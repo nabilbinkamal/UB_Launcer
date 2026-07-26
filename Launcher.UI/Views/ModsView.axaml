@@ -1,0 +1,112 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Launcher.Core.ViewModels"
+             mc:Ignorable="d"
+             d:DesignWidth="1120"
+             d:DesignHeight="850"
+             x:Class="Launcher.UI.Views.ModsView"
+             x:DataType="vm:ModsViewModel">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <Grid Margin="28 24 28 32" RowDefinitions="Auto,Auto,Auto,*" RowSpacing="12">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <ItemsControl ItemsSource="{Binding Categories}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="5"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Content="{Binding Name}"
+                                    Classes="ContentTab"
+                                    Classes.Active="{Binding IsSelected}"
+                                    Command="{Binding $parent[UserControl].((vm:ModsViewModel)DataContext).SelectCategoryCommand}"
+                                    CommandParameter="{Binding}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <Border Grid.Row="1" Classes="ContentSearchBox">
+                <Grid ColumnDefinitions="Auto,*">
+                    <TextBlock Text="⌕" FontSize="24" Foreground="#7C8595" VerticalAlignment="Center" Margin="13 0 9 2"/>
+                    <TextBox Grid.Column="1"
+                             Text="{Binding SearchQuery}"
+                             Background="Transparent"
+                             BorderBrush="Transparent"
+                             Foreground="#EDF1F7"
+                             CaretBrush="#51A8FF"
+                             FontFamily="Poppins"
+                             FontSize="14"
+                             VerticalContentAlignment="Center"
+                             PlaceholderText="Search content..."/>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="2" ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8">
+                <Button Content="Sort by:  Relevance   ˅" Classes="ContentFilterButton"/>
+                <Button Grid.Column="1" Content="View:  20   ˅" Classes="ContentFilterButton"/>
+                <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center" Spacing="16">
+                    <TextBlock Text="1" Classes="ContentPageActive"/>
+                    <TextBlock Text="2" Classes="ContentPageNumber"/>
+                    <TextBlock Text="..." Classes="ContentPageNumber"/>
+                    <TextBlock Text="889" Classes="ContentPageNumber"/>
+                    <TextBlock Text="›" FontSize="25" Foreground="#AEB8C7" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+
+            <ItemsControl Grid.Row="3" ItemsSource="{Binding VisibleContent}" Margin="0 0 0 2">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ContentItem">
+                        <Border Classes="ContentResultCard" Margin="0 0 0 12" Padding="16">
+                            <Grid ColumnDefinitions="94,*,Auto" ColumnSpacing="14">
+                                <Border Width="82" Height="82" CornerRadius="12" Background="{Binding Accent}" BorderBrush="#48FFFFFF" BorderThickness="1" VerticalAlignment="Center">
+                                    <Grid>
+                                        <Border Width="60" Height="60" Background="#24000000" CornerRadius="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding Mark}" FontFamily="Minecraft Ten" FontSize="20" FontWeight="Medium" Foreground="#F8FBFF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                                <Grid Grid.Column="1" RowDefinitions="Auto,Auto,Auto" RowSpacing="6" VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal" Spacing="7">
+                                        <TextBlock Text="{Binding Name}" Classes="ContentTitle"/>
+                                        <TextBlock Text="by" Classes="ContentByline"/>
+                                        <TextBlock Text="{Binding Author}" Classes="ContentByline"/>
+                                        <TextBlock Text="↗" Classes="ContentByline"/>
+                                    </StackPanel>
+                                    <TextBlock Grid.Row="1" Text="{Binding Description}" Classes="ContentDescription" TextTrimming="CharacterEllipsis" MaxLines="2"/>
+                                    <TextBlock Grid.Row="2" Text="{Binding Tags}" Classes="ContentTags" TextTrimming="CharacterEllipsis"/>
+                                </Grid>
+                                <Grid Grid.Column="2" RowDefinitions="Auto,*,Auto" Width="160">
+                                    <Button Content="{Binding ActionLabel}"
+                                            Classes="ContentInstallButton"
+                                            Classes.Installed="{Binding IsInstalled}"
+                                            Command="{Binding $parent[UserControl].((vm:ModsViewModel)DataContext).InstallCommand}"
+                                            CommandParameter="{Binding}"
+                                            HorizontalAlignment="Right"/>
+                                    <StackPanel Grid.Row="2" Spacing="6" HorizontalAlignment="Right">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="14">
+                                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                                <TextBlock Text="↓" Classes="ContentMetric"/>
+                                                <TextBlock Text="{Binding Downloads}" Classes="ContentMetric"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                                <TextBlock Text="♡" Classes="ContentMetric"/>
+                                                <TextBlock Text="{Binding Likes}" Classes="ContentMetric"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="5">
+                                            <TextBlock Text="↻" Classes="ContentMetric"/>
+                                            <TextBlock Text="{Binding Updated}" Classes="ContentMetric"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

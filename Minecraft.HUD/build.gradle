@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.ublauncher'
+version = '1.0.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://maven.fabricmc.net/' }
+    maven { url = 'https://libraries.minecraft.net/' }
+}
+
+dependencies {
+    // Fabric Loader and Mixin AP
+    compileOnly 'net.fabricmc:fabric-loader:0.15.7'
+    compileOnly 'org.spongepowered:mixin:0.8.5'
+    
+    // OpenGL & LWJGL dependencies for graphics/HUD
+    compileOnly 'org.lwjgl:lwjgl:3.3.1'
+    compileOnly 'org.lwjgl:lwjgl-opengl:3.3.1'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}

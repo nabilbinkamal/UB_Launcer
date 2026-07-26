@@ -1,0 +1,177 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Launcher.Core.ViewModels"
+             xmlns:conv="clr-namespace:Launcher.UI.Converters"
+             xmlns:controls="using:Launcher.UI.Controls"
+             mc:Ignorable="d"
+             d:DesignWidth="1220"
+             d:DesignHeight="850"
+             x:Class="Launcher.UI.Views.HomeView"
+             x:DataType="vm:HomeViewModel">
+
+    <UserControl.Resources>
+        <conv:StringToBitmapConverter x:Key="StringToBitmapConverter"/>
+    </UserControl.Resources>
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <Grid x:Name="DashboardGrid"
+              ColumnDefinitions="*,313"
+              RowDefinitions="Auto"
+              ColumnSpacing="9"
+              RowSpacing="10"
+              Margin="30 54 22 18">
+            <Grid x:Name="PrimaryColumn" Grid.Column="0" RowSpacing="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*" MinHeight="279"/>
+                    <RowDefinition Height="239"/>
+                    <RowDefinition Height="187"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" ColumnDefinitions="*,135,135" ColumnSpacing="8" Margin="4 0 0 13">
+                    <StackPanel Spacing="1" Margin="0 7 0 -7">
+                        <TextBlock Text="Welcome back," Classes="WelcomeTitle" Foreground="#00D9FF"/>
+                        <TextBlock Text="{Binding Username}" Classes="UserNameTitle" Foreground="White"/>
+                    </StackPanel>
+                    <Border Grid.Column="1" Classes="StatPill">
+                        <StackPanel Orientation="Horizontal" Spacing="9" HorizontalAlignment="Center" VerticalAlignment="Center"><controls:SvgPathIcon Source="/Assets/playtime.svg" Width="27" Height="27"/><StackPanel VerticalAlignment="Center"><TextBlock Text="Total Playtime" Classes="StatLabel" Foreground="#E5E5E5"/><TextBlock Text="1,482h" Classes="StatValue" Foreground="White"/></StackPanel></StackPanel>
+                    </Border>
+                    <Border Grid.Column="2" Classes="StatPill">
+                        <StackPanel Orientation="Horizontal" Spacing="9" HorizontalAlignment="Left" VerticalAlignment="Center"><controls:SvgPathIcon Source="/Assets/mods.svg" Width="27" Height="27"/><StackPanel VerticalAlignment="Center"><TextBlock Text="Total Mods" Classes="StatLabel" Foreground="#E5E5E5" HorizontalAlignment="Left"/><TextBlock Text="1,482" Classes="StatValue" Foreground="White" HorizontalAlignment="Left"/></StackPanel></StackPanel>
+                    </Border>
+                </Grid>
+
+                <Border Grid.Row="1" Classes="HeroCard" MinHeight="279" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ClipToBounds="True">
+                    <Grid>
+                        <Border Background="#111B2A" CornerRadius="8" BorderBrush="#213A55" BorderThickness="1" ClipToBounds="True">
+                            <Grid>
+                                <Image Name="HeroImage"
+                                       Source="{Binding BannerPlaceholderPath, Converter={StaticResource StringToBitmapConverter}}"
+                                       Stretch="UniformToFill"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                                
+                                <Rectangle Fill="#050505" Opacity="0.3" IsVisible="{Binding #HeroImage.Source, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8"
+                                            IsVisible="{Binding #HeroImage.Source, Converter={x:Static ObjectConverters.IsNull}}">
+                                    <TextBlock Text="BANNER IMAGE PLACEHOLDER" FontFamily="Consolas" FontSize="21" FontWeight="Bold" Foreground="#5EDFFF" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding BannerPlaceholderPath}" FontFamily="Consolas" FontSize="12" Foreground="#86AFC8" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Replace this path with the Supabase Storage banner URL." FontSize="11" Foreground="#63839B" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <Grid Grid.Row="2" ColumnDefinitions="476*,348*" ColumnSpacing="12">
+                    <Border Grid.Column="0" Classes="CurrentInstanceCard" Padding="20 17">
+                        <Grid ColumnDefinitions="125,*" RowDefinitions="Auto,Auto,Auto,*,Auto">
+                            <Border Grid.RowSpan="4" Width="104" Height="104" Background="#6C4533" CornerRadius="8" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0 6 16 0">
+                                <Grid>
+                                    <Border Background="#72D65D" Height="42" VerticalAlignment="Top" CornerRadius="7 7 0 0"/>
+                                    <Border Background="#9B684D" Height="61" VerticalAlignment="Bottom" CornerRadius="0 0 7 7"/>
+                                    <Border Background="#4F9E48" Width="70" Height="13" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0 31 0 0"/>
+                                    <Border Background="#C08B61" Width="29" Height="17" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="17 6 0 0"/>
+                                    <Border Background="#7C503A" Width="24" Height="16" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0 12 16 0"/>
+                                </Grid>
+                            </Border>
+                            <TextBlock Grid.Column="1" Text="Current instance" Classes="CurrentInstanceLabel" Foreground="#D2D2D2"/>
+                            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="8" Margin="0 6 0 0">
+                                <TextBlock Text="UB OPTIMIZE" Classes="InstanceNameLabel" Foreground="White"/>
+                                <Button Classes="IconButton" Content="✎"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="14" Margin="0 10 0 0" IsVisible="False">
+                                <TextBlock Text="Minecraft 1.21.1" Classes="VersionLabel" Foreground="White"/><TextBlock Text="♢ Fabric" Classes="VersionLabel" Foreground="White"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Top" Margin="0 10 0 0" IsVisible="False">
+                                <Border Classes="Tag"><TextBlock Text="● 8 GB RAM" Classes="TagLabel" Foreground="#E5E5E5"/></Border>
+                                <Border Classes="Tag"><TextBlock Text="☕ Java 21" Classes="TagLabel" Foreground="#E5E5E5"/></Border>
+                                <Border Classes="Tag"><TextBlock Text="▣ 1920x1080" Classes="TagLabel" Foreground="#E5E5E5"/></Border>
+                            </StackPanel>
+                            <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="14" Margin="0 10 0 0">
+                                <TextBlock Text="Minecraft 1.21.1" Classes="VersionLabel" Foreground="White"/>
+                                <StackPanel Orientation="Horizontal" Spacing="5">
+                                    <controls:SvgPathIcon Source="/Assets/fabric.svg" Width="15" Height="16"/>
+                                    <TextBlock Text="Fabric" Classes="VersionLabel" Foreground="White"/>
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Top" Margin="0 10 0 0">
+                                <Border Classes="Tag">
+                                    <StackPanel Orientation="Horizontal" Spacing="5">
+                                        <controls:SvgPathIcon Source="/Assets/Ellipse Ram.svg" Width="10" Height="10"/>
+                                        <TextBlock Text="8 GB RAM" Classes="TagLabel" Foreground="#E5E5E5"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Classes="Tag">
+                                    <StackPanel Orientation="Horizontal" Spacing="5">
+                                        <controls:SvgPathIcon Source="/Assets/java.svg" Width="13" Height="13"/>
+                                        <TextBlock Text="Java 21" Classes="TagLabel" Foreground="#E5E5E5"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Classes="Tag">
+                                    <StackPanel Orientation="Horizontal" Spacing="5">
+                                        <controls:SvgPathIcon Source="/Assets/screen resulation.svg" Width="14" Height="14"/>
+                                        <TextBlock Text="1920x1080" Classes="TagLabel" Foreground="#E5E5E5"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                            <Button Grid.Row="4" Grid.ColumnSpan="2" Classes="PlayButton" Command="{Binding LaunchGameCommand}" IsEnabled="{Binding !IsLaunching}" Margin="0 12 0 0">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="14"><TextBlock Text="▶" FontSize="23"/><TextBlock Text="PLAY" Classes="PlayLabel"/></StackPanel>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Column="1" Classes="PanelCard" Padding="18 10">
+                        <Grid RowDefinitions="Auto,*">
+                            <TextBlock Text="♛ PARTNER'S" FontFamily="Consolas" FontSize="18" FontWeight="Black" Foreground="#00D9FF" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Row="0" Text="SERVERS" FontFamily="Consolas" FontSize="18" FontWeight="Black" Foreground="#00D9FF" HorizontalAlignment="Center" Margin="0 22 0 0"/>
+                            <StackPanel Grid.Row="1" Margin="0 13 0 0" Spacing="5">
+                                <Button Classes="ServerRow"><Grid ColumnDefinitions="Auto,*,Auto"><Border Width="28" Height="28" Background="#0D8FB5" CornerRadius="5"><TextBlock Text="UB" FontSize="9" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Grid.Column="1" Text="United Bangla" FontSize="12" Foreground="White" VerticalAlignment="Center" Margin="8 0"/><TextBlock Grid.Column="2" Text="▶" Foreground="#3C91E6" FontSize="15" VerticalAlignment="Center"/></Grid></Button>
+                                <Button Classes="ServerRow"><Grid ColumnDefinitions="Auto,*,Auto"><Border Width="28" Height="28" Background="#0D8FB5" CornerRadius="5"><TextBlock Text="UB" FontSize="9" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Grid.Column="1" Text="United Bangla" FontSize="12" Foreground="White" VerticalAlignment="Center" Margin="8 0"/><TextBlock Grid.Column="2" Text="▶" Foreground="#3C91E6" FontSize="15" VerticalAlignment="Center"/></Grid></Button>
+                                <Button Classes="ServerRow"><Grid ColumnDefinitions="Auto,*,Auto"><Border Width="28" Height="28" Background="#0D8FB5" CornerRadius="5"><TextBlock Text="UB" FontSize="9" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Grid.Column="1" Text="United Bangla" FontSize="12" Foreground="White" VerticalAlignment="Center" Margin="8 0"/><TextBlock Grid.Column="2" Text="▶" Foreground="#3C91E6" FontSize="15" VerticalAlignment="Center"/></Grid></Button>
+                                <Button Classes="ServerRow"><Grid ColumnDefinitions="Auto,*,Auto"><Border Width="28" Height="28" Background="#0D8FB5" CornerRadius="5"><TextBlock Text="UB" FontSize="9" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Grid.Column="1" Text="United Bangla" FontSize="12" Foreground="White" VerticalAlignment="Center" Margin="8 0"/><TextBlock Grid.Column="2" Text="▶" Foreground="#3C91E6" FontSize="15" VerticalAlignment="Center"/></Grid></Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <Grid Grid.Row="3" ColumnDefinitions="476*,348*" ColumnSpacing="12">
+                    <Border Grid.Column="0" Classes="PanelCard" Padding="17 13">
+                        <Grid RowDefinitions="Auto,*"><TextBlock Text="Recent Instances" Classes="PanelTitle" Foreground="White"/><Grid Grid.Row="1" ColumnDefinitions="*,*,*" ColumnSpacing="9" Margin="0 11 0 0">
+                            <Border Classes="RecentCard"><StackPanel><Border Width="38" Height="38" Background="#9B684D" CornerRadius="5"/><TextBlock Text="Fabric 1.21.10" FontSize="10" Foreground="White" Margin="0 7 0 0"/><TextBlock Text="Optimise" FontSize="10" Foreground="White"/><TextBlock Text="120 Mods" FontSize="9" Foreground="#89929B"/><TextBlock Text="Last played: 1 hour ago" FontSize="8" Foreground="#89929B" Margin="0 10 0 0"/></StackPanel></Border>
+                            <Border Grid.Column="1" Classes="RecentCard"><StackPanel><Border Width="38" Height="38" Background="#9B684D" CornerRadius="5"/><TextBlock Text="Fabric 1.21.10" FontSize="10" Foreground="White" Margin="0 7 0 0"/><TextBlock Text="Optimise" FontSize="10" Foreground="White"/><TextBlock Text="20 Mods" FontSize="9" Foreground="#89929B"/><TextBlock Text="Last played: 1 day ago" FontSize="8" Foreground="#89929B" Margin="0 10 0 0"/></StackPanel></Border>
+                            <Border Grid.Column="2" Classes="RecentCard"><StackPanel><Border Width="38" Height="38" Background="#9B684D" CornerRadius="5"/><TextBlock Text="Fabric 1.21.10" FontSize="10" Foreground="White" Margin="0 7 0 0"/><TextBlock Text="Optimise" FontSize="10" Foreground="White"/><TextBlock Text="110 Mods" FontSize="9" Foreground="#89929B"/><TextBlock Text="Last played: 2 days ago" FontSize="8" Foreground="#89929B" Margin="0 10 0 0"/></StackPanel></Border>
+                        </Grid></Grid>
+                    </Border>
+                    <Border Grid.Column="1" Classes="PanelCard" Padding="18 13"><Grid RowDefinitions="Auto,*"><TextBlock Text="Recents Server" Classes="PanelTitle" Foreground="White"/><StackPanel Grid.Row="1" Margin="0 9 0 0" Spacing="3"><Button Classes="ServerRow"><Grid ColumnDefinitions="Auto,*,Auto"><Border Width="27" Height="27" Background="#0D8FB5" CornerRadius="5"><TextBlock Text="UB" FontSize="9" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Grid.Column="1" Text="United Bangla" FontSize="12" Foreground="White" VerticalAlignment="Center" Margin="8 0"/><TextBlock Grid.Column="2" Text="▶" Foreground="#3C91E6" FontSize="15"/></Grid></Button><Button Classes="ServerRow"><Grid ColumnDefinitions="Auto,*,Auto"><Border Width="27" Height="27" Background="#0D8FB5" CornerRadius="5"><TextBlock Text="UB" FontSize="9" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Grid.Column="1" Text="United Bangla" FontSize="12" Foreground="White" VerticalAlignment="Center" Margin="8 0"/><TextBlock Grid.Column="2" Text="▶" Foreground="#3C91E6" FontSize="15"/></Grid></Button><Button Classes="ServerRow"><Grid ColumnDefinitions="Auto,*,Auto"><Border Width="27" Height="27" Background="#0D8FB5" CornerRadius="5"><TextBlock Text="UB" FontSize="9" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Grid.Column="1" Text="United Bangla" FontSize="12" Foreground="White" VerticalAlignment="Center" Margin="8 0"/><TextBlock Grid.Column="2" Text="▶" Foreground="#3C91E6" FontSize="15"/></Grid></Button><Button Classes="ServerRow"><Grid ColumnDefinitions="Auto,*,Auto"><Border Width="27" Height="27" Background="#0D8FB5" CornerRadius="5"><TextBlock Text="UB" FontSize="9" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Grid.Column="1" Text="United Bangla" FontSize="12" Foreground="White" VerticalAlignment="Center" Margin="8 0"/><TextBlock Grid.Column="2" Text="▶" Foreground="#3C91E6" FontSize="15"/></Grid></Button></StackPanel></Grid></Border>
+                </Grid>
+            </Grid>
+
+            <Grid x:Name="RightRail" Grid.Column="1" RowSpacing="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" MinHeight="398"/>
+                    <RowDefinition Height="239"/>
+                    <RowDefinition Height="142"/>
+                </Grid.RowDefinitions>
+                <Border Classes="PanelCard" Padding="18 15"><Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="7"><Grid ColumnDefinitions="*,Auto"><TextBlock Text="Performance Summary" Classes="PanelTitle" Foreground="White"/><Button Grid.Column="1" Classes="DetailsButton" Content="View Details"/></Grid><Border Grid.Row="1" Classes="MetricCard"><Grid ColumnDefinitions="*,Auto"><StackPanel><TextBlock Text="Launch Time" FontSize="10" Foreground="#737981"/><TextBlock Text="12.10s" FontSize="22" Foreground="White"/></StackPanel><TextBlock Grid.Column="1" Text="╱╲╱╲╱╲╱╲╱╲" FontSize="20" Foreground="#638BFF" VerticalAlignment="Center"/></Grid></Border><Border Grid.Row="2" Classes="MetricCard"><Grid ColumnDefinitions="*,Auto"><StackPanel><TextBlock Text="CPU Usage" FontSize="10" Foreground="#737981"/><TextBlock Text="099%" FontSize="22" Foreground="White"/></StackPanel><TextBlock Grid.Column="1" Text="╱╲╱╲╱╲╱╲╱╲" FontSize="20" Foreground="#638BFF" VerticalAlignment="Center"/></Grid></Border><Border Grid.Row="3" Classes="MetricCard"><Grid ColumnDefinitions="*,Auto"><StackPanel><TextBlock Text="GPU Usage" FontSize="10" Foreground="#737981"/><TextBlock Text="045%" FontSize="22" Foreground="White"/></StackPanel><TextBlock Grid.Column="1" Text="╱╲╱╲╱╲╱╲╱╲" FontSize="20" Foreground="#638BFF" VerticalAlignment="Center"/></Grid></Border><Border Grid.Row="4" Classes="MetricCard"><Grid ColumnDefinitions="*,Auto"><StackPanel><TextBlock Text="Memory Usage" FontSize="10" Foreground="#737981"/><StackPanel Orientation="Horizontal"><TextBlock Text="23" FontSize="22" Foreground="White"/><TextBlock Text=" GB/32 GB" FontSize="10" Foreground="#737981" VerticalAlignment="Bottom" Margin="3 0 0 4"/></StackPanel></StackPanel><Border Grid.Column="1" Width="50" Height="50" CornerRadius="25" BorderBrush="#2771FF" BorderThickness="4" Background="Transparent"><TextBlock Text="72%" FontSize="11" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></Grid></Border></Grid></Border>
+                <Border Classes="PanelCard" Height="239" Padding="18 15 18 19">
+                    <StackPanel Spacing="7" VerticalAlignment="Bottom">
+                        <TextBlock Text="Quick Actions" Classes="QuickActionsTitle" Foreground="White"/>
+                        <Button Classes="QuickButton" Command="{Binding AddInstanceCommand}"><StackPanel Orientation="Horizontal" Spacing="12"><controls:SvgPathIcon Source="/Assets/plus.svg" Width="14" Height="14"/><TextBlock Text="Add instance" VerticalAlignment="Center"/></StackPanel></Button>
+                        <Button Classes="QuickButton" Command="{Binding InstallModsCommand}"><StackPanel Orientation="Horizontal" Spacing="12"><controls:SvgPathIcon Source="/Assets/mods.svg" Width="18" Height="18"/><TextBlock Text="Install Mods" VerticalAlignment="Center"/></StackPanel></Button>
+                        <Button Classes="QuickButton" Command="{Binding EditProfileCommand}"><StackPanel Orientation="Horizontal" Spacing="12"><controls:SvgPathIcon Source="/Assets/edit profile.svg" Width="14" Height="14"/><TextBlock Text="Edit Profile" VerticalAlignment="Center"/></StackPanel></Button>
+                        <Button Classes="QuickButton" Command="{Binding LaunchOptionCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <controls:SvgPathIcon Source="/Assets/settings.svg" Width="14" Height="14"/>
+                                <TextBlock Text="Launch Option" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Border>
+                <Border Classes="DiscordCard" Height="142" Padding="18 16"><Grid><StackPanel VerticalAlignment="Center" Spacing="3"><TextBlock Text="JOIN OUR" FontSize="10" Foreground="#C6BBCD"/><TextBlock Text="DISCORD SERVER" FontSize="19" FontWeight="Black" Foreground="#A84FFF"/><TextBlock Text="Giveaways, events &amp; more!" FontSize="9" Foreground="#C6BBCD"/><Button Classes="JoinButton" Content="Join Now" Margin="0 10 0 0"/></StackPanel><TextBlock Grid.Column="1" Text="DISCORD" FontFamily="Consolas" FontSize="21" FontWeight="Black" Foreground="#6A24C7" Opacity="0.75" HorizontalAlignment="Right" VerticalAlignment="Center" RenderTransform="rotate(-15deg)"/></Grid></Border>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

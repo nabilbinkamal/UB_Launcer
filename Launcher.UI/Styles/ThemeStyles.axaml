@@ -1,0 +1,532 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Styles.Resources>
+        <SolidColorBrush x:Key="PageBrush" Color="#050505"/>
+        <SolidColorBrush x:Key="SidebarBrush" Color="#030303"/>
+        <SolidColorBrush x:Key="PanelBrush" Color="#080808"/>
+        <SolidColorBrush x:Key="PanelHoverBrush" Color="#141414"/>
+        <SolidColorBrush x:Key="BlueBrush" Color="#2363B4"/>
+        <SolidColorBrush x:Key="CyanBrush" Color="#00D9FF"/>
+        <SolidColorBrush x:Key="BorderBrush" Color="#343434"/>
+        <SolidColorBrush x:Key="MutedBrush" Color="#87909A"/>
+    </Styles.Resources>
+
+    <Style Selector="Button.SidebarButton">
+        <Setter Property="Width" Value="179"/>
+        <Setter Property="Height" Value="39"/>
+        <Setter Property="MinHeight" Value="0"/>
+        <Setter Property="Background" Value="#1AFFFFFF"/>
+        <Setter Property="Foreground" Value="#F0F0F0"/>
+        <Setter Property="BorderBrush" Value="#00FFFFFF"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="14 0"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="CornerRadius" Value="6"/>
+    </Style>
+    <Style Selector="Button.SidebarButton StackPanel">
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Button.SidebarButton TextBlock">
+        <Setter Property="FontFamily" Value="Minecraft"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="TextBlock.WelcomeTitle">
+        <Setter Property="FontFamily" Value="Minecraft"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+    </Style>
+    <Style Selector="TextBlock.UserNameTitle">
+        <Setter Property="FontFamily" Value="Minecraft"/>
+        <Setter Property="FontSize" Value="22"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+    </Style>
+    <Style Selector="TextBlock.CurrentInstanceLabel">
+        <Setter Property="FontFamily" Value="Montserrat"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+    </Style>
+    <Style Selector="TextBlock.InstanceNameLabel">
+        <Setter Property="FontFamily" Value="Minecraft Ten"/>
+        <Setter Property="FontSize" Value="22"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+    </Style>
+    <Style Selector="TextBlock.VersionLabel">
+        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+    </Style>
+    <Style Selector="TextBlock.TagLabel">
+        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+    </Style>
+    <Style Selector="TextBlock.PanelTitle">
+        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+    </Style>
+    <Style Selector="TextBlock.QuickActionsTitle">
+        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+    </Style>
+    <Style Selector="TextBlock.PremiumLabel">
+        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Foreground" Value="#87E3F2"/>
+    </Style>
+    <Style Selector="TextBlock.PlayerNameLabel">
+        <Setter Property="FontFamily" Value="Minecraft"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Foreground" Value="#FFFFFF"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="TextBlock.PlayerChevron">
+        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="Foreground" Value="#F3F6FB"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="7 -5 0 0"/>
+    </Style>
+    <Style Selector="TextBlock.PlayerSocialIcon">
+        <Setter Property="FontFamily" Value="Segoe UI Symbol"/>
+        <Setter Property="Foreground" Value="#FFFFFF"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="TextBlock.StatLabel">
+        <Setter Property="FontFamily" Value="Minecraft"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+    </Style>
+    <Style Selector="TextBlock.StatValue">
+        <Setter Property="FontFamily" Value="Minecraft"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+    </Style>
+    <Style Selector="Button.SidebarButton:pointerover">
+        <Setter Property="Background" Value="#26FFFFFF"/>
+        <Setter Property="BorderBrush" Value="#335D9CE8"/>
+    </Style>
+    <Style Selector="Button.SidebarButton.Active">
+        <Setter Property="Background" Value="#1E58A5"/>
+        <Setter Property="BorderBrush" Value="#3379B8FF"/>
+    </Style>
+    <Style Selector="Button.SidebarButton.Active:pointerover">
+        <Setter Property="Background" Value="#2465B9"/>
+        <Setter Property="BorderBrush" Value="#668BC7FF"/>
+    </Style>
+
+    <Style Selector="Button.WindowButton">
+        <Setter Property="Width" Value="46"/>
+        <Setter Property="Height" Value="32"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="#F1F4F8"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="CornerRadius" Value="4"/>
+    </Style>
+    <Style Selector="Button.WindowButton:pointerover"><Setter Property="Background" Value="#1AFFFFFF"/></Style>
+    <Style Selector="Button.WindowButton.CloseButton"><Setter Property="Foreground" Value="#F4F4F4"/></Style>
+    <Style Selector="Button.WindowButton.CloseButton:pointerover"><Setter Property="Background" Value="#C42B1C"/><Setter Property="Foreground" Value="White"/></Style>
+
+    <Style Selector="Border.StatPill">
+        <Setter Property="Width" Value="135"/>
+        <Setter Property="Height" Value="45"/>
+        <Setter Property="Background" Value="#1AFFFFFF"/>
+        <Setter Property="BorderBrush" Value="#33FFFFFF"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="9"/>
+        <Setter Property="Padding" Value="10 6"/>
+    </Style>
+    <Style Selector="Border.HeroCard">
+        <Setter Property="Background" Value="#101C29"/>
+        <Setter Property="BorderBrush" Value="#354B62"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="9"/>
+        <Setter Property="Padding" Value="0"/>
+    </Style>
+    <Style Selector="Border.PanelCard">
+        <Setter Property="Background" Value="#080808"/>
+        <Setter Property="BorderBrush" Value="#3A3A3A"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="9"/>
+    </Style>
+    <Style Selector="Grid#RightRail > Border.PanelCard:nth-child(1)">
+        <Setter Property="Grid.Row" Value="0"/>
+    </Style>
+    <Style Selector="Grid#RightRail > Border.PanelCard:nth-child(2)">
+        <Setter Property="Grid.Row" Value="1"/>
+    </Style>
+    <Style Selector="Grid#RightRail > Border.DiscordCard">
+        <Setter Property="Grid.Row" Value="2"/>
+    </Style>
+    <Style Selector="Border.CurrentInstanceCard">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#C23A9ECB" Offset="0"/>
+                <GradientStop Color="#00000000" Offset="0.27"/>
+                <GradientStop Color="#29FFFFFF" Offset="0.84"/>
+                <GradientStop Color="#00000000" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="BorderBrush" Value="#33FFFFFF"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="10"/>
+    </Style>
+    <Style Selector="Border.MetricCard">
+        <Setter Property="Background" Value="#111111"/>
+        <Setter Property="BorderBrush" Value="#252525"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="12 7"/>
+        <Setter Property="MinHeight" Value="76"/>
+    </Style>
+    <Style Selector="Border.Tag">
+        <Setter Property="Background" Value="#252525"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Padding" Value="8 4"/>
+    </Style>
+    <Style Selector="Button.PlayButton">
+        <Setter Property="Width" Value="432"/>
+        <Setter Property="Background" Value="#1C53A3"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="#3D82D9"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Height" Value="55"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="TextBlock.PlayLabel">
+        <Setter Property="FontFamily" Value="Minecraft Ten"/>
+        <Setter Property="FontSize" Value="25"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Button.PlayButton StackPanel">
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Button.PlayButton TextBlock">
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Button.PlayButton:pointerover"><Setter Property="Background" Value="#347CD2"/></Style>
+    <Style Selector="Button.PlayButton:disabled"><Setter Property="Background" Value="#1C375D"/><Setter Property="Foreground" Value="#8EA0B7"/></Style>
+    <Style Selector="Button.IconButton">
+        <Setter Property="Width" Value="28"/><Setter Property="Height" Value="28"/><Setter Property="Background" Value="#252525"/><Setter Property="Foreground" Value="White"/><Setter Property="Padding" Value="0"/><Setter Property="CornerRadius" Value="5"/>
+    </Style>
+    <Style Selector="Button.ServerRow">
+        <Setter Property="Background" Value="Transparent"/><Setter Property="Padding" Value="0"/><Setter Property="HorizontalAlignment" Value="Stretch"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="Height" Value="31"/>
+    </Style>
+    <Style Selector="Button.ServerRow:pointerover"><Setter Property="Background" Value="#151515"/></Style>
+    <Style Selector="Border.RecentCard">
+        <Setter Property="Background" Value="#0C0C0C"/><Setter Property="BorderBrush" Value="#3A3A3A"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="5"/><Setter Property="Padding" Value="9"/>
+    </Style>
+    <Style Selector="Button.DetailsButton">
+        <Setter Property="Background" Value="#101C25"/><Setter Property="Foreground" Value="#46B3F6"/><Setter Property="Padding" Value="11 5"/><Setter Property="FontSize" Value="10"/><Setter Property="CornerRadius" Value="5"/>
+    </Style>
+    <Style Selector="Button.QuickButton">
+        <Setter Property="Width" Value="276"/><Setter Property="Height" Value="38"/><Setter Property="Background" Value="#1AFFFFFF"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#1AFFFFFF"/><Setter Property="BorderThickness" Value="1.5"/><Setter Property="HorizontalContentAlignment" Value="Left"/><Setter Property="Padding" Value="11 6"/><Setter Property="CornerRadius" Value="8"/>
+    </Style>
+    <Style Selector="Button.QuickButton:pointerover"><Setter Property="Background" Value="#2865B5"/></Style>
+    <Style Selector="Border.DiscordCard">
+        <Setter Property="Background" Value="#100B1E"/><Setter Property="BorderBrush" Value="#322060"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="MinHeight" Value="132"/>
+    </Style>
+    <Style Selector="Button.JoinButton">
+        <Setter Property="Background" Value="Transparent"/><Setter Property="BorderBrush" Value="#9884B5"/><Setter Property="BorderThickness" Value="1"/><Setter Property="Foreground" Value="#D6C8EB"/><Setter Property="Padding" Value="15 5"/><Setter Property="CornerRadius" Value="5"/>
+    </Style>
+    <Style Selector="TextBlock.PageTitle">
+        <Setter Property="FontFamily" Value="Minecraft"/><Setter Property="FontSize" Value="22"/><Setter Property="FontWeight" Value="Medium"/>
+    </Style>
+    <Style Selector="TextBlock.PageSubtitle">
+        <Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontSize" Value="12"/><Setter Property="FontWeight" Value="Medium"/>
+    </Style>
+    <Style Selector="Border.InstanceCard">
+        <Setter Property="Background" Value="#111111"/><Setter Property="BorderBrush" Value="#2E3740"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/>
+    </Style>
+    <Style Selector="Border.InstanceCard:pointerover">
+        <Setter Property="Background" Value="#151B22"/><Setter Property="BorderBrush" Value="#1E58A5"/>
+    </Style>
+    <Style Selector="TextBlock.InstanceCardTitle">
+        <Setter Property="FontFamily" Value="Minecraft Ten"/><Setter Property="FontSize" Value="18"/><Setter Property="FontWeight" Value="Medium"/>
+    </Style>
+    <Style Selector="TextBlock.InstanceCardMeta">
+        <Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="Medium"/>
+    </Style>
+    <Style Selector="TextBlock.InstanceCardSmall">
+        <Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontSize" Value="10"/><Setter Property="FontWeight" Value="Medium"/>
+    </Style>
+    <Style Selector="TextBlock.FormLabel">
+        <Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="Medium"/>
+    </Style>
+    <Style Selector="Button.CreateInstanceButton">
+        <Setter Property="Background" Value="#1E58A5"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#3D82D9"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="14 8"/>
+    </Style>
+    <Style Selector="Button.CreateInstanceButton:pointerover">
+        <Setter Property="Background" Value="#2A6CC0"/>
+    </Style>
+    <Style Selector="Button.InstancePlayButton">
+        <Setter Property="Width" Value="34"/><Setter Property="Height" Value="34"/><Setter Property="Background" Value="#1E58A5"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#3D82D9"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="0"/>
+    </Style>
+    <Style Selector="Button.InstancePlayButton:pointerover">
+        <Setter Property="Background" Value="#2A6CC0"/>
+    </Style>
+    <Style Selector="Button.InstanceMoreButton">
+        <Setter Property="Background" Value="#1AFFFFFF"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#33FFFFFF"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="9 7"/>
+    </Style>
+    <Style Selector="Button.InstanceMoreButton:pointerover">
+        <Setter Property="Background" Value="#2865B5"/>
+    </Style>
+    <Style Selector="Border.UploadDropZone">
+        <Setter Property="Background" Value="#0B1117"/><Setter Property="BorderBrush" Value="#35506A"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/>
+    </Style>
+    <Style Selector="Border.PreviewStage">
+        <Setter Property="Background" Value="#080D12"/><Setter Property="BorderBrush" Value="#24394C"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="ClipToBounds" Value="True"/>
+    </Style>
+    <Style Selector="Border.PerformanceStatCard">
+        <Setter Property="Background" Value="#0D1116"/><Setter Property="BorderBrush" Value="#2C4256"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/>
+    </Style>
+    <Style Selector="Border.ModCard">
+        <Setter Property="Background" Value="#111111"/><Setter Property="BorderBrush" Value="#2D2D2D"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/>
+    </Style>
+    <Style Selector="Border.ModCard:pointerover">
+        <Setter Property="Background" Value="#151B22"/><Setter Property="BorderBrush" Value="#1E58A5"/>
+    </Style>
+    <Style Selector="Button.ContentTab">
+        <Setter Property="Background" Value="#25272E"/>
+        <Setter Property="Foreground" Value="#F0F3F7"/>
+        <Setter Property="BorderBrush" Value="#40434B"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="18"/>
+        <Setter Property="Padding" Value="17 10"/>
+        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontSize" Value="13"/>
+    </Style>
+    <Style Selector="Button.ContentTab:pointerover">
+        <Setter Property="Background" Value="#333742"/><Setter Property="BorderBrush" Value="#5D80A5"/>
+    </Style>
+    <Style Selector="Button.ContentTab.Active">
+        <Setter Property="Background" Value="#164B3A"/><Setter Property="Foreground" Value="#28E485"/><Setter Property="BorderBrush" Value="#1E8B5F"/>
+    </Style>
+    <Style Selector="Button.ContentTab.Active:pointerover">
+        <Setter Property="Background" Value="#1B6049"/><Setter Property="Foreground" Value="#62F3A7"/>
+    </Style>
+    <Style Selector="Border.ContentSearchBox">
+        <Setter Property="Height" Value="42"/><Setter Property="Background" Value="#30323A"/><Setter Property="BorderBrush" Value="#3E414A"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="10"/>
+    </Style>
+    <Style Selector="Border.ContentSearchBox TextBox">
+        <Setter Property="Padding" Value="0 9 12 9"/>
+    </Style>
+    <Style Selector="Button.ContentFilterButton">
+        <Setter Property="Height" Value="36"/><Setter Property="Background" Value="#363942"/><Setter Property="Foreground" Value="#B4BFCE"/><Setter Property="BorderBrush" Value="#424650"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="Padding" Value="15 6"/><Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="FontSize" Value="13"/>
+    </Style>
+    <Style Selector="Button.ContentFilterButton:pointerover">
+        <Setter Property="Background" Value="#414652"/><Setter Property="BorderBrush" Value="#5E8CC2"/>
+    </Style>
+    <Style Selector="TextBlock.ContentPageActive">
+        <Setter Property="Width" Value="36"/><Setter Property="Height" Value="36"/><Setter Property="Background" Value="#125637"/><Setter Property="Foreground" Value="#29E687"/><Setter Property="TextAlignment" Value="Center"/><Setter Property="LineHeight" Value="36"/><Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="FontSize" Value="14"/>
+    </Style>
+    <Style Selector="TextBlock.ContentPageNumber">
+        <Setter Property="Foreground" Value="#AEB8C7"/><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="FontSize" Value="14"/>
+    </Style>
+    <Style Selector="Border.ContentResultCard">
+        <Setter Property="MinHeight" Value="112"/><Setter Property="Background" Value="#272A31"/><Setter Property="BorderBrush" Value="#393D46"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="14"/>
+    </Style>
+    <Style Selector="Border.ContentResultCard:pointerover">
+        <Setter Property="Background" Value="#2C3038"/><Setter Property="BorderBrush" Value="#4875A4"/>
+    </Style>
+    <Style Selector="TextBlock.ContentTitle">
+        <Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontSize" Value="18"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#F8FAFD"/>
+    </Style>
+    <Style Selector="TextBlock.ContentByline">
+        <Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontSize" Value="14"/><Setter Property="Foreground" Value="#9AA5B4"/><Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="TextBlock.ContentDescription">
+        <Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontSize" Value="13"/><Setter Property="Foreground" Value="#B9C2CE"/>
+    </Style>
+    <Style Selector="TextBlock.ContentTags">
+        <Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontSize" Value="11"/><Setter Property="Foreground" Value="#9AA5B4"/>
+    </Style>
+    <Style Selector="TextBlock.ContentMetric">
+        <Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontSize" Value="13"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#B7C2D0"/>
+    </Style>
+    <Style Selector="Button.ContentInstallButton">
+        <Setter Property="Height" Value="37"/><Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#32EE93"/><Setter Property="BorderBrush" Value="#22E37D"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="10"/><Setter Property="Padding" Value="15 5"/><Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="FontSize" Value="14"/>
+    </Style>
+    <Style Selector="Button.ContentInstallButton:pointerover">
+        <Setter Property="Background" Value="#193D30"/><Setter Property="Foreground" Value="#7DFFBD"/>
+    </Style>
+    <Style Selector="Button.ContentInstallButton.Installed">
+        <Setter Property="Background" Value="#173D2D"/><Setter Property="Foreground" Value="#D5F8E6"/><Setter Property="BorderBrush" Value="#398C67"/>
+    </Style>
+    <Style Selector="Border.SkinPreviewPanel">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#111A23" Offset="0"/>
+                <GradientStop Color="#0D131A" Offset="0.48"/>
+                <GradientStop Color="#101923" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="BorderBrush">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#E9FAFF" Offset="0"/>
+                <GradientStop Color="#78CFFF" Offset="0.24"/>
+                <GradientStop Color="#3478C8" Offset="0.62"/>
+                <GradientStop Color="#BDEEFF" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="14"/>
+    </Style>
+    <Style Selector="Border.SkinUsernamePill">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                <GradientStop Color="#24303C" Offset="0"/>
+                <GradientStop Color="#18232E" Offset="0.55"/>
+                <GradientStop Color="#243647" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="BorderBrush" Value="#5B9DD2F2"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="7"/>
+    </Style>
+    <Style Selector="Border.SkinPreviewStage">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#192633" Offset="0"/>
+                <GradientStop Color="#111A23" Offset="0.46"/>
+                <GradientStop Color="#0D151D" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="BorderBrush">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#F1FCFF" Offset="0"/>
+                <GradientStop Color="#7FD8FF" Offset="0.28"/>
+                <GradientStop Color="#3E8FE3" Offset="0.66"/>
+                <GradientStop Color="#BCEFFF" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="ClipToBounds" Value="True"/>
+    </Style>
+    <Style Selector="Border.SkinPreviewFooter">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#B5121D28" Offset="0"/>
+                <GradientStop Color="#8A172637" Offset="0.52"/>
+                <GradientStop Color="#66101A25" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="BorderBrush">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                <GradientStop Color="#69FFFFFF" Offset="0"/>
+                <GradientStop Color="#7BCBFFFF" Offset="0.45"/>
+                <GradientStop Color="#2E70B8FF" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Padding" Value="12 10"/>
+    </Style>
+    <Style Selector="TextBlock.SkinSectionTitle">
+        <Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontSize" Value="19"/><Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+    <Style Selector="Button.SkinAddTile">
+        <Setter Property="Background" Value="#15191E"/><Setter Property="BorderBrush" Value="#48515A"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="18"/><Setter Property="Padding" Value="0"/><Setter Property="HorizontalAlignment" Value="Stretch"/><Setter Property="HorizontalContentAlignment" Value="Center"/><Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Button.SkinAddTile:pointerover">
+        <Setter Property="Background" Value="#1B2229"/><Setter Property="BorderBrush" Value="#1E78C8"/>
+    </Style>
+    <Style Selector="Border.SkinTile">
+        <Setter Property="Background" Value="#24282E"/><Setter Property="BorderBrush" Value="#343A41"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="18"/><Setter Property="ClipToBounds" Value="True"/>
+    </Style>
+    <Style Selector="Border.SkinTile:pointerover">
+        <Setter Property="Background" Value="#2A3037"/><Setter Property="BorderBrush" Value="#4D667A"/>
+    </Style>
+    <Style Selector="Border.SelectedSkinTile">
+        <Setter Property="Background" Value="#113624"/><Setter Property="BorderBrush" Value="#23D873"/><Setter Property="BorderThickness" Value="1.5"/>
+    </Style>
+    <Style Selector="TextBlock.SkinPathLabel">
+        <Setter Property="FontFamily" Value="Consolas"/><Setter Property="FontSize" Value="8"/><Setter Property="Foreground" Value="#65707A"/><Setter Property="TextAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Button.SkinEditButton">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#2E6EC6" Offset="0"/>
+                <GradientStop Color="#1E58A5" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="Foreground" Value="#FFFFFF"/><Setter Property="BorderBrush" Value="#78CFFF"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="Padding" Value="22 9"/><Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+    <Style Selector="Button.SkinEditButton:pointerover">
+        <Setter Property="Background" Value="#3479D8"/>
+    </Style>
+    <Style Selector="Button.SkinResetButton">
+        <Setter Property="Background" Value="#17FFFFFF"/><Setter Property="Foreground" Value="#AFC5D8"/><Setter Property="BorderBrush" Value="#22FFFFFF"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="16 7"/><Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+    <Style Selector="Button.SkinResetButton:pointerover">
+        <Setter Property="Background" Value="#261E58A5"/><Setter Property="Foreground" Value="#DDF8FF"/><Setter Property="BorderBrush" Value="#457FD3"/>
+    </Style>
+    <Style Selector="Button.SkinLibraryButton">
+        <Setter Property="Background" Value="#24282E"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#343A41"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="15"/><Setter Property="Padding" Value="0"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="VerticalContentAlignment" Value="Stretch"/><Setter Property="ClipToBounds" Value="True"/>
+    </Style>
+    <Style Selector="Button.SkinLibraryButton:pointerover">
+        <Setter Property="Background" Value="#2A3E54"/><Setter Property="BorderBrush" Value="#2C9BFF"/>
+    </Style>
+    <Style Selector="Button.SkinLibraryButton.Selected">
+        <Setter Property="Background" Value="#123A5D"/><Setter Property="BorderBrush" Value="Transparent"/><Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    <Style Selector="Button.SkinLibraryButton.Selected:pointerover">
+        <Setter Property="Background" Value="#123A5D"/><Setter Property="BorderBrush" Value="Transparent"/><Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    <Style Selector="Border.SkinSelectedStroke">
+        <Setter Property="BorderBrush" Value="#2C9BFF"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="15"/>
+    </Style>
+    <Style Selector="Border.SkinCardEdit">
+        <Setter Property="Background" Value="#1E58A5"/><Setter Property="BorderBrush" Value="#55B4FF"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="11 7"/><Setter Property="IsVisible" Value="False"/>
+    </Style>
+    <Style Selector="Button.SkinCardDeleteButton">
+        <Setter Property="Width" Value="36"/><Setter Property="Height" Value="36"/><Setter Property="Background" Value="#EF3E64"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#FF7A95"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="18"/><Setter Property="Padding" Value="0"/><Setter Property="IsVisible" Value="False"/>
+    </Style>
+    <Style Selector="Button.SkinCardDeleteButton:pointerover">
+        <Setter Property="Background" Value="#FF5478"/><Setter Property="BorderBrush" Value="#FF9AAD"/>
+    </Style>
+    <Style Selector="Button.SkinLibraryButton.Selected:pointerover Border.SkinCardEdit">
+        <Setter Property="IsVisible" Value="False"/>
+    </Style>
+    <Style Selector="Button.SkinLibraryButton:pointerover Border.SkinCardEdit">
+        <Setter Property="IsVisible" Value="True"/>
+    </Style>
+    <Style Selector="Button.SkinLibraryButton.Selected:pointerover Border.SkinCardEdit">
+        <Setter Property="IsVisible" Value="False"/>
+    </Style>
+    <Style Selector="Button.SkinLibraryButton:pointerover Button.SkinCardDeleteButton">
+        <Setter Property="IsVisible" Value="True"/>
+    </Style>
+    <Style Selector="Button.SkinLibraryButton.Selected:pointerover Button.SkinCardDeleteButton">
+        <Setter Property="IsVisible" Value="False"/>
+    </Style>
+    <Style Selector="Button.CapeLibraryButton">
+        <Setter Property="Background" Value="#24282E"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#343A41"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="15"/><Setter Property="Padding" Value="0"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="VerticalContentAlignment" Value="Stretch"/><Setter Property="ClipToBounds" Value="True"/>
+    </Style>
+    <Style Selector="Button.CapeLibraryButton:pointerover">
+        <Setter Property="Background" Value="#24282E"/><Setter Property="BorderBrush" Value="#343A41"/>
+    </Style>
+    <Style Selector="Button.CapeLibraryButton.Selected">
+        <Setter Property="Background" Value="#123A5D"/><Setter Property="BorderBrush" Value="#2C9BFF"/><Setter Property="BorderThickness" Value="1.5"/>
+    </Style>
+    <Style Selector="Button.CapeLibraryButton.Selected:pointerover">
+        <Setter Property="Background" Value="#123A5D"/><Setter Property="BorderBrush" Value="#2C9BFF"/>
+    </Style>
+</Styles>

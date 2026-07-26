@@ -1,0 +1,11 @@
+<Solution>
+  <Project Path="Launcher.Core/Launcher.Core.csproj" />
+  <Project Path="Launcher.Database/Launcher.Database.csproj" />
+  <Project Path="Launcher.Downloader/Launcher.Downloader.csproj" />
+  <Project Path="Launcher.Security/Launcher.Security.csproj" />
+  <Project Path="Launcher.Services/Launcher.Services.csproj" />
+  <Project Path="Launcher.UI/Launcher.UI.csproj" />
+  <Project Path="Launcher.Updater/Launcher.Updater.csproj" />
+  <Project Path="Minecraft.ModManager/Minecraft.ModManager.csproj" />
+  <Project Path="Minecraft.Runtime/Minecraft.Runtime.csproj" />
+</Solution>

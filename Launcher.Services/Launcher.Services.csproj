@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Launcher.Downloader\Launcher.Downloader.csproj" />
+    <ProjectReference Include="..\Launcher.Security\Launcher.Security.csproj" />
+    <ProjectReference Include="..\Launcher.Database\Launcher.Database.csproj" />
+    <ProjectReference Include="..\Minecraft.Runtime\Minecraft.Runtime.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Serilog" Version="4.4.0" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

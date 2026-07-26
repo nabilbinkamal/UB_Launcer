@@ -1,0 +1,93 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Launcher.Core.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="1120" d:DesignHeight="850"
+             x:Class="Launcher.UI.Views.ProfilesView"
+             x:DataType="vm:ProfilesViewModel">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <Grid RowDefinitions="Auto,*" Margin="30 46 30 24" RowSpacing="18">
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="INSTANCES" Classes="PageTitle" Foreground="#00D9FF"/>
+                    <TextBlock Text="Manage your Minecraft installations" Classes="PageSubtitle" Foreground="#89929B"/>
+                </StackPanel>
+                <Button Grid.Column="1" Content="+  Create instance" Classes="CreateInstanceButton" Command="{Binding FocusCreateCommand}"/>
+            </Grid>
+
+            <Grid Grid.Row="1" ColumnDefinitions="*,330" ColumnSpacing="14">
+                <Border Grid.Column="0" Classes="PanelCard" Padding="18 16">
+                    <Grid RowDefinitions="Auto,*">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="Your instances" Classes="PanelTitle" Foreground="White"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Profiles.Count, StringFormat='{}{0} instances'}" FontFamily="Poppins" FontSize="11" Foreground="#737981" VerticalAlignment="Center"/>
+                        </Grid>
+                        <ScrollViewer Grid.Row="1" Margin="0 14 0 0">
+                            <ItemsControl ItemsSource="{Binding Profiles}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Classes="InstanceCard" Margin="0 0 0 10" Padding="13">
+                                            <Grid ColumnDefinitions="70,*,Auto" ColumnSpacing="13">
+                                                <Border Width="64" Height="64" Background="#6C4533" CornerRadius="7" VerticalAlignment="Center">
+                                                    <Grid>
+                                                        <Border Background="#72D65D" Height="27" VerticalAlignment="Top" CornerRadius="7 7 0 0"/>
+                                                        <Border Background="#9B684D" Height="38" VerticalAlignment="Bottom" CornerRadius="0 0 7 7"/>
+                                                        <Border Background="#4F9E48" Width="42" Height="9" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0 20 0 0"/>
+                                                        <Border Background="#C08B61" Width="18" Height="11" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10 4 0 0"/>
+                                                    </Grid>
+                                                </Border>
+                                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="5">
+                                                    <TextBlock Text="{Binding Name}" Classes="InstanceCardTitle" Foreground="White"/>
+                                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                                        <TextBlock Text="{Binding Version}" Classes="InstanceCardMeta" Foreground="#D7D7D7"/>
+                                                        <TextBlock Text="•" Classes="InstanceCardMeta" Foreground="#5F6870"/>
+                                                        <TextBlock Text="{Binding LoaderType}" Classes="InstanceCardMeta" Foreground="#87E3F2"/>
+                                                    </StackPanel>
+                                                    <TextBlock Text="{Binding LastPlayed, StringFormat='Last played: {0}'}" Classes="InstanceCardSmall" Foreground="#737981"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="7" VerticalAlignment="Center">
+                                                    <Button Content="▶" Classes="InstancePlayButton" Command="{Binding $parent[UserControl].((vm:ProfilesViewModel)DataContext).LaunchProfileCommand}" CommandParameter="{Binding}"/>
+                                                    <Button Content="⋮" Classes="InstanceMoreButton" Command="{Binding $parent[UserControl].((vm:ProfilesViewModel)DataContext).SelectProfileCommand}" CommandParameter="{Binding}"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+
+                <StackPanel Grid.Column="1" Spacing="12">
+                    <Border Classes="PanelCard" Padding="18 16">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="NEW INSTANCE" Classes="PanelTitle" Foreground="White"/>
+                            <TextBlock Text="Create a clean profile for a version, loader, and mod setup." TextWrapping="Wrap" FontFamily="Poppins" FontSize="11" Foreground="#89929B"/>
+                            <TextBlock Text="Instance name" Classes="FormLabel" Foreground="#89929B"/>
+                            <TextBox Text="{Binding NewProfileName}" PlaceholderText="e.g. UB Optimize"/>
+                            <TextBlock Text="Minecraft version" Classes="FormLabel" Foreground="#89929B"/>
+                            <TextBox Text="{Binding NewProfileVersion}"/>
+                            <TextBlock Text="Mod loader" Classes="FormLabel" Foreground="#89929B"/>
+                            <ComboBox ItemsSource="{Binding Loaders}" SelectedItem="{Binding NewProfileLoader}" HorizontalAlignment="Stretch"/>
+                            <Button Content="Create instance" Classes="CreateInstanceButton" HorizontalAlignment="Stretch" Padding="0 12" Command="{Binding AddProfileCommand}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="PanelCard" Padding="18 16">
+                        <StackPanel Spacing="11">
+                            <TextBlock Text="OFFLINE ACCOUNT" Classes="PanelTitle" Foreground="White"/>
+                            <TextBlock Text="Play single-player with a local username." TextWrapping="Wrap" FontFamily="Poppins" FontSize="11" Foreground="#89929B"/>
+                            <TextBox Text="{Binding OfflineUsername}" PlaceholderText="Username"/>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button Content="Login Offline" Classes="CreateInstanceButton" Padding="13 7" Command="{Binding LoginOfflineCommand}"/>
+                                <Button Content="Logout" Classes="InstanceMoreButton" Padding="13 7" Command="{Binding LogoutOfflineCommand}"/>
+                            </StackPanel>
+                            <TextBlock Text="{Binding AccountStatus}" FontFamily="Poppins" FontSize="10" Foreground="#87E3F2" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</UserControl>
