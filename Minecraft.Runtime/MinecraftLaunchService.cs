@@ -1,6 +1,7 @@
 using CmlLib.Core;
 using CmlLib.Core.Auth;
 using CmlLib.Core.ProcessBuilder;
+using System.Diagnostics;
 
 namespace Minecraft.Runtime;
 
@@ -14,7 +15,7 @@ public sealed class MinecraftLaunchService
         launcher = new MinecraftLauncher(new MinecraftPath(root));
     }
 
-    public async Task LaunchOfflineAsync(string username, string version, int maximumRamMb, IProgress<string>? progress = null)
+    public async Task<Process> LaunchOfflineAsync(string username, string version, int maximumRamMb, IProgress<string>? progress = null)
     {
         if (string.IsNullOrWhiteSpace(username)) throw new ArgumentException("Enter an offline username first.", nameof(username));
         if (string.IsNullOrWhiteSpace(version)) throw new ArgumentException("Select a Minecraft version first.", nameof(version));
@@ -29,5 +30,6 @@ public sealed class MinecraftLaunchService
             MaximumRamMb = maximumRamMb
         });
         process.Start();
+        return process;
     }
 }

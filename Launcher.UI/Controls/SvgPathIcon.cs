@@ -99,7 +99,9 @@ public class SvgPathIcon : Control
             }
 
             var geometry = Geometry.Parse(data);
-            var fill = ParseBrush(pathElement.Attribute("fill")?.Value);
+            var fill = ParseBrush(
+                pathElement.Attribute("fill")?.Value,
+                pathElement.Attribute("fill-opacity")?.Value);
             var stroke = ParseBrush(pathElement.Attribute("stroke")?.Value);
             var thickness = ParseDouble(pathElement.Attribute("stroke-width")?.Value) ?? 1;
             var pen = stroke is null
@@ -129,7 +131,9 @@ public class SvgPathIcon : Control
                 centerY - radius,
                 radius * 2,
                 radius * 2));
-            var fill = ParseBrush(circleElement.Attribute("fill")?.Value);
+            var fill = ParseBrush(
+                circleElement.Attribute("fill")?.Value,
+                circleElement.Attribute("fill-opacity")?.Value);
             var stroke = ParseBrush(circleElement.Attribute("stroke")?.Value);
             var thickness = ParseDouble(circleElement.Attribute("stroke-width")?.Value) ?? 1;
             var pen = stroke is null
@@ -141,6 +145,45 @@ public class SvgPathIcon : Control
                     lineJoin: ParseLineJoin(circleElement.Attribute("stroke-linejoin")?.Value));
 
             paths.Add(new SvgPath(geometry, fill, pen));
+        }
+
+        foreach (var rectangleElement in root.Descendants().Where(element =>
+                     element.Name.LocalName == "rect" &&
+                     !element.Ancestors().Any(ancestor =>
+                         ancestor.Name.LocalName is "defs" or "clipPath")))
+        {
+            var width = ParseDouble(rectangleElement.Attribute("width")?.Value) ?? 0;
+            var height = ParseDouble(rectangleElement.Attribute("height")?.Value) ?? 0;
+
+            if (width <= 0 || height <= 0)
+            {
+                continue;
+            }
+
+            var geometry = new RectangleGeometry
+            {
+                Rect = new Rect(
+                    ParseDouble(rectangleElement.Attribute("x")?.Value) ?? 0,
+                    ParseDouble(rectangleElement.Attribute("y")?.Value) ?? 0,
+                    width,
+                    height),
+                RadiusX = ParseDouble(rectangleElement.Attribute("rx")?.Value) ?? 0,
+                RadiusY = ParseDouble(rectangleElement.Attribute("ry")?.Value) ?? 0
+            };
+            var fill = ParseBrush(
+                rectangleElement.Attribute("fill")?.Value,
+                rectangleElement.Attribute("fill-opacity")?.Value);
+            var stroke = ParseBrush(rectangleElement.Attribute("stroke")?.Value);
+            var thickness = ParseDouble(rectangleElement.Attribute("stroke-width")?.Value) ?? 1;
+            var pen = stroke is null
+                ? null
+                : new Pen(
+                    stroke,
+                    thickness,
+                    lineCap: ParseLineCap(rectangleElement.Attribute("stroke-linecap")?.Value),
+                    lineJoin: ParseLineJoin(rectangleElement.Attribute("stroke-linejoin")?.Value));
+
+            paths.Insert(0, new SvgPath(geometry, fill, pen));
         }
 
         InvalidateVisual();
@@ -178,11 +221,22 @@ public class SvgPathIcon : Control
         return (24, 24);
     }
 
-    private static IBrush? ParseBrush(string? value)
+    private static IBrush? ParseBrush(string? value, string? opacityValue = null)
     {
-        return string.IsNullOrWhiteSpace(value) || value.Equals("none", StringComparison.OrdinalIgnoreCase)
-            ? null
-            : Brush.Parse(value);
+        if (string.IsNullOrWhiteSpace(value) || value.Equals("none", StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        var brush = Brush.Parse(value);
+
+        if (brush is SolidColorBrush solidColorBrush &&
+            ParseDouble(opacityValue) is { } opacity)
+        {
+            return new SolidColorBrush(solidColorBrush.Color, opacity);
+        }
+
+        return brush;
     }
 
     private static double? ParseDouble(string? value)

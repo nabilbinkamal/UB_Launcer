@@ -2,13 +2,21 @@ using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
+using Launcher.UI.Services;
+using Launcher.Core.ViewModels;
+using System.Runtime.Versioning;
 
 namespace Launcher.UI.Views;
 
+[SupportedOSPlatform("windows")]
 public partial class HomeView : UserControl
 {
     private const double CompactBreakpoint = 1180;
     private bool? isCompact;
+    private readonly DispatcherTimer telemetryTimer;
+    private readonly WindowsTelemetryReader telemetryReader;
 
     public HomeView()
     {
@@ -18,8 +26,37 @@ public partial class HomeView : UserControl
             performanceGrid.RowDefinitions = new RowDefinitions("Auto,*,*,*,*");
         }
 
+        telemetryReader = new WindowsTelemetryReader();
+        telemetryTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+        telemetryTimer.Tick += OnTelemetryTick;
+
         SizeChanged += OnSizeChanged;
-        AttachedToVisualTree += (_, _) => ApplyResponsiveLayout(Bounds.Width, Bounds.Height);
+        AttachedToVisualTree += OnAttachedToVisualTree;
+        DetachedFromVisualTree += OnDetachedFromVisualTree;
+    }
+
+    private void OnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
+    {
+        ApplyResponsiveLayout(Bounds.Width, Bounds.Height);
+        OnTelemetryTick(this, EventArgs.Empty);
+        telemetryTimer.Start();
+    }
+
+    private void OnDetachedFromVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
+    {
+        telemetryTimer.Stop();
+    }
+
+    private void OnTelemetryTick(object? sender, EventArgs e)
+    {
+        if (DataContext is not HomeViewModel viewModel)
+        {
+            return;
+        }
+
+        var snapshot = telemetryReader.Read();
+        viewModel.UpdateTelemetry(snapshot.CpuUsage, snapshot.GpuUsage, snapshot.UsedMemoryGb, snapshot.TotalMemoryGb);
+        viewModel.RefreshTotalPlaytime();
     }
 
     private void OnSizeChanged(object? sender, SizeChangedEventArgs e)
@@ -30,6 +67,17 @@ public partial class HomeView : UserControl
     private void ApplyResponsiveLayout(double width, double height)
     {
         var shouldUseCompactLayout = width < CompactBreakpoint;
+        var scale = Math.Clamp(width / 1210d, 1d, 1.35d);
+        var rightRailWidth = 313 * scale;
+        DashboardHeader.ColumnDefinitions = new ColumnDefinitions("*,Auto");
+        LaunchGraph.Width = 180 * scale;
+        CpuGraph.Width = 180 * scale;
+        GpuGraph.Width = 180 * scale;
+        DiscordCard.Height = 142 * scale;
+        RightRail.RowDefinitions[2].Height = new GridLength(142 * scale);
+        DashboardGrid.ColumnDefinitions = shouldUseCompactLayout
+            ? new ColumnDefinitions("*")
+            : new ColumnDefinitions($"*,{rightRailWidth}");
         DashboardGrid.MinHeight = !shouldUseCompactLayout && height >= 980
             ? Math.Max(0, height - 72)
             : 0;
@@ -54,7 +102,6 @@ public partial class HomeView : UserControl
             return;
         }
 
-        DashboardGrid.ColumnDefinitions = new ColumnDefinitions("*,313");
         DashboardGrid.RowDefinitions = new RowDefinitions("Auto");
         DashboardGrid.ColumnSpacing = 9;
         Grid.SetColumn(RightRail, 1);

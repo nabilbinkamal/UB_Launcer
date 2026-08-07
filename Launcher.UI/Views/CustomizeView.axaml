@@ -12,6 +12,7 @@
              x:DataType="vm:CustomizeViewModel">
     <UserControl.Resources>
         <conv:StringToBitmapConverter x:Key="StringToBitmapConverter"/>
+        <conv:OpaqueBitmapConverter x:Key="OpaqueBitmapConverter"/>
     </UserControl.Resources>
 
     <Grid RowDefinitions="Auto,*" Margin="30 46 30 24" RowSpacing="18">
@@ -27,8 +28,8 @@
                     Command="{Binding ApplyCosmeticsCommand}"/>
         </Grid>
 
-        <Grid Grid.Row="1" ColumnDefinitions="285,*" ColumnSpacing="24">
-            <Border Classes="SkinPreviewPanel" Padding="16 14">
+        <Grid Grid.Row="1" ColumnDefinitions="Auto,*" ColumnSpacing="24">
+            <Border x:Name="PreviewPanel" Width="285" Classes="SkinPreviewPanel" Padding="16 14">
                 <Grid RowDefinitions="Auto,*,Auto,Auto,Auto" RowSpacing="12">
                     <Border Classes="SkinUsernamePill" HorizontalAlignment="Center" Padding="13 6">
                         <TextBlock Text="{Binding Username}" FontFamily="Minecraft" FontSize="16" Foreground="#C9D1D9"/>
@@ -97,7 +98,7 @@
                             Classes="SkinEditButton"
                             HorizontalAlignment="Center"
                             Click="OnBrowseSkinClick"/>
-                    <Border Grid.Row="4" Classes="SkinPreviewFooter">
+                    <Border Grid.Row="4" Padding="12 10">
                         <StackPanel Spacing="10">
                         <CheckBox Content="Slim Alex model"
                                   IsChecked="{Binding UseSlimModel}"
@@ -258,18 +259,15 @@
                                                     ToolTip.Tip="{Binding Name}"
                                                     Command="{Binding $parent[UserControl].((vm:CustomizeViewModel)DataContext).SelectSavedCapeCommand}"
                                                     CommandParameter="{Binding}">
-                                                <Grid RowDefinitions="*,Auto">
-                                                    <Image Source="{Binding ImagePath, Converter={StaticResource StringToBitmapConverter}}"
+                                                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                    <Image Source="{Binding ImagePath, Converter={StaticResource OpaqueBitmapConverter}}"
                                                            Stretch="Uniform"
-                                                           Margin="24"
+                                                           Width="122"
+                                                           Height="176"
+                                                           Margin="0"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"
                                                            RenderOptions.BitmapInterpolationMode="None"/>
-                                                    <Border Grid.Row="1" Background="#B5101113" Padding="8 7">
-                                                        <TextBlock Text="{Binding Name}"
-                                                                   FontFamily="Minecraft"
-                                                                   FontSize="13"
-                                                                   Foreground="White"
-                                                                   HorizontalAlignment="Center"/>
-                                                    </Border>
                                                 </Grid>
                                             </Button>
                                         </DataTemplate>

@@ -1,3 +1,5 @@
+using System;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
@@ -12,6 +14,21 @@ public partial class CustomizeView : UserControl
     public CustomizeView()
     {
         InitializeComponent();
+        SizeChanged += OnSizeChanged;
+        AttachedToVisualTree += (_, _) => ApplyPreviewScale(Bounds.Width);
+    }
+
+    private void OnSizeChanged(object? sender, SizeChangedEventArgs eventArgs)
+    {
+        ApplyPreviewScale(eventArgs.NewSize.Width);
+    }
+
+    private void ApplyPreviewScale(double width)
+    {
+        if (width <= 0) return;
+
+        var scale = Math.Clamp(width / 1120d, 1d, 1.35d);
+        PreviewPanel.Width = 285 * scale;
     }
 
     private async void OnBrowseSkinClick(object? sender, RoutedEventArgs eventArgs)

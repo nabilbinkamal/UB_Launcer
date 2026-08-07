@@ -39,6 +39,14 @@ public partial class CustomizeViewModel : ViewModelBase
     private static readonly string SavedCapesDirectory = Path.Combine(CosmeticsDirectory, "saved-capes");
     private static readonly string SavedCapesManifestPath = Path.Combine(CosmeticsDirectory, "saved-capes.json");
     private static readonly string SavedCapePath = Path.Combine(CosmeticsDirectory, "cape.png");
+    private static readonly string CosmeticsSelectionPath = Path.Combine(CosmeticsDirectory, "selection.json");
+
+    private sealed class CosmeticSelectionState
+    {
+        public string? SkinPath { get; set; }
+        public string? CapePath { get; set; }
+        public bool UseSlimModel { get; set; }
+    }
 
     [ObservableProperty] private string _skinPath = DefaultStevePath;
     [ObservableProperty] private string _capePath = File.Exists(SavedCapePath) ? SavedCapePath : string.Empty;
@@ -70,7 +78,7 @@ public partial class CustomizeViewModel : ViewModelBase
     {
         LoadSavedSkins();
         LoadSavedCapes();
-        DefaultSkins[0].IsSelected = true;
+        RestoreSelection();
     }
 
     public void ImportSkin(string selectedPath, bool isSlim)
@@ -99,6 +107,7 @@ public partial class CustomizeViewModel : ViewModelBase
 
         CapePath = selectedPath;
         SaveCape();
+        SaveSelection();
         StatusText = $"{Path.GetFileNameWithoutExtension(selectedPath)} added to Saved capes.";
     }
 
@@ -109,6 +118,7 @@ public partial class CustomizeViewModel : ViewModelBase
         SelectedSkinName = skin.Name;
         UseSlimModel = skin.IsSlim;
         SetSelectedSkin(skin);
+        SaveSelection();
         StatusText = $"{skin.Name} selected from default skins.";
     }
 
@@ -119,6 +129,7 @@ public partial class CustomizeViewModel : ViewModelBase
         SelectedSkinName = skin.Name;
         UseSlimModel = skin.IsSlim;
         SetSelectedSkin(skin);
+        SaveSelection();
         StatusText = $"{skin.Name} selected from saved skins.";
     }
 
@@ -144,6 +155,7 @@ public partial class CustomizeViewModel : ViewModelBase
             savedCape.IsSelected = ReferenceEquals(savedCape, cape);
 
         CapePath = cape.ImagePath;
+        SaveSelection();
         StatusText = $"{cape.Name} selected from saved capes.";
     }
 
@@ -162,6 +174,7 @@ public partial class CustomizeViewModel : ViewModelBase
             });
             SetSelectedSkin(defaultSkin);
             SaveCape();
+            SaveSelection();
             StatusText = $"{SelectedSkinName} saved and applied.";
             return;
         }
@@ -182,6 +195,7 @@ public partial class CustomizeViewModel : ViewModelBase
             UseSlimModel);
         ActivateSkin(savedSkin);
         SaveCape();
+        SaveSelection();
         StatusText = $"{SelectedSkinName} saved and applied.";
     }
 
@@ -196,7 +210,59 @@ public partial class CustomizeViewModel : ViewModelBase
             cape.IsSelected = false;
         SetSelectedSkin(DefaultSkins[0]);
         if (File.Exists(SavedCapePath)) File.Delete(SavedCapePath);
+        SaveSelection();
         StatusText = "Reset to the default Steve preview.";
+    }
+
+    private void RestoreSelection()
+    {
+        var selection = LoadSelection();
+        var selectedSkin = selection is not null
+            ? DefaultSkins.Concat(SavedSkins).FirstOrDefault(skin =>
+                skin.ImagePath.Equals(selection.SkinPath, StringComparison.OrdinalIgnoreCase)
+                && IsAvailableSkin(skin))
+            : null;
+
+        selectedSkin ??= DefaultSkins[0];
+        SkinPath = selectedSkin.ImagePath;
+        SelectedSkinName = selectedSkin.Name;
+        UseSlimModel = selectedSkin.IsSlim;
+        SetSelectedSkin(selectedSkin);
+
+        var selectedCapePath = selection?.CapePath;
+        if (string.IsNullOrWhiteSpace(selectedCapePath) || !File.Exists(selectedCapePath))
+            selectedCapePath = File.Exists(SavedCapePath) ? SavedCapePath : string.Empty;
+
+        CapePath = selectedCapePath;
+        SetSelectedCape(selectedCapePath);
+    }
+
+    private CosmeticSelectionState? LoadSelection()
+    {
+        if (!File.Exists(CosmeticsSelectionPath)) return null;
+
+        try
+        {
+            return JsonSerializer.Deserialize<CosmeticSelectionState>(
+                File.ReadAllText(CosmeticsSelectionPath));
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+    }
+
+    private void SaveSelection()
+    {
+        Directory.CreateDirectory(CosmeticsDirectory);
+        File.WriteAllText(
+            CosmeticsSelectionPath,
+            JsonSerializer.Serialize(new CosmeticSelectionState
+            {
+                SkinPath = SkinPath,
+                CapePath = CapePath,
+                UseSlimModel = UseSlimModel
+            }, new JsonSerializerOptions { WriteIndented = true }));
     }
 
     private void LoadSavedSkins()
@@ -307,6 +373,7 @@ public partial class CustomizeViewModel : ViewModelBase
         SelectedSkinName = skin.Name;
         UseSlimModel = skin.IsSlim;
         SetSelectedSkin(skin);
+        SaveSelection();
     }
 
     private void SetSelectedSkin(SkinLibraryItem selectedSkin)
@@ -316,6 +383,19 @@ public partial class CustomizeViewModel : ViewModelBase
 
         foreach (var skin in SavedSkins)
             skin.IsSelected = ReferenceEquals(skin, selectedSkin);
+    }
+
+    private void SetSelectedCape(string? selectedCapePath)
+    {
+        foreach (var cape in SavedCapes)
+        {
+            cape.IsSelected = !string.IsNullOrWhiteSpace(selectedCapePath)
+                && (cape.ImagePath.Equals(selectedCapePath, StringComparison.OrdinalIgnoreCase)
+                    || (File.Exists(cape.ImagePath)
+                        && File.Exists(selectedCapePath)
+                        && Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(cape.ImagePath)))
+                            .Equals(Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(selectedCapePath))), StringComparison.OrdinalIgnoreCase)));
+        }
     }
 
     private static bool IsAvailableSkin(SkinLibraryItem skin)
