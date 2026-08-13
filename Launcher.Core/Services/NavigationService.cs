@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Launcher.Core.ViewModels;
 
@@ -23,14 +24,32 @@ public class NavigationService : ObservableObject, INavigationService
         set => SetProperty(ref _currentView, value);
     }
 
+    public ObservableCollection<ViewModelBase> Views { get; } = [];
+
     public void NavigateTo<TViewModel>() where TViewModel : ViewModelBase
     {
-        var type = typeof(TViewModel);
-        if (!_cache.TryGetValue(type, out var viewModel))
+        var viewModel = GetOrCreate(typeof(TViewModel));
+        if (ReferenceEquals(CurrentView, viewModel))
         {
-            viewModel = _factory(type);
-            _cache[type] = viewModel;
+            return;
         }
+
         CurrentView = viewModel;
+    }
+
+    public void Preload<TViewModel>() where TViewModel : ViewModelBase =>
+        GetOrCreate(typeof(TViewModel));
+
+    private ViewModelBase GetOrCreate(Type type)
+    {
+        if (_cache.TryGetValue(type, out var viewModel))
+        {
+            return viewModel;
+        }
+
+        viewModel = _factory(type);
+        _cache[type] = viewModel;
+        Views.Add(viewModel);
+        return viewModel;
     }
 }

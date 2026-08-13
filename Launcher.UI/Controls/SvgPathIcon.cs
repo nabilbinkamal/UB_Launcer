@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
+using System.Net.Http;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -17,8 +18,10 @@ public class SvgPathIcon : Control
         AvaloniaProperty.Register<SvgPathIcon, string?>(nameof(Source));
 
     private readonly List<SvgPath> paths = new();
+    private static readonly HttpClient HttpClient = new() { Timeout = TimeSpan.FromSeconds(8) };
     private double canvasWidth = 24;
     private double canvasHeight = 24;
+    private int loadRevision;
 
     public SvgPathIcon()
     {
@@ -65,8 +68,9 @@ public class SvgPathIcon : Control
         }
     }
 
-    private void LoadIcon()
+    private async void LoadIcon()
     {
+        var revision = ++loadRevision;
         paths.Clear();
 
         if (string.IsNullOrWhiteSpace(Source))
@@ -75,10 +79,37 @@ public class SvgPathIcon : Control
             return;
         }
 
-        var assetUri = CreateAssetUri(Source);
+        XDocument document;
+        try
+        {
+            if (Uri.TryCreate(Source, UriKind.Absolute, out var remoteUri) &&
+                remoteUri.Scheme == Uri.UriSchemeHttps)
+            {
+                var svg = await HttpClient.GetStringAsync(remoteUri);
+                if (revision != loadRevision || svg.Length > 256 * 1024)
+                {
+                    return;
+                }
+                document = XDocument.Parse(svg);
+            }
+            else
+            {
+                var assetUri = CreateAssetUri(Source);
+                using var stream = AssetLoader.Open(assetUri);
+                document = XDocument.Load(stream);
+            }
+        }
+        catch
+        {
+            InvalidateVisual();
+            return;
+        }
 
-        using var stream = AssetLoader.Open(assetUri);
-        var document = XDocument.Load(stream);
+        if (revision != loadRevision)
+        {
+            return;
+        }
+
         var root = document.Root;
 
         if (root is null)
@@ -230,10 +261,12 @@ public class SvgPathIcon : Control
 
         var brush = Brush.Parse(value);
 
-        if (brush is SolidColorBrush solidColorBrush &&
+        if (brush is ISolidColorBrush solidColorBrush &&
             ParseDouble(opacityValue) is { } opacity)
         {
-            return new SolidColorBrush(solidColorBrush.Color, opacity);
+            var color = solidColorBrush.Color;
+            var alpha = (byte)Math.Clamp(Math.Round(color.A * opacity), 0, byte.MaxValue);
+            return new SolidColorBrush(Color.FromArgb(alpha, color.R, color.G, color.B));
         }
 
         return brush;

@@ -1,14 +1,114 @@
-<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:vm="using:Launcher.Core.ViewModels" mc:Ignorable="d" d:DesignWidth="1120" d:DesignHeight="850" x:Class="Launcher.UI.Views.SettingsView" x:DataType="vm:SettingsViewModel">
-    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-        <Grid RowDefinitions="Auto,*" Margin="30 46 30 24" RowSpacing="18">
-            <StackPanel Spacing="4"><TextBlock Text="SETTINGS" Classes="PageTitle" Foreground="#00D9FF"/><TextBlock Text="Configure launcher, Java, memory, and integrations" Classes="PageSubtitle" Foreground="#89929B"/></StackPanel>
-            <Grid Grid.Row="1" ColumnDefinitions="*,360" ColumnSpacing="14">
-                <StackPanel Spacing="12">
-                    <Border Classes="PanelCard" Padding="18 16"><StackPanel Spacing="14"><TextBlock Text="JAVA &amp; MEMORY" Classes="PanelTitle" Foreground="White"/><Grid ColumnDefinitions="*,Auto"><StackPanel><TextBlock Text="Allocated memory" FontFamily="Poppins" FontSize="12" Foreground="White"/><TextBlock Text="Memory reserved for Minecraft" FontFamily="Poppins" FontSize="10" Foreground="#737981"/></StackPanel><TextBlock Grid.Column="1" Text="{Binding AllocatedRamGb, StringFormat='{}{0} GB'}" FontFamily="Minecraft Ten" FontSize="19" Foreground="#87E3F2"/></Grid><Slider Minimum="{Binding MinRamGb}" Maximum="{Binding MaxRamGb}" Value="{Binding AllocatedRamGb}" IsSnapToTickEnabled="True" TickFrequency="1"/><TextBlock Text="Java executable path" Classes="FormLabel" Foreground="#89929B"/><TextBox Text="{Binding JavaRuntimePath}" PlaceholderText="Auto-detected Java path"/><TextBlock Text="JVM arguments" Classes="FormLabel" Foreground="#89929B"/><TextBox Text="{Binding CustomJvmArguments}" TextWrapping="Wrap" AcceptsReturn="True" Height="86"/></StackPanel></Border>
-                    <Border Classes="PanelCard" Padding="18 16"><StackPanel Spacing="14"><TextBlock Text="INTEGRATIONS" Classes="PanelTitle" Foreground="White"/><Grid ColumnDefinitions="*,Auto"><StackPanel><TextBlock Text="Discord Rich Presence" FontFamily="Poppins" FontSize="12" Foreground="White"/><TextBlock Text="Show the current instance and playtime" FontFamily="Poppins" FontSize="10" Foreground="#737981"/></StackPanel><ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableDiscordRpc}"/></Grid><Grid ColumnDefinitions="*,Auto"><StackPanel><TextBlock Text="In-game overlay" FontFamily="Poppins" FontSize="12" Foreground="White"/><TextBlock Text="Enable the UB performance HUD" FontFamily="Poppins" FontSize="10" Foreground="#737981"/></StackPanel><ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableOverlay}"/></Grid></StackPanel></Border>
-                </StackPanel>
-                <StackPanel Grid.Column="1" Spacing="12"><Border Classes="PanelCard" Padding="18 16"><StackPanel Spacing="12"><TextBlock Text="LAUNCHER" Classes="PanelTitle" Foreground="White"/><TextBlock Text="UB Launcher" FontFamily="Minecraft Ten" FontSize="22" Foreground="#87E3F2"/><TextBlock Text="Performance Edition" FontFamily="Poppins" FontSize="11" Foreground="#89929B"/><Border Height="1" Background="#2A2A2A"/><TextBlock Text="Game directory" Classes="FormLabel" Foreground="#89929B"/><TextBlock Text="%AppData%\UBLauncher\minecraft" FontFamily="Consolas" FontSize="10" Foreground="White" TextWrapping="Wrap"/></StackPanel></Border><Border Classes="PanelCard" Padding="18 16"><StackPanel Spacing="10"><Button Content="Save &amp; apply" Classes="CreateInstanceButton" HorizontalAlignment="Stretch" Padding="0 11" Command="{Binding SaveSettingsCommand}"/><Button Content="Reset defaults" Classes="InstanceMoreButton" HorizontalAlignment="Stretch" Padding="0 11" Command="{Binding ResetToDefaultCommand}"/></StackPanel></Border></StackPanel>
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:vm="using:Launcher.Core.ViewModels" mc:Ignorable="d" d:DesignWidth="1180" d:DesignHeight="860" x:Class="Launcher.UI.Views.SettingsView" x:DataType="vm:SettingsViewModel">
+    <UserControl.Styles>
+        <Style Selector="TextBox"><Setter Property="MinHeight" Value="44"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="Padding" Value="12 9"/><Setter Property="CornerRadius" Value="6"/></Style>
+        <Style Selector="ComboBox"><Setter Property="MinHeight" Value="44"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="Padding" Value="12 8"/><Setter Property="CornerRadius" Value="6"/></Style>
+        <Style Selector="Button.InstanceMoreButton"><Setter Property="MinHeight" Value="42"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="CornerRadius" Value="6"/></Style>
+        <Style Selector="Button.CreateInstanceButton"><Setter Property="MinHeight" Value="42"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="CornerRadius" Value="6"/></Style>
+    </UserControl.Styles>
+    <Grid Width="1040" Height="720" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="24">
+        <Border Classes="SettingsShell">
+            <Grid RowDefinitions="76,*">
+                <Border BorderBrush="#303840" BorderThickness="0 0 0 1" Padding="26 0">
+                    <Grid ColumnDefinitions="*,Auto"><TextBlock Text="Settings" Classes="SettingsTitle" VerticalAlignment="Center"/><Button Grid.Column="1" Classes="SettingsCloseButton" Click="OnCloseSettingsClick" ToolTip.Tip="Close settings"><TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="14"/></Button></Grid>
+                </Border>
+                <Grid Grid.Row="1" ColumnDefinitions="250,1,*" Margin="24 22 0 16">
+                    <Grid RowDefinitions="*,Auto" Margin="0 0 18 0">
+                        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                            <StackPanel Spacing="5">
+                                <TextBlock Text="Display" Classes="SettingsGroupLabel"/>
+                                <Button Content="Appearance" Classes="SettingsNavButton" Classes.Active="{Binding IsAppearanceSelected}" Command="{Binding SelectSectionCommand}" CommandParameter="Appearance"/>
+                                <Button Content="Behavior" Classes="SettingsNavButton" Classes.Active="{Binding IsBehaviorSelected}" Command="{Binding SelectSectionCommand}" CommandParameter="Behavior"/>
+                                <TextBlock Text="Privacy" Classes="SettingsGroupLabel" Margin="0 16 0 0"/>
+                                <Button Content="Privacy" Classes="SettingsNavButton" Classes.Active="{Binding IsPrivacySelected}" Command="{Binding SelectSectionCommand}" CommandParameter="Privacy"/>
+                                <TextBlock Text="Instances" Classes="SettingsGroupLabel" Margin="0 16 0 0"/>
+                                <Button Content="Default game options" Classes="SettingsNavButton" Classes.Active="{Binding IsGameOptionsSelected}" Command="{Binding SelectSectionCommand}" CommandParameter="GameOptions"/>
+                                <Button Content="Java installations" Classes="SettingsNavButton" Classes.Active="{Binding IsJavaSelected}" Command="{Binding SelectSectionCommand}" CommandParameter="Java"/>
+                                <Button Content="Resource management" Classes="SettingsNavButton" Classes.Active="{Binding IsResourcesSelected}" Command="{Binding SelectSectionCommand}" CommandParameter="Resources"/>
+                            </StackPanel>
+                        </ScrollViewer>
+                        <StackPanel Grid.Row="1" Spacing="4" Margin="16 18 0 0"><TextBlock Text="UB Launcher" FontFamily="Inter" FontSize="14" FontWeight="SemiBold" Foreground="#E5E8EB"/><TextBlock Text="Performance Edition" FontFamily="Inter" FontSize="14" Foreground="#AEB5BE"/></StackPanel>
+                    </Grid>
+                    <Border Grid.Column="1" Background="#303840"/>
+                    <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <Grid Margin="26 0 26 28">
+                            <StackPanel IsVisible="{Binding IsAppearanceSelected}" Spacing="20">
+                                <StackPanel Spacing="5"><TextBlock Text="Appearance" Classes="SettingsPageHeading"/><TextBlock Text="Choose how UB Launcher looks and renders on this device." Classes="SettingsDescription"/></StackPanel>
+                                <Border Classes="SettingsContentCard"><StackPanel Spacing="20">
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="20"><StackPanel Spacing="5"><TextBlock Text="Color theme" Classes="SettingsSectionTitle"/><TextBlock Text="The launcher currently uses its optimized dark theme." Classes="SettingsDescription" TextWrapping="Wrap"/></StackPanel><TextBlock Grid.Column="1" Text="Dark" Classes="ThemeChoiceLabel" Foreground="#8DBAFF" VerticalAlignment="Center"/></Grid>
+                                    <Border Classes="SettingsDivider"/>
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="20"><StackPanel Spacing="5"><TextBlock Text="Advanced rendering" Classes="SettingsSectionTitle"/><TextBlock Text="Use hardware-accelerated visual effects where supported." Classes="SettingsDescription" TextWrapping="Wrap"/></StackPanel><ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableAdvancedRendering}" VerticalAlignment="Center"/></Grid>
+                                    <Border Classes="SettingsDivider"/>
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="20"><StackPanel Spacing="5"><TextBlock Text="System window frame" Classes="SettingsSectionTitle"/><TextBlock Text="Use the standard Windows title bar. Requires a restart." Classes="SettingsDescription" TextWrapping="Wrap"/></StackPanel><ToggleSwitch Grid.Column="1" IsChecked="{Binding UseSystemWindowFrame}" VerticalAlignment="Center"/></Grid>
+                                </StackPanel></Border>
+                            </StackPanel>
+
+                            <StackPanel IsVisible="{Binding IsBehaviorSelected}" Spacing="20">
+                                <StackPanel Spacing="5"><TextBlock Text="Behavior" Classes="SettingsPageHeading"/><TextBlock Text="Control how the launcher behaves during everyday use." Classes="SettingsDescription"/></StackPanel>
+                                <Border Classes="SettingsContentCard"><StackPanel Spacing="20">
+                                    <Grid ColumnDefinitions="*,Auto"><StackPanel Spacing="5"><TextBlock Text="Keep launcher open" Classes="SettingsSectionTitle"/><TextBlock Text="Keep UB Launcher visible after Minecraft starts." Classes="SettingsDescription"/></StackPanel><ToggleSwitch Grid.Column="1" IsChecked="{Binding KeepLauncherOpen}"/></Grid><Border Classes="SettingsDivider"/>
+                                    <Grid ColumnDefinitions="*,Auto"><StackPanel Spacing="5"><TextBlock Text="Desktop notifications" Classes="SettingsSectionTitle"/><TextBlock Text="Show notifications for downloads and completed tasks." Classes="SettingsDescription"/></StackPanel><ToggleSwitch Grid.Column="1" IsChecked="{Binding ShowNotifications}"/></Grid><Border Classes="SettingsDivider"/>
+                                    <Grid ColumnDefinitions="*,Auto"><StackPanel Spacing="5"><TextBlock Text="In-game overlay" Classes="SettingsSectionTitle"/><TextBlock Text="Enable the UB performance HUD while playing." Classes="SettingsDescription"/></StackPanel><ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableOverlay}"/></Grid>
+                                </StackPanel></Border>
+                            </StackPanel>
+
+                            <StackPanel IsVisible="{Binding IsPrivacySelected}" Spacing="20">
+                                <StackPanel Spacing="5"><TextBlock Text="Privacy" Classes="SettingsPageHeading"/><TextBlock Text="Choose what diagnostic information the launcher may collect." Classes="SettingsDescription"/></StackPanel>
+                                <Border Classes="SettingsContentCard"><StackPanel Spacing="20">
+                                    <Grid ColumnDefinitions="*,Auto"><StackPanel Spacing="5"><TextBlock Text="Anonymous diagnostics" Classes="SettingsSectionTitle"/><TextBlock Text="Share anonymous launcher performance information." Classes="SettingsDescription"/></StackPanel><ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableAnonymousTelemetry}"/></Grid><Border Classes="SettingsDivider"/>
+                                    <Grid ColumnDefinitions="*,Auto"><StackPanel Spacing="5"><TextBlock Text="Crash reports" Classes="SettingsSectionTitle"/><TextBlock Text="Send technical crash details to help improve stability." Classes="SettingsDescription"/></StackPanel><ToggleSwitch Grid.Column="1" IsChecked="{Binding ShareCrashReports}"/></Grid>
+                                </StackPanel></Border>
+                            </StackPanel>
+
+                            <StackPanel IsVisible="{Binding IsGameOptionsSelected}" Spacing="20">
+                                <StackPanel Spacing="5"><TextBlock Text="Default game options" Classes="SettingsPageHeading"/><TextBlock Text="Defaults used when creating and launching instances." Classes="SettingsDescription"/></StackPanel>
+                                <Border Classes="SettingsContentCard"><StackPanel Spacing="20"><TextBlock Text="Display" Classes="SettingsSectionTitle"/>
+                                    <Grid ColumnDefinitions="*,Auto"><StackPanel Spacing="5"><TextBlock Text="Fullscreen" Classes="SettingsDescription" Foreground="#E4E7E9"/><TextBlock Text="Start new instances in fullscreen." Classes="SettingsDescription"/></StackPanel><ToggleSwitch Grid.Column="1" IsChecked="{Binding ForceFullscreen}"/></Grid>
+                                    <Grid ColumnDefinitions="*,190" ColumnSpacing="20"><StackPanel Spacing="5"><TextBlock Text="Window width" Classes="SettingsDescription" Foreground="#E4E7E9"/><TextBlock Text="Used when fullscreen is disabled." Classes="SettingsDescription"/></StackPanel><TextBox Grid.Column="1" Text="{Binding GameWindowWidth}" IsEnabled="{Binding !ForceFullscreen}"/></Grid>
+                                    <Grid ColumnDefinitions="*,190" ColumnSpacing="20"><StackPanel Spacing="5"><TextBlock Text="Window height" Classes="SettingsDescription" Foreground="#E4E7E9"/><TextBlock Text="Used when fullscreen is disabled." Classes="SettingsDescription"/></StackPanel><TextBox Grid.Column="1" Text="{Binding GameWindowHeight}" IsEnabled="{Binding !ForceFullscreen}"/></Grid>
+                                </StackPanel></Border>
+                                <Border Classes="SettingsContentCard"><StackPanel Spacing="18"><TextBlock Text="Runtime" Classes="SettingsSectionTitle"/>
+                                    <StackPanel Spacing="10"><Grid ColumnDefinitions="*,Auto"><TextBlock Text="Memory allocation" Classes="SettingsDescription" Foreground="#E4E7E9"/><TextBlock Grid.Column="1" Text="{Binding MaximumMemoryMb, StringFormat='{}{0:0} MB'}" Classes="ThemeChoiceLabel" Foreground="#8DBAFF"/></Grid><Slider Minimum="512" Maximum="{Binding MaxMemoryLimitMb}" Value="{Binding MaximumMemoryMb}" TickFrequency="64"/><TextBlock Text="Maximum memory available to each instance." Classes="SettingsDescription"/></StackPanel>
+                                    <StackPanel Spacing="8"><TextBlock Text="Java arguments" Classes="SettingsDescription" Foreground="#E4E7E9"/><TextBox Text="{Binding CustomJvmArguments}"/><TextBlock Text="Arguments passed to Java when an instance starts." Classes="SettingsDescription"/></StackPanel>
+                                    <StackPanel Spacing="8"><TextBlock Text="Environment variables" Classes="SettingsDescription" Foreground="#E4E7E9"/><TextBox Text="{Binding EnvironmentVariables}"/><TextBlock Text="Variables added to the game process." Classes="SettingsDescription"/></StackPanel>
+                                </StackPanel></Border>
+                                <Border Classes="SettingsContentCard"><StackPanel Spacing="18"><TextBlock Text="Launch hooks" Classes="SettingsSectionTitle"/>
+                                    <StackPanel Spacing="8"><TextBlock Text="Pre-launch command" Classes="SettingsDescription" Foreground="#E4E7E9"/><TextBox Text="{Binding PreLaunchHook}"/></StackPanel>
+                                    <StackPanel Spacing="8"><TextBlock Text="Wrapper command" Classes="SettingsDescription" Foreground="#E4E7E9"/><TextBox Text="{Binding WrapperHook}"/></StackPanel>
+                                    <StackPanel Spacing="8"><TextBlock Text="Post-exit command" Classes="SettingsDescription" Foreground="#E4E7E9"/><TextBox Text="{Binding PostExitHook}"/></StackPanel>
+                                    <TextBlock Text="$INST_NAME · instance name&#x0a;$INST_ID · instance folder&#x0a;$INST_DIR / $INST_MC_DIR · instance path&#x0a;$INST_JAVA · Java path&#x0a;$INST_JAVA_ARGS · JVM arguments" FontFamily="Consolas" FontSize="13" Foreground="#B4BBC1" LineHeight="20"/>
+                                </StackPanel></Border>
+                            </StackPanel>
+
+                            <StackPanel IsVisible="{Binding IsJavaSelected}" Spacing="20">
+                                <StackPanel Spacing="5"><TextBlock Text="Java installations" Classes="SettingsPageHeading"/><TextBlock Text="Select the Java runtime used to launch each Minecraft generation." Classes="SettingsDescription"/></StackPanel>
+                                <Border Classes="SettingsContentCard"><StackPanel Spacing="20">
+                                    <StackPanel Spacing="8"><TextBlock Text="Java 25 location" Classes="SettingsSectionTitle"/><Grid ColumnDefinitions="*,Auto" ColumnSpacing="10"><TextBox Text="{Binding Java25Path}" PlaceholderText="Auto-detect Java 25"/><Button Grid.Column="1" Content="Browse" Tag="25" Click="OnBrowseJavaClick" Classes="InstanceMoreButton"/></Grid></StackPanel>
+                                    <StackPanel Spacing="8"><TextBlock Text="Java 21 location" Classes="SettingsSectionTitle"/><Grid ColumnDefinitions="*,Auto" ColumnSpacing="10"><TextBox Text="{Binding Java21Path}" PlaceholderText="Auto-detect Java 21"/><Button Grid.Column="1" Content="Browse" Tag="21" Click="OnBrowseJavaClick" Classes="InstanceMoreButton"/></Grid></StackPanel>
+                                    <StackPanel Spacing="8"><TextBlock Text="Java 17 location" Classes="SettingsSectionTitle"/><Grid ColumnDefinitions="*,Auto" ColumnSpacing="10"><TextBox Text="{Binding Java17Path}" PlaceholderText="Auto-detect Java 17"/><Button Grid.Column="1" Content="Browse" Tag="17" Click="OnBrowseJavaClick" Classes="InstanceMoreButton"/></Grid></StackPanel>
+                                    <StackPanel Spacing="8"><TextBlock Text="Java 8 location" Classes="SettingsSectionTitle"/><Grid ColumnDefinitions="*,Auto" ColumnSpacing="10"><TextBox Text="{Binding Java8Path}" PlaceholderText="Auto-detect Java 8"/><Button Grid.Column="1" Content="Browse" Tag="8" Click="OnBrowseJavaClick" Classes="InstanceMoreButton"/></Grid></StackPanel>
+                                    <TextBlock Text="Leave a location empty to let UB Launcher choose a compatible installation." Classes="SettingsDescription" TextWrapping="Wrap"/>
+                                </StackPanel></Border>
+                            </StackPanel>
+
+                            <StackPanel IsVisible="{Binding IsResourcesSelected}" Spacing="20">
+                                <StackPanel Spacing="5"><TextBlock Text="Resource management" Classes="SettingsPageHeading"/><TextBlock Text="Manage launcher storage, cache, downloads, and backups." Classes="SettingsDescription"/></StackPanel>
+                                <Border Classes="SettingsContentCard"><StackPanel Spacing="20">
+                                    <StackPanel Spacing="8"><TextBlock Text="App directory" Classes="SettingsSectionTitle"/><Grid ColumnDefinitions="*,Auto" ColumnSpacing="10"><TextBox Text="{Binding AppDirectory}"/><Button Grid.Column="1" Content="Browse" Click="OnBrowseAppDirectoryClick" Classes="InstanceMoreButton"/></Grid><TextBlock Text="Changes take effect after restarting the launcher." Classes="SettingsDescription"/></StackPanel><Border Classes="SettingsDivider"/>
+                                    <Grid ColumnDefinitions="*,Auto"><StackPanel Spacing="5"><TextBlock Text="Always show copy details" Classes="SettingsSectionTitle"/><TextBlock Text="Show the copy action while an install is queued or running." Classes="SettingsDescription" TextWrapping="Wrap"/></StackPanel><ToggleSwitch Grid.Column="1" IsChecked="{Binding AlwaysShowCopyDetails}"/></Grid><Border Classes="SettingsDivider"/>
+                                    <StackPanel Spacing="10"><TextBlock Text="App cache" Classes="SettingsSectionTitle"/><TextBlock Text="Clear cached files and download them again when needed." Classes="SettingsDescription"/><Button Content="Purge cache" Classes="InstanceMoreButton" HorizontalAlignment="Left" Command="{Binding RequestCachePurgeCommand}"/>
+                                        <Border IsVisible="{Binding IsCachePurgeConfirmationVisible}" Background="#1D1315" BorderBrush="#663A42" BorderThickness="1" CornerRadius="7" Padding="16"><StackPanel Spacing="12"><TextBlock Text="Purge the app cache?" Classes="SettingsSectionTitle"/><TextBlock Text="Cached files will be removed and rebuilt when needed." Classes="SettingsDescription"/><StackPanel Orientation="Horizontal" Spacing="10"><Button Content="Cancel" Classes="InstanceMoreButton" Command="{Binding CancelCachePurgeCommand}"/><Button Content="Purge cache" Classes="CreateInstanceButton" Command="{Binding ConfirmCachePurgeCommand}"/></StackPanel></StackPanel></Border>
+                                        <TextBlock Text="{Binding ResourceStatusText}" FontFamily="Inter" FontSize="14" Foreground="#8DBAFF" TextWrapping="Wrap"/>
+                                    </StackPanel><Border Classes="SettingsDivider"/>
+                                    <StackPanel Spacing="10"><Grid ColumnDefinitions="*,Auto"><TextBlock Text="Maximum concurrent downloads" Classes="SettingsSectionTitle"/><TextBlock Grid.Column="1" Text="{Binding MaximumConcurrentDownloads, StringFormat='{}{0:0}'}" Classes="ThemeChoiceLabel"/></Grid><Slider Minimum="1" Maximum="10" Value="{Binding MaximumConcurrentDownloads}" TickFrequency="1" IsSnapToTickEnabled="True"/><TextBlock Text="Lower this value if downloads are unreliable." Classes="SettingsDescription"/></StackPanel>
+                                    <StackPanel Spacing="10"><Grid ColumnDefinitions="*,Auto"><TextBlock Text="Maximum concurrent writes" Classes="SettingsSectionTitle"/><TextBlock Grid.Column="1" Text="{Binding MaximumConcurrentWrites, StringFormat='{}{0:0}'}" Classes="ThemeChoiceLabel"/></Grid><Slider Minimum="1" Maximum="50" Value="{Binding MaximumConcurrentWrites}" TickFrequency="1" IsSnapToTickEnabled="True"/><TextBlock Text="Lower this value if disk operations fail." Classes="SettingsDescription"/></StackPanel>
+                                    <StackPanel Spacing="10"><TextBlock Text="Database backups" Classes="SettingsSectionTitle"/><Button Content="Open backups folder" HorizontalAlignment="Left" Click="OnOpenBackupsFolderClick" Classes="InstanceMoreButton"/><TextBlock Text="Backups can help recover important launcher data." Classes="SettingsDescription"/></StackPanel>
+                                    <Border Classes="SettingsDivider"/><StackPanel Orientation="Horizontal" Spacing="10"><Button Content="Save and apply" Classes="CreateInstanceButton" Command="{Binding SaveSettingsCommand}"/><Button Content="Reset defaults" Classes="InstanceMoreButton" Command="{Binding ResetToDefaultCommand}"/></StackPanel>
+                                </StackPanel></Border>
+                            </StackPanel>
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
             </Grid>
-        </Grid>
-    </ScrollViewer>
+        </Border>
+    </Grid>
 </UserControl>

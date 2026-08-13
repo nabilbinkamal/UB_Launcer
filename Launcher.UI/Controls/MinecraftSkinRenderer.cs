@@ -106,6 +106,7 @@ internal readonly record struct MinecraftRenderSettings(
     double Zoom,
     double VerticalOffset,
     bool IsSlim,
+    bool TextureIsSlim,
     double Bob,
     double ArmSwingDegrees,
     double AnimationPhase);
@@ -376,15 +377,15 @@ internal sealed class MinecraftSkinRenderer
 
             RenderCuboid(
                 new Cuboid(-4 - armWidth, -4, 8, 20, -2, 2),
-                settings.IsSlim ? RightArmSlimBase : RightArmBase,
-                settings.IsSlim ? RightArmSlimOverlay : RightArmOverlay,
+                settings.TextureIsSlim ? RightArmSlimBase : RightArmBase,
+                settings.TextureIsSlim ? RightArmSlimOverlay : RightArmOverlay,
                 0.25f,
                 rightArmTransform);
 
             RenderCuboid(
                 new Cuboid(4, 4 + armWidth, 8, 20, -2, 2),
-                settings.IsSlim ? LeftArmSlimBase : LeftArmBase,
-                settings.IsSlim ? LeftArmSlimOverlay : LeftArmOverlay,
+                settings.TextureIsSlim ? LeftArmSlimBase : LeftArmBase,
+                settings.TextureIsSlim ? LeftArmSlimOverlay : LeftArmOverlay,
                 0.25f,
                 leftArmTransform);
 

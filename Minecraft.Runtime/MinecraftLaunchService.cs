@@ -9,9 +9,12 @@ public sealed class MinecraftLaunchService
 {
     private readonly MinecraftLauncher launcher;
 
-    public MinecraftLaunchService()
+    public MinecraftLaunchService(string? gameDirectory = null)
     {
-        var root = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "UBLauncher", "minecraft");
+        var root = string.IsNullOrWhiteSpace(gameDirectory)
+            ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "UBLauncher", "minecraft")
+            : gameDirectory;
+        Directory.CreateDirectory(root);
         launcher = new MinecraftLauncher(new MinecraftPath(root));
     }
 
@@ -31,5 +34,28 @@ public sealed class MinecraftLaunchService
         });
         process.Start();
         return process;
+    }
+
+    public async Task InstallVersionAsync(string version, IProgress<string>? progress = null)
+    {
+        if (string.IsNullOrWhiteSpace(version))
+        {
+            throw new ArgumentException("A Minecraft version is required.", nameof(version));
+        }
+
+        progress?.Report($"Downloading Minecraft {version}...");
+        await launcher.InstallAsync(version);
+        progress?.Report($"Minecraft {version} is ready.");
+    }
+
+    public async Task<IReadOnlyList<string>> GetAvailableReleaseVersionsAsync()
+    {
+        var versions = await launcher.GetAllVersionsAsync();
+        return versions
+            .Where(version => string.Equals(version.Type?.ToString(), "release", StringComparison.OrdinalIgnoreCase))
+            .Select(version => version.Name)
+            .Where(version => !string.IsNullOrWhiteSpace(version))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
     }
 }

@@ -10,10 +10,19 @@ public sealed class MemoryUsageRing : Control
     public static readonly StyledProperty<double> ValueProperty =
         AvaloniaProperty.Register<MemoryUsageRing, double>(nameof(Value));
 
+    private static readonly Pen BackgroundPen = new(
+        new SolidColorBrush(Color.FromArgb(55, 255, 255, 255)), 4);
+    private static readonly Pen ProgressPen = new(
+        new SolidColorBrush(Color.FromRgb(39, 113, 255)), 4,
+        lineCap: PenLineCap.Round, lineJoin: PenLineJoin.Round);
+    private double displayedValue;
+    private bool hasValue;
+
     public MemoryUsageRing()
     {
         Width = 50;
         Height = 50;
+
     }
 
     public double Value
@@ -28,6 +37,16 @@ public sealed class MemoryUsageRing : Control
 
         if (change.Property == ValueProperty)
         {
+            var target = Math.Clamp(change.NewValue is double value ? value : 0, 0, 100);
+            if (!hasValue)
+            {
+                hasValue = true;
+                displayedValue = target;
+                InvalidateVisual();
+                return;
+            }
+
+            displayedValue = target;
             InvalidateVisual();
         }
     }
@@ -38,10 +57,9 @@ public sealed class MemoryUsageRing : Control
 
         var center = new Point(Bounds.Width / 2, Bounds.Height / 2);
         var radius = Math.Max(1, Math.Min(Bounds.Width, Bounds.Height) / 2 - 4);
-        var backgroundPen = new Pen(new SolidColorBrush(Color.FromArgb(55, 255, 255, 255)), 4);
-        context.DrawEllipse(null, backgroundPen, center, radius, radius);
+        context.DrawEllipse(null, BackgroundPen, center, radius, radius);
 
-        var progress = Math.Clamp(Value / 100, 0, 1);
+        var progress = Math.Clamp(displayedValue / 100, 0, 1);
         if (progress <= 0)
         {
             return;
@@ -58,7 +76,7 @@ public sealed class MemoryUsageRing : Control
         }
 
         builder.EndFigure(false);
-        context.DrawGeometry(null, new Pen(new SolidColorBrush(Color.FromRgb(39, 113, 255)), 4, lineCap: PenLineCap.Round, lineJoin: PenLineJoin.Round), geometry);
+        context.DrawGeometry(null, ProgressPen, geometry);
     }
 
     private static Point GetPoint(Point center, double radius, double progress)

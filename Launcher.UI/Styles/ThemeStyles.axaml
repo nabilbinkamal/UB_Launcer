@@ -1,23 +1,78 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Styles.Resources>
-        <SolidColorBrush x:Key="PageBrush" Color="#040609"/>
-        <SolidColorBrush x:Key="SidebarBrush" Color="#06080B"/>
-        <SolidColorBrush x:Key="PanelBrush" Color="#090D12"/>
-        <SolidColorBrush x:Key="PanelHoverBrush" Color="#111820"/>
-        <SolidColorBrush x:Key="BlueBrush" Color="#2363B4"/>
-        <SolidColorBrush x:Key="CyanBrush" Color="#00D9FF"/>
-        <SolidColorBrush x:Key="BorderBrush" Color="#26313B"/>
-        <SolidColorBrush x:Key="MutedBrush" Color="#8493A3"/>
+        <LinearGradientBrush x:Key="PageBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#030508" Offset="0"/>
+            <GradientStop Color="#071019" Offset="0.52"/>
+            <GradientStop Color="#03070B" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="SidebarBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#FB06090D" Offset="0"/>
+            <GradientStop Color="#F5081017" Offset="0.58"/>
+            <GradientStop Color="#EE07121B" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="PanelBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#E80D151D" Offset="0"/>
+            <GradientStop Color="#D9091118" Offset="0.62"/>
+            <GradientStop Color="#C90A151E" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="PanelHoverBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#F0152430" Offset="0"/>
+            <GradientStop Color="#E00D1B26" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="GlassInsetBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#E00E151C" Offset="0"/>
+            <GradientStop Color="#C9091016" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="SidebarButtonBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#DF121A22" Offset="0"/>
+            <GradientStop Color="#C90D131A" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="SidebarButtonHoverBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#E524587F" Offset="0"/>
+            <GradientStop Color="#D9173C5D" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="BrandGradientBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#2C73C9" Offset="0"/>
+            <GradientStop Color="#1E58A5" Offset="0.64"/>
+            <GradientStop Color="#174780" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="BrandGradientHoverBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#3B8BE2" Offset="0"/>
+            <GradientStop Color="#2867B8" Offset="0.64"/>
+            <GradientStop Color="#1D5594" Offset="1"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="BlueBrush" Color="#2C73C9"/>
+        <SolidColorBrush x:Key="CyanBrush" Color="#65D9FF"/>
+        <SolidColorBrush x:Key="BorderBrush" Color="#2B3B49"/>
+        <SolidColorBrush x:Key="GlassBorderBrush" Color="#344A5C"/>
+        <SolidColorBrush x:Key="MutedBrush" Color="#8798A8"/>
     </Styles.Resources>
+
+    <Style Selector="Border.SidebarGlass">
+        <Setter Property="Background" Value="{DynamicResource SidebarBrush}"/>
+        <Setter Property="BorderBrush" Value="#2A3B49"/>
+        <Setter Property="BorderThickness" Value="0 0 1 0"/>
+    </Style>
+    <Style Selector="Border.TitleBarGlass">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                <GradientStop Color="#F4070A0E" Offset="0"/>
+                <GradientStop Color="#E90A1118" Offset="0.58"/>
+                <GradientStop Color="#F206090D" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="BorderBrush" Value="#24323E"/>
+        <Setter Property="BorderThickness" Value="0 0 0 1"/>
+    </Style>
 
     <Style Selector="Button.SidebarButton">
         <Setter Property="Width" Value="179"/>
         <Setter Property="Height" Value="39"/>
         <Setter Property="MinHeight" Value="0"/>
-        <Setter Property="Background" Value="#11171D"/>
+        <Setter Property="Background" Value="{DynamicResource SidebarButtonBrush}"/>
         <Setter Property="Foreground" Value="#F0F0F0"/>
-        <Setter Property="BorderBrush" Value="#202B35"/>
+        <Setter Property="BorderBrush" Value="#243442"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -107,24 +162,28 @@
         <Setter Property="FontFamily" Value="Minecraft"/>
         <Setter Property="FontSize" Value="11"/>
         <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="LineHeight" Value="12"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
     <Style Selector="TextBlock.StatValue">
         <Setter Property="FontFamily" Value="Minecraft"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="LineHeight" Value="14"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
     <Style Selector="Button.SidebarButton:pointerover">
-        <Setter Property="Background" Value="#1A4D80"/>
-        <Setter Property="BorderBrush" Value="#63B5F2"/>
+        <Setter Property="Background" Value="{DynamicResource SidebarButtonHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="#70C9F8"/>
         <Setter Property="Foreground" Value="White"/>
     </Style>
     <Style Selector="Button.SidebarButton.Active">
-        <Setter Property="Background" Value="#1E58A5"/>
-        <Setter Property="BorderBrush" Value="#4B88D4"/>
+        <Setter Property="Background" Value="{DynamicResource BrandGradientBrush}"/>
+        <Setter Property="BorderBrush" Value="#5CA7EB"/>
     </Style>
     <Style Selector="Button.SidebarButton.Active:pointerover">
-        <Setter Property="Background" Value="#2867B8"/>
-        <Setter Property="BorderBrush" Value="#6AA4E8"/>
+        <Setter Property="Background" Value="{DynamicResource BrandGradientHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="#8ED7FF"/>
     </Style>
 
     <Style Selector="Button.WindowButton">
@@ -136,7 +195,7 @@
         <Setter Property="Padding" Value="0"/>
         <Setter Property="CornerRadius" Value="4"/>
     </Style>
-    <Style Selector="Button.WindowButton:pointerover"><Setter Property="Background" Value="#28445C"/><Setter Property="Foreground" Value="White"/></Style>
+    <Style Selector="Button.WindowButton:pointerover"><Setter Property="Background" Value="#5C24547A"/><Setter Property="Foreground" Value="White"/></Style>
     <Style Selector="Button.WindowButton:pressed"><Setter Property="Background" Value="#314456"/></Style>
     <Style Selector="Button.WindowButton.CloseButton"><Setter Property="Foreground" Value="#F4F4F4"/></Style>
     <Style Selector="Button.WindowButton.CloseButton:pointerover"><Setter Property="Background" Value="#C42B1C"/><Setter Property="Foreground" Value="White"/></Style>
@@ -144,22 +203,34 @@
     <Style Selector="Border.StatPill">
         <Setter Property="Width" Value="135"/>
         <Setter Property="Height" Value="45"/>
-        <Setter Property="Background" Value="#10161C"/>
-        <Setter Property="BorderBrush" Value="#2A3641"/>
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#1FFFFFFF" Offset="0"/>
+                <GradientStop Color="#18182735" Offset="0.58"/>
+                <GradientStop Color="#11112431" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="BorderBrush">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#4AFFFFFF" Offset="0"/>
+                <GradientStop Color="#3F75BCEB" Offset="0.48"/>
+                <GradientStop Color="#334A718E" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="10"/>
-        <Setter Property="Padding" Value="10 6"/>
+        <Setter Property="Padding" Value="11 6"/>
     </Style>
     <Style Selector="Border.HeroCard">
-        <Setter Property="Background" Value="#0B121A"/>
-        <Setter Property="BorderBrush" Value="#2B4965"/>
+        <Setter Property="Background" Value="#0A121A"/>
+        <Setter Property="BorderBrush" Value="#35658A"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="10"/>
         <Setter Property="Padding" Value="0"/>
     </Style>
     <Style Selector="Border.PanelCard">
-        <Setter Property="Background" Value="#080C10"/>
-        <Setter Property="BorderBrush" Value="#26313B"/>
+        <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource GlassBorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="10"/>
     </Style>
@@ -175,18 +246,18 @@
     <Style Selector="Border.CurrentInstanceCard">
         <Setter Property="Background">
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#111E29" Offset="0"/>
-                <GradientStop Color="#090D12" Offset="0.46"/>
-                <GradientStop Color="#0D141B" Offset="1"/>
+                <GradientStop Color="#152838" Offset="0"/>
+                <GradientStop Color="#0B1219" Offset="0.48"/>
+                <GradientStop Color="#0D1B25" Offset="1"/>
             </LinearGradientBrush>
         </Setter>
-        <Setter Property="BorderBrush" Value="#2D4152"/>
+        <Setter Property="BorderBrush" Value="#3B5870"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="10"/>
     </Style>
     <Style Selector="Border.MetricCard">
-        <Setter Property="Background" Value="#0D1217"/>
-        <Setter Property="BorderBrush" Value="#202B35"/>
+        <Setter Property="Background" Value="{DynamicResource GlassInsetBrush}"/>
+        <Setter Property="BorderBrush" Value="#293B49"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="8"/>
         <Setter Property="Padding" Value="12 7"/>
@@ -199,16 +270,16 @@
         <Setter Property="Foreground" Value="#66FFFFFF"/>
     </Style>
     <Style Selector="Border.Tag">
-        <Setter Property="Background" Value="#151B22"/>
-        <Setter Property="BorderBrush" Value="#26323D"/>
+        <Setter Property="Background" Value="#B817222C"/>
+        <Setter Property="BorderBrush" Value="#344958"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="12"/>
         <Setter Property="Padding" Value="8 4"/>
     </Style>
     <Style Selector="Button.PlayButton">
-        <Setter Property="Background" Value="#1C53A3"/>
+        <Setter Property="Background" Value="{DynamicResource BrandGradientBrush}"/>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="BorderBrush" Value="#3D82D9"/>
+        <Setter Property="BorderBrush" Value="#5AA5EA"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="8"/>
         <Setter Property="Height" Value="55"/>
@@ -230,8 +301,15 @@
     <Style Selector="Button.PlayButton TextBlock">
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
-    <Style Selector="Button.PlayButton:pointerover"><Setter Property="Background" Value="#2B6FC2"/><Setter Property="BorderBrush" Value="#63A1E8"/></Style>
-    <Style Selector="Button.PlayButton:pressed"><Setter Property="Background" Value="#184985"/></Style>
+    <Style Selector="Button.PlayButton:pointerover">
+        <Setter Property="Background" Value="{DynamicResource BrandGradientBrush}"/>
+        <Setter Property="BorderBrush" Value="#5AA5EA"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Effect">
+            <DropShadowEffect Color="#78A8E8FF" BlurRadius="18" Opacity="0.78" OffsetX="0" OffsetY="0"/>
+        </Setter>
+    </Style>
+    <Style Selector="Button.PlayButton:pressed"><Setter Property="Background" Value="#17447F"/><Setter Property="BorderBrush" Value="#4B88D4"/></Style>
     <Style Selector="Button.PlayButton:disabled"><Setter Property="Background" Value="#1C375D"/><Setter Property="Foreground" Value="#8EA0B7"/></Style>
     <Style Selector="Button.IconButton">
         <Setter Property="Width" Value="28"/><Setter Property="Height" Value="28"/><Setter Property="Background" Value="#252525"/><Setter Property="Foreground" Value="White"/><Setter Property="Padding" Value="0"/><Setter Property="CornerRadius" Value="5"/>
@@ -243,23 +321,114 @@
     </Style>
     <Style Selector="Button.InstanceEditButton:pointerover"><Setter Property="Background" Value="#24577F"/><Setter Property="BorderBrush" Value="#8BD0FF"/><Setter Property="BorderThickness" Value="1"/></Style>
     <Style Selector="Button.InstanceEditButton:pressed"><Setter Property="Background" Value="#142333"/></Style>
+    <Style Selector="ComboBox.HomeInstancePicker">
+        <Setter Property="MinHeight" Value="34"/>
+        <Setter Property="MinWidth" Value="230"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="4 0 9 0"/>
+    </Style>
+    <Style Selector="ComboBox.HomeInstancePicker:pointerover">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+    </Style>
+    <Style Selector="ComboBox.HomeInstancePicker:dropdownopen">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+    </Style>
+    <Style Selector="ComboBox.HomeInstancePicker:focus">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+    </Style>
+    <Style Selector="ComboBox.HomeInstancePicker /template/ Border#Background">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="ComboBox.HomeInstancePicker:pointerover /template/ Border#Background">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="ComboBox.HomeInstancePicker:focus /template/ Border#Background">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="ComboBox.HomeInstancePicker:dropdownopen /template/ Border#Background">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="ComboBox.HomeInstancePicker:dropdownopen /template/ Border#PopupBorder">
+        <Setter Property="Background" Value="#071018"/>
+        <Setter Property="BorderBrush" Value="#315F82"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Padding" Value="5"/>
+        <Setter Property="Margin" Value="0 8 0 0"/>
+        <Setter Property="BoxShadow" Value="0 16 36 0 #B8000000"/>
+    </Style>
     <Style Selector="Button.ServerRow">
         <Setter Property="Background" Value="Transparent"/><Setter Property="Padding" Value="4 2"/><Setter Property="HorizontalAlignment" Value="Stretch"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="Height" Value="31"/><Setter Property="CornerRadius" Value="6"/>
     </Style>
     <Style Selector="Button.ServerRow:pointerover"><Setter Property="Background" Value="#1C3C59"/><Setter Property="BorderBrush" Value="#4D9BD5"/><Setter Property="BorderThickness" Value="1"/></Style>
     <Style Selector="Button.ServerRow:pressed"><Setter Property="Background" Value="#0E1A25"/></Style>
-    <Style Selector="Border.RecentCard">
-        <Setter Property="Background" Value="#090D12"/><Setter Property="BorderBrush" Value="#222D37"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="10"/>
+    <Style Selector="Button.RecentInstanceCard">
+        <Setter Property="MinHeight" Value="132"/>
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="Background" Value="#0B1218"/>
+        <Setter Property="BorderBrush" Value="#233744"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="9"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
     </Style>
-    <Style Selector="Border.RecentCard:pointerover"><Setter Property="Background" Value="#101720"/><Setter Property="BorderBrush" Value="#315C84"/></Style>
+    <Style Selector="Button.RecentInstanceCard:pointerover">
+        <Setter Property="Background" Value="#101F2A"/>
+        <Setter Property="BorderBrush" Value="#4C91C2"/>
+    </Style>
+    <Style Selector="Button.RecentInstanceCard:pressed">
+        <Setter Property="Background" Value="#0B1720"/>
+        <Setter Property="BorderBrush" Value="#76C7FA"/>
+    </Style>
+    <Style Selector="Button.RecentServerRow">
+        <Setter Property="Height" Value="31"/>
+        <Setter Property="Padding" Value="4 3"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="7"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+    </Style>
+    <Style Selector="Button.RecentServerRow:pointerover">
+        <Setter Property="Background" Value="#102432"/>
+        <Setter Property="BorderBrush" Value="#315E7D"/>
+    </Style>
+    <Style Selector="Button.RecentServerRow:pressed">
+        <Setter Property="Background" Value="#0A1821"/>
+        <Setter Property="BorderBrush" Value="#5AAEE4"/>
+    </Style>
+    <Style Selector="Border.RecentCard">
+        <Setter Property="Background" Value="{DynamicResource GlassInsetBrush}"/><Setter Property="BorderBrush" Value="#293946"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="10"/>
+    </Style>
+    <Style Selector="Border.RecentCard:pointerover"><Setter Property="Background" Value="{DynamicResource PanelHoverBrush}"/><Setter Property="BorderBrush" Value="#4786B6"/></Style>
     <Style Selector="Button.DetailsButton">
         <Setter Property="Background" Value="#0C1C29"/><Setter Property="Foreground" Value="#63C4FF"/><Setter Property="BorderBrush" Value="#20394D"/><Setter Property="BorderThickness" Value="1"/><Setter Property="Padding" Value="11 5"/><Setter Property="FontSize" Value="10"/><Setter Property="CornerRadius" Value="6"/>
     </Style>
     <Style Selector="Button.DetailsButton:pointerover"><Setter Property="Background" Value="#1B527A"/><Setter Property="BorderBrush" Value="#69C2FF"/><Setter Property="Foreground" Value="White"/></Style>
     <Style Selector="Button.QuickButton">
-        <Setter Property="Height" Value="38"/><Setter Property="Background" Value="#11171D"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#29343E"/><Setter Property="BorderThickness" Value="1"/><Setter Property="HorizontalAlignment" Value="Stretch"/><Setter Property="HorizontalContentAlignment" Value="Left"/><Setter Property="Padding" Value="11 6"/><Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Height" Value="38"/><Setter Property="Background" Value="{DynamicResource SidebarButtonBrush}"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#304353"/><Setter Property="BorderThickness" Value="1"/><Setter Property="HorizontalAlignment" Value="Stretch"/><Setter Property="HorizontalContentAlignment" Value="Left"/><Setter Property="Padding" Value="11 6"/><Setter Property="CornerRadius" Value="8"/>
     </Style>
-    <Style Selector="Button.QuickButton:pointerover"><Setter Property="Background" Value="#1B4D76"/><Setter Property="BorderBrush" Value="#64B8F2"/><Setter Property="Foreground" Value="White"/></Style>
+    <Style Selector="Button.QuickButton:pointerover"><Setter Property="Background" Value="{DynamicResource SidebarButtonHoverBrush}"/><Setter Property="BorderBrush" Value="#78CDFB"/><Setter Property="Foreground" Value="White"/></Style>
     <Style Selector="Button.QuickButton:pressed"><Setter Property="Background" Value="#102034"/></Style>
     <Style Selector="Border.DiscordCard">
         <Setter Property="Background" Value="#100B1E"/><Setter Property="BorderBrush" Value="#322060"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="MinHeight" Value="132"/>
@@ -271,12 +440,185 @@
     <Style Selector="Button.JoinButton:pressed"><Setter Property="Background" Value="#3A1760"/><Setter Property="BorderBrush" Value="#E1A2FF"/></Style>
     <Style Selector="Border.ProfileCard">
         <Setter Property="Padding" Value="11 13"/>
-        <Setter Property="Background" Value="#080D12"/>
-        <Setter Property="BorderBrush" Value="#3D1C53A3"/>
+        <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>
+        <Setter Property="BorderBrush" Value="#31506A"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+    </Style>
+    <Style Selector="Border.ProfileCard:pointerover"><Setter Property="BorderBrush" Value="#4B84AF"/></Style>
+    <Style Selector="Button.ProfileToggleButton">
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        <Setter Property="CornerRadius" Value="5"/>
+    </Style>
+    <Style Selector="Button.ProfileToggleButton:pointerover">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+    </Style>
+    <Style Selector="Button.ProfileToggleButton:pressed">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+    </Style>
+    <Style Selector="Border.SocialIconHover">
+        <Setter Property="Width" Value="26"/>
+        <Setter Property="Height" Value="26"/>
+        <Setter Property="Padding" Value="3"/>
+        <Setter Property="CornerRadius" Value="5"/>
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    <Style Selector="Border.SocialIconHover:pointerover">
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    <Style Selector="TextBlock.AccountMenuTitle">
+        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontSize" Value="8.5"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="#777D83"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Button.SavedAccountButton">
+        <Setter Property="Height" Value="34"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="3"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="CornerRadius" Value="5"/>
+        <Setter Property="Margin" Value="0 0 0 2"/>
+    </Style>
+    <Style Selector="Button.SavedAccountButton:pointerover"><Setter Property="Background" Value="Transparent"/></Style>
+    <Style Selector="Button.SavedAccountButton:pressed"><Setter Property="Background" Value="Transparent"/></Style>
+    <Style Selector="Button.SavedAccountButton.Active"><Setter Property="Background" Value="Transparent"/></Style>
+    <Style Selector="Button.AddAccountButton">
+        <Setter Property="Height" Value="27"/>
+        <Setter Property="Background" Value="#303336"/>
+        <Setter Property="Foreground" Value="#E4E6E8"/>
+        <Setter Property="BorderBrush" Value="#414549"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="7 0"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="CornerRadius" Value="4"/>
+    </Style>
+    <Style Selector="Button.AddAccountButton:pointerover"><Setter Property="Background" Value="#303336"/><Setter Property="BorderBrush" Value="#414549"/></Style>
+    <Style Selector="Button.AddAccountButton:pressed"><Setter Property="Background" Value="#303336"/><Setter Property="BorderBrush" Value="#414549"/></Style>
+    <Style Selector="Border.SettingsShell">
+        <Setter Property="MaxWidth" Value="928"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="Background" Value="#282A2F"/>
+        <Setter Property="BorderBrush" Value="#42454C"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="ClipToBounds" Value="True"/>
+    </Style>
+    <Style Selector="TextBlock.SettingsTitle">
+        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontSize" Value="24"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="#F4F5F6"/>
+    </Style>
+    <Style Selector="Button.SettingsCloseButton">
+        <Setter Property="Width" Value="36"/>
+        <Setter Property="Height" Value="36"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Background" Value="#34363D"/>
+        <Setter Property="Foreground" Value="#AFB5BE"/>
+        <Setter Property="BorderBrush" Value="#464950"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="18"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Button.SettingsCloseButton:pointerover"><Setter Property="Background" Value="#40434A"/><Setter Property="Foreground" Value="White"/></Style>
+    <Style Selector="TextBlock.SettingsGroupLabel">
+        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="#A6ADB7"/>
+        <Setter Property="Margin" Value="16 0 0 5"/>
+    </Style>
+    <Style Selector="Button.SettingsNavButton">
+        <Setter Property="Height" Value="35"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="#B7BEC8"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="16 0"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+    <Style Selector="Button.SettingsNavButton:pointerover"><Setter Property="Background" Value="#34363C"/><Setter Property="Foreground" Value="#F1F2F3"/></Style>
+    <Style Selector="Button.SettingsNavButton.Active"><Setter Property="Background" Value="#285F45"/><Setter Property="Foreground" Value="#24D875"/></Style>
+    <Style Selector="Button.SettingsNavButton.Active:pointerover"><Setter Property="Background" Value="#2E6B4E"/><Setter Property="Foreground" Value="#35E184"/></Style>
+    <Style Selector="TextBlock.SettingsNavIcon">
+        <Setter Property="Width" Value="16"/>
+        <Setter Property="FontFamily" Value="Segoe UI Symbol"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="TextBlock.SettingsPageHeading">
+        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="#F2F3F4"/>
+    </Style>
+    <Style Selector="TextBlock.SettingsSectionTitle">
+        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="#F0F2F3"/>
+    </Style>
+    <Style Selector="TextBlock.SettingsDescription">
+        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="#A6ADB7"/>
+    </Style>
+    <Style Selector="Border.ThemeChoiceCard">
+        <Setter Property="Background" Value="#393B42"/>
+        <Setter Property="BorderBrush" Value="#3F4248"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="9"/>
+        <Setter Property="ClipToBounds" Value="True"/>
     </Style>
-    <Style Selector="Border.ProfileCard:pointerover"><Setter Property="Background" Value="#0C141C"/><Setter Property="BorderBrush" Value="#805486C5"/></Style>
+    <Style Selector="Border.ThemeChoiceCard.Selected"><Setter Property="BorderBrush" Value="#4B4E55"/></Style>
+    <Style Selector="TextBlock.ThemeChoiceLabel">
+        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Foreground" Value="#F1F3F4"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="TextBlock.ThemeChoiceLabel.Muted"><Setter Property="Foreground" Value="#9AA4AE"/></Style>
+    <Style Selector="Border.SettingsDivider">
+        <Setter Property="Height" Value="1"/>
+        <Setter Property="Background" Value="#2C333A"/>
+    </Style>
+    <Style Selector="Border.SettingsContentCard">
+        <Setter Property="Background" Value="#171C22"/>
+        <Setter Property="BorderBrush" Value="#30373E"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="9"/>
+        <Setter Property="Padding" Value="20"/>
+    </Style>
+    <Style Selector="Border.StatusBadge">
+        <Setter Property="Background" Value="#244B36"/>
+        <Setter Property="BorderBrush" Value="#33704D"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="8 4"/>
+    </Style>
     <Style Selector="TextBlock.PageTitle">
         <Setter Property="FontFamily" Value="Minecraft"/><Setter Property="FontSize" Value="22"/><Setter Property="FontWeight" Value="Medium"/>
     </Style>
@@ -329,8 +671,81 @@
         <Setter Property="Background" Value="#080D12"/><Setter Property="BorderBrush" Value="#24394C"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="ClipToBounds" Value="True"/>
     </Style>
     <Style Selector="Border.PerformanceStatCard">
-        <Setter Property="Background" Value="#0D1116"/><Setter Property="BorderBrush" Value="#2C4256"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/>
+        <Setter Property="MinHeight" Value="214"/><Setter Property="Background" Value="#0B1015"/><Setter Property="BorderBrush" Value="#27323A"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="13"/><Setter Property="Padding" Value="16 14"/>
     </Style>
+    <Style Selector="Border.PerformanceStatCard.Cpu"><Setter Property="BorderBrush" Value="#273C4A"/></Style>
+    <Style Selector="Border.PerformanceStatCard.Gpu"><Setter Property="BorderBrush" Value="#352F4E"/></Style>
+    <Style Selector="Border.PerformanceStatCard.Memory"><Setter Property="BorderBrush" Value="#284238"/></Style>
+    <Style Selector="Border.PerformanceLiveBadge">
+        <Setter Property="Background" Value="#0E1D16"/><Setter Property="BorderBrush" Value="#244C37"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="14"/><Setter Property="Padding" Value="12 6"/>
+    </Style>
+    <Style Selector="Border.PerformancePanel">
+        <Setter Property="Background" Value="#090E13"/><Setter Property="BorderBrush" Value="#222B33"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="13"/><Setter Property="Padding" Value="18 16"/>
+    </Style>
+    <Style Selector="Border.PerformancePanel.ProfilePanel"><Setter Property="BorderBrush" Value="#29343B"/></Style>
+    <Style Selector="Border.PerformancePanel.HealthPanel"><Setter Property="BorderBrush" Value="#26372F"/></Style>
+    <Style Selector="Border.PerformanceApplyPanel">
+        <Setter Property="Background" Value="#0C1319"/><Setter Property="BorderBrush" Value="#263847"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="12"/><Setter Property="Padding" Value="19 17"/>
+    </Style>
+    <Style Selector="TextBlock.PerformanceMetricLabel">
+        <Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8.5"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#89959E"/><Setter Property="LetterSpacing" Value="0.8"/>
+    </Style>
+    <Style Selector="TextBlock.PerformanceLiveLabel">
+        <Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#5ACF87"/>
+    </Style>
+    <Style Selector="TextBlock.PerformanceMetricValue">
+        <Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="31"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#F1F4F6"/>
+    </Style>
+    <Style Selector="TextBlock.PerformanceMetricValue.Compact"><Setter Property="FontSize" Value="20"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+    <Style Selector="TextBlock.PerformanceSectionTitle">
+        <Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#EDF0F2"/>
+    </Style>
+    <Style Selector="TextBlock.PerformanceSectionDescription">
+        <Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/><Setter Property="Foreground" Value="#77828D"/>
+    </Style>
+    <Style Selector="Button.PerformancePresetCard">
+        <Setter Property="MinHeight" Value="102"/><Setter Property="HorizontalAlignment" Value="Stretch"/><Setter Property="Background" Value="#0D1318"/><Setter Property="Foreground" Value="#E8EBEE"/><Setter Property="BorderBrush" Value="#26313A"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="10"/><Setter Property="Padding" Value="14 12"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="VerticalContentAlignment" Value="Stretch"/>
+    </Style>
+    <Style Selector="Button.PerformancePresetCard:pointerover"><Setter Property="Background" Value="#121A20"/><Setter Property="BorderBrush" Value="#384650"/></Style>
+    <Style Selector="Button.PerformancePresetCard.Active"><Setter Property="Background" Value="#0F2119"/><Setter Property="BorderBrush" Value="#326C50"/><Setter Property="Foreground" Value="#6ED497"/></Style>
+    <Style Selector="Button.PerformancePresetCard.Active:pointerover"><Setter Property="Background" Value="#13281F"/><Setter Property="BorderBrush" Value="#3F8060"/></Style>
+    <Style Selector="Border.PerformancePresetIndicator">
+        <Setter Property="Width" Value="22"/><Setter Property="Height" Value="3"/><Setter Property="CornerRadius" Value="2"/><Setter Property="Background" Value="#37434C"/><Setter Property="BorderBrush" Value="Transparent"/><Setter Property="BorderThickness" Value="0"/><Setter Property="HorizontalAlignment" Value="Left"/>
+    </Style>
+    <Style Selector="Border.PerformancePresetIndicator.Active"><Setter Property="Background" Value="#62D38F"/><Setter Property="BorderBrush" Value="#62D38F"/></Style>
+    <Style Selector="TextBlock.PerformancePresetTitle"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="11.5"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
+    <Style Selector="TextBlock.PerformancePresetDescription"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8.5"/><Setter Property="LineHeight" Value="13"/><Setter Property="Foreground" Value="#79848F"/></Style>
+    <Style Selector="Border.PerformanceOptionCard">
+        <Setter Property="MinHeight" Value="76"/><Setter Property="Background" Value="#0D1318"/><Setter Property="BorderBrush" Value="#202A32"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="Padding" Value="13 11"/>
+    </Style>
+    <Style Selector="TextBlock.PerformanceOptionTitle"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="Medium"/><Setter Property="Foreground" Value="#E6EAED"/></Style>
+    <Style Selector="TextBlock.PerformanceOptionDescription"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/><Setter Property="Foreground" Value="#707B85"/><Setter Property="TextWrapping" Value="Wrap"/></Style>
+    <Style Selector="TextBlock.PerformanceHealthLabel"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/><Setter Property="Foreground" Value="#919BA4"/></Style>
+    <Style Selector="TextBlock.PerformanceHealthValue"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#DCE1E5"/></Style>
+    <Style Selector="Button.PerformanceSecondaryButton">
+        <Setter Property="Background" Value="#141B21"/><Setter Property="Foreground" Value="#DDE2E6"/><Setter Property="BorderBrush" Value="#303B44"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="13 7"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/>
+    </Style>
+    <Style Selector="Button.PerformanceSecondaryButton:pointerover"><Setter Property="Background" Value="#1A232B"/><Setter Property="BorderBrush" Value="#43515D"/></Style>
+    <Style Selector="Button.PerformancePrimaryButton">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/><Setter Property="Background" Value="#225FA9"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#3778C4"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="0 10"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+    <Style Selector="Button.PerformancePrimaryButton:pointerover"><Setter Property="Background" Value="#2D6DB8"/><Setter Property="BorderBrush" Value="#5792D4"/></Style>
+    <Style Selector="TextBlock.PerformanceEyebrow"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8.5"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#52D493"/><Setter Property="LetterSpacing" Value="1.5"/></Style>
+    <Style Selector="TextBlock.PerformancePageHeading"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="25"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#F2F5F7"/></Style>
+    <Style Selector="TextBlock.PerformancePageDescription"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10.5"/><Setter Property="Foreground" Value="#77838D"/></Style>
+    <Style Selector="TextBlock.PerformanceHeaderLoad"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8.5"/><Setter Property="Foreground" Value="#65717A"/><Setter Property="HorizontalAlignment" Value="Right"/></Style>
+    <Style Selector="TextBlock.PerformanceMetricContext"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="7"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#53616B"/><Setter Property="LetterSpacing" Value="0.7"/></Style>
+    <Style Selector="TextBlock.PerformanceMetricHint"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8"/><Setter Property="Foreground" Value="#59656F"/><Setter Property="VerticalAlignment" Value="Bottom"/><Setter Property="Margin" Value="0 0 0 4"/></Style>
+    <Style Selector="Border.PerformanceChartSurface"><Setter Property="Background" Value="#080D11"/><Setter Property="BorderBrush" Value="#1E2931"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="ClipToBounds" Value="True"/></Style>
+    <Style Selector="TextBlock.PerformanceAxisLabel"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="6.5"/><Setter Property="Foreground" Value="#46535D"/></Style>
+    <Style Selector="TextBlock.PerformanceChartCaption"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="7"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#53616B"/><Setter Property="LetterSpacing" Value="0.7"/></Style>
+    <Style Selector="TextBlock.PerformanceChartMeta"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="7.5"/><Setter Property="Foreground" Value="#4D5962"/></Style>
+    <Style Selector="TextBlock.PerformanceMemoryBadge"><Setter Property="Background" Value="#10271E"/><Setter Property="Foreground" Value="#68D79B"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Padding" Value="7 4"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+    <Style Selector="Border.PerformanceStepBadge"><Setter Property="Width" Value="18"/><Setter Property="Height" Value="18"/><Setter Property="CornerRadius" Value="9"/><Setter Property="Background" Value="#14291F"/><Setter Property="BorderBrush" Value="#2D6247"/><Setter Property="BorderThickness" Value="1"/></Style>
+    <Style Selector="Border.PerformanceStepBadge TextBlock"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#64D697"/><Setter Property="HorizontalAlignment" Value="Center"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+    <Style Selector="TextBlock.PerformanceStepLabel"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="7.5"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#65727B"/><Setter Property="LetterSpacing" Value="1"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+    <Style Selector="TextBlock.PerformanceSafeLabel"><Setter Property="Background" Value="#101A16"/><Setter Property="Foreground" Value="#6FA48A"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8"/><Setter Property="Padding" Value="8 4"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+    <Style Selector="Border.PerformanceRecommendation"><Setter Property="Background" Value="#0E1519"/><Setter Property="BorderBrush" Value="#233039"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="10"/></Style>
     <Style Selector="Border.ModCard">
         <Setter Property="Background" Value="#111111"/><Setter Property="BorderBrush" Value="#2D2D2D"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/>
     </Style>
@@ -359,6 +774,16 @@
         <Setter Property="Background" Value="#1B6049"/><Setter Property="Foreground" Value="#62F3A7"/>
     </Style>
     <Style Selector="Button.ContentTab.Active:pressed"><Setter Property="Background" Value="#10402F"/></Style>
+    <Style Selector="Border.CatalogSourceSummary">
+        <Setter Property="Background" Value="#0E1713"/><Setter Property="BorderBrush" Value="#244537"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="14"/><Setter Property="Padding" Value="11 6"/><Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="ComboBox.InstanceTargetPicker">
+        <Setter Property="MinHeight" Value="44"/><Setter Property="Background" Value="#11161C"/><Setter Property="Foreground" Value="#E9EDF1"/><Setter Property="BorderBrush" Value="#2B3742"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="12 7"/>
+    </Style>
+    <Style Selector="ComboBox.InstanceTargetPicker:pointerover"><Setter Property="BorderBrush" Value="#496071"/><Setter Property="Background" Value="#141B22"/></Style>
+    <Style Selector="Border.CatalogStoreBadge">
+        <Setter Property="Background" Value="#102219"/><Setter Property="BorderBrush" Value="#28533D"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="Padding" Value="8 3"/>
+    </Style>
     <Style Selector="Border.ContentSearchBox">
         <Setter Property="Height" Value="42"/><Setter Property="Background" Value="#30323A"/><Setter Property="BorderBrush" Value="#3E414A"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="10"/>
     </Style>
@@ -574,5 +999,1585 @@
     </Style>
     <Style Selector="Button.CapeLibraryButton.Selected:pointerover">
         <Setter Property="Background" Value="#123A5D"/><Setter Property="BorderBrush" Value="#2C9BFF"/>
+    </Style>
+
+    <!-- Instance workspace -->
+    <Style Selector="TextBlock.InstanceEyebrow">
+        <Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#45D991"/><Setter Property="LetterSpacing" Value="1.6"/>
+    </Style>
+    <Style Selector="TextBlock.InstancePageHeading">
+        <Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="25"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#F3F6F8"/>
+    </Style>
+    <Style Selector="TextBlock.InstancePageDescription">
+        <Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="11"/><Setter Property="Foreground" Value="#77838D"/>
+    </Style>
+    <Style Selector="Button.InstanceCreatePrimary">
+        <Setter Property="MinHeight" Value="40"/><Setter Property="Background" Value="#24D579"/><Setter Property="Foreground" Value="#07140D"/><Setter Property="BorderBrush" Value="#49E594"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="10"/><Setter Property="Padding" Value="16 8"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Button.InstanceCreatePrimary:pointerover"><Setter Property="Background" Value="#3BE28B"/><Setter Property="BorderBrush" Value="#80F1B2"/></Style>
+    <Style Selector="Button.InstanceCreatePrimary:pressed"><Setter Property="Background" Value="#1FB86A"/></Style>
+    <Style Selector="Border.InstanceHero">
+        <Setter Property="MinHeight" Value="112"/><Setter Property="Padding" Value="17"/><Setter Property="BorderBrush" Value="#26343D"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="14"/>
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#10191D" Offset="0"/><GradientStop Color="#0C1116" Offset="0.58"/><GradientStop Color="#10171A" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+    </Style>
+    <Style Selector="TextBlock.InstanceHeroMonogram"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="17"/><Setter Property="FontWeight" Value="Bold"/><Setter Property="Foreground" Value="White"/><Setter Property="HorizontalAlignment" Value="Center"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+    <Style Selector="TextBlock.InstanceHeroLabel"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#6BD69B"/><Setter Property="LetterSpacing" Value="1.2"/></Style>
+    <Style Selector="TextBlock.InstanceHeroTitle"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="18"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#F4F7F8"/></Style>
+    <Style Selector="TextBlock.InstanceHeroSubtitle"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/><Setter Property="Foreground" Value="#83909A"/></Style>
+    <Style Selector="Border.InstanceHeroMetric"><Setter Property="Width" Value="82"/><Setter Property="MinHeight" Value="70"/><Setter Property="Background" Value="#0AFFFFFF"/><Setter Property="BorderBrush" Value="#12FFFFFF"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="10"/><Setter Property="Padding" Value="12 10"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+    <Style Selector="TextBlock.InstanceMetricLabel"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="7.5"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#697782"/><Setter Property="LetterSpacing" Value="0.8"/></Style>
+    <Style Selector="TextBlock.InstanceMetricValue"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="19"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#E8ECEF"/></Style>
+    <Style Selector="Button.InstanceCategoryTab"><Setter Property="MinHeight" Value="32"/><Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#7F8A94"/><Setter Property="BorderBrush" Value="Transparent"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="13 6"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
+    <Style Selector="Button.InstanceCategoryTab:pointerover"><Setter Property="Background" Value="#11191F"/><Setter Property="Foreground" Value="#C3CBD1"/></Style>
+    <Style Selector="Button.InstanceCategoryTab.Selected"><Setter Property="Background" Value="#13251D"/><Setter Property="Foreground" Value="#52DC94"/><Setter Property="BorderBrush" Value="#28543F"/></Style>
+    <Style Selector="Button.InstanceCategoryTab.Selected:pointerover"><Setter Property="Background" Value="#162B22"/><Setter Property="Foreground" Value="#67E6A5"/></Style>
+    <Style Selector="TextBlock.InstanceStatusText"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/><Setter Property="Foreground" Value="#75818A"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+    <Style Selector="Border.InstanceSearchField"><Setter Property="Height" Value="40"/><Setter Property="Background" Value="#10151A"/><Setter Property="BorderBrush" Value="#273039"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="Padding" Value="12 7"/></Style>
+    <Style Selector="Border.InstanceSearchField:pointerover"><Setter Property="BorderBrush" Value="#3B4954"/></Style>
+    <Style Selector="TextBlock.InstanceSearchGlyph"><Setter Property="Width" Value="20"/><Setter Property="Height" Value="20"/><Setter Property="Background" Value="#192229"/><Setter Property="Foreground" Value="#83909B"/><Setter Property="FontFamily" Value="Segoe MDL2 Assets"/><Setter Property="FontSize" Value="10"/><Setter Property="TextAlignment" Value="Center"/><Setter Property="LineHeight" Value="20"/></Style>
+    <Style Selector="ComboBox.InstanceToolbarCombo"><Setter Property="Height" Value="40"/><Setter Property="Background" Value="#10151A"/><Setter Property="Foreground" Value="#BDC5CB"/><Setter Property="BorderBrush" Value="#273039"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="Padding" Value="10 6"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/></Style>
+    <Style Selector="ComboBox.InstanceToolbarCombo:pointerover"><Setter Property="Background" Value="#131A20"/><Setter Property="BorderBrush" Value="#3B4954"/></Style>
+    <Style Selector="TextBlock.InstanceSectionLabel"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#77838D"/><Setter Property="LetterSpacing" Value="1.2"/></Style>
+    <Style Selector="TextBlock.InstanceResultCount"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/><Setter Property="Foreground" Value="#59656E"/></Style>
+    <Style Selector="Button.InstanceDashboardCard"><Setter Property="Background" Value="#0D1216"/><Setter Property="Foreground" Value="#E9EDF0"/><Setter Property="BorderBrush" Value="#232C33"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="12"/><Setter Property="ClipToBounds" Value="True"/></Style>
+    <Style Selector="Button.InstanceDashboardCard:pointerover"><Setter Property="Background" Value="#11181D"/><Setter Property="BorderBrush" Value="#35434D"/></Style>
+    <Style Selector="Button.InstanceDashboardCard:pressed"><Setter Property="Background" Value="#0B1014"/></Style>
+    <Style Selector="Button.InstanceDashboardCard.Selected"><Setter Property="Background" Value="#101A18"/><Setter Property="BorderBrush" Value="#347254"/><Setter Property="BorderThickness" Value="1"/></Style>
+    <Style Selector="Button.InstanceDashboardCard.Selected:pointerover"><Setter Property="Background" Value="#12201C"/><Setter Property="BorderBrush" Value="#438B68"/></Style>
+    <Style Selector="TextBlock.InstanceCardMonogram"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="Bold"/><Setter Property="Foreground" Value="White"/><Setter Property="HorizontalAlignment" Value="Center"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+    <Style Selector="TextBlock.InstanceDashboardTitle"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="12"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#EDF1F3"/></Style>
+    <Style Selector="TextBlock.InstanceDashboardRuntime"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9.5"/><Setter Property="FontWeight" Value="Medium"/><Setter Property="Foreground" Value="#82CDA5"/></Style>
+    <Style Selector="TextBlock.InstanceDashboardActivity"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8.5"/><Setter Property="Foreground" Value="#626E77"/></Style>
+    <Style Selector="Border.InstanceReadyBadge"><Setter Property="Background" Value="#102219"/><Setter Property="BorderBrush" Value="#244B37"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="6 3"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+    <Style Selector="Border.InstanceReadyBadge TextBlock"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="6.5"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#72D69B"/></Style>
+    <Style Selector="TextBlock.InstanceCardStatLabel"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="7"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#52606A"/><Setter Property="LetterSpacing" Value="0.7"/></Style>
+    <Style Selector="TextBlock.InstanceCardStatValue"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#B9C2C9"/></Style>
+    <Style Selector="TextBlock.InstanceInspectLabel"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8.5"/><Setter Property="Foreground" Value="#6E7A83"/></Style>
+    <Style Selector="TextBlock.InstanceInspectArrow"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/><Setter Property="Foreground" Value="#4AD98E"/></Style>
+    <Style Selector="Border.InstanceEmptyState"><Setter Property="MinHeight" Value="220"/><Setter Property="Background" Value="#080C0F"/><Setter Property="BorderBrush" Value="#20282E"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="12"/><Setter Property="Padding" Value="30"/></Style>
+    <Style Selector="TextBlock.InstanceEmptyTitle"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="12"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#C8D0D5"/></Style>
+    <Style Selector="TextBlock.InstanceEmptyDescription"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/><Setter Property="Foreground" Value="#68747D"/></Style>
+    <Style Selector="Border.InstanceInspectorCard"><Setter Property="Background" Value="#0C1115"/><Setter Property="BorderBrush" Value="#263038"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="13"/><Setter Property="Padding" Value="17"/><Setter Property="VerticalAlignment" Value="Top"/></Style>
+    <Style Selector="Border.InstanceInspectorCard.Create"><Setter Property="BorderBrush" Value="#2C4539"/></Style>
+    <Style Selector="TextBlock.InstanceInspectorHint"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8.5"/><Setter Property="Foreground" Value="#5E6A73"/></Style>
+    <Style Selector="TextBlock.InstanceInspectorTitle"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="12"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#ECF0F2"/></Style>
+    <Style Selector="TextBlock.InstanceInspectorRuntime"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/><Setter Property="Foreground" Value="#7D8992"/></Style>
+    <Style Selector="Button.InstanceLaunchButton"><Setter Property="Height" Value="39"/><Setter Property="HorizontalAlignment" Value="Stretch"/><Setter Property="Background" Value="#1FCB72"/><Setter Property="Foreground" Value="#06130B"/><Setter Property="BorderBrush" Value="#41DF8A"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
+    <Style Selector="Button.InstanceLaunchButton:pointerover"><Setter Property="Background" Value="#35DC84"/><Setter Property="BorderBrush" Value="#75ECAA"/></Style>
+    <Style Selector="Button.InstanceLaunchButton:pressed"><Setter Property="Background" Value="#1AAF62"/></Style>
+    <Style Selector="Border.InstanceInspectorDivider"><Setter Property="Height" Value="1"/><Setter Property="Background" Value="#20282E"/></Style>
+    <Style Selector="TextBlock.InstanceDetailLabel"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/><Setter Property="Foreground" Value="#69757E"/></Style>
+    <Style Selector="TextBlock.InstanceDetailValue"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/><Setter Property="FontWeight" Value="Medium"/><Setter Property="Foreground" Value="#C6CDD2"/></Style>
+    <Style Selector="TextBlock.InstanceDetailValue.Accent"><Setter Property="Foreground" Value="#63D499"/></Style>
+    <Style Selector="Border.InstanceContentMiniCard"><Setter Property="MinHeight" Value="35"/><Setter Property="Background" Value="#10171B"/><Setter Property="BorderBrush" Value="#273139"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="9 7"/></Style>
+    <Style Selector="TextBlock.InstanceContentType"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="7.5"/><Setter Property="Foreground" Value="#7C8992"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+    <Style Selector="TextBlock.InstanceContentCount"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#62D89A"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+    <Style Selector="Button.InstanceSecondaryAction"><Setter Property="MinHeight" Value="34"/><Setter Property="HorizontalAlignment" Value="Stretch"/><Setter Property="Background" Value="#12191E"/><Setter Property="Foreground" Value="#AEB8BF"/><Setter Property="BorderBrush" Value="#2A353D"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="10 6"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/></Style>
+    <Style Selector="Button.InstanceSecondaryAction:pointerover"><Setter Property="Background" Value="#172128"/><Setter Property="BorderBrush" Value="#3B4B56"/><Setter Property="Foreground" Value="#D5DBDF"/></Style>
+    <Style Selector="Button.InstanceDangerAction"><Setter Property="MinHeight" Value="32"/><Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#A97378"/><Setter Property="BorderBrush" Value="#3A292D"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="10 6"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/></Style>
+    <Style Selector="Button.InstanceDangerAction:pointerover"><Setter Property="Background" Value="#241517"/><Setter Property="BorderBrush" Value="#714047"/><Setter Property="Foreground" Value="#E0989E"/></Style>
+    <Style Selector="Button.InstanceDangerAction.Solid"><Setter Property="Background" Value="#8F3741"/><Setter Property="Foreground" Value="#FFF4F5"/><Setter Property="BorderBrush" Value="#B54A57"/></Style>
+    <Style Selector="Border.InstanceDeleteConfirm"><Setter Property="Background" Value="#1A1113"/><Setter Property="BorderBrush" Value="#533038"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="Padding" Value="12"/></Style>
+    <Style Selector="TextBlock.InstanceDeleteTitle"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#E7C6C9"/></Style>
+    <Style Selector="TextBlock.InstanceDeleteDescription"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8.5"/><Setter Property="Foreground" Value="#9A7479"/></Style>
+    <Style Selector="Button.InstanceCloseButton"><Setter Property="Width" Value="28"/><Setter Property="Height" Value="28"/><Setter Property="Padding" Value="0"/><Setter Property="Background" Value="#12191E"/><Setter Property="Foreground" Value="#84909A"/><Setter Property="BorderBrush" Value="#29343C"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="14"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/></Style>
+    <Style Selector="Button.InstanceCloseButton:pointerover"><Setter Property="Background" Value="#1A232A"/><Setter Property="Foreground" Value="#D0D6DA"/></Style>
+    <Style Selector="Border.InstanceCreatePreview"><Setter Property="Background" Value="#101A17"/><Setter Property="BorderBrush" Value="#274737"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="10"/><Setter Property="Padding" Value="12"/></Style>
+    <Style Selector="TextBlock.InstanceFormLabel"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/><Setter Property="FontWeight" Value="Medium"/><Setter Property="Foreground" Value="#8A959E"/></Style>
+    <Style Selector="TextBox.InstanceFormField"><Setter Property="MinHeight" Value="37"/><Setter Property="Background" Value="#10161B"/><Setter Property="Foreground" Value="#E2E7EA"/><Setter Property="BorderBrush" Value="#2B363E"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="10 7"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/></Style>
+    <Style Selector="ComboBox.InstanceFormCombo"><Setter Property="MinHeight" Value="37"/><Setter Property="Background" Value="#10161B"/><Setter Property="Foreground" Value="#E2E7EA"/><Setter Property="BorderBrush" Value="#2B363E"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="10 7"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/></Style>
+    <Style Selector="Border.InstanceCreateNote"><Setter Property="Background" Value="#0E1713"/><Setter Property="BorderBrush" Value="#223C30"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="11"/></Style>
+    <Style Selector="TextBlock.InstanceCreateNoteText"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8.5"/><Setter Property="Foreground" Value="#789485"/><Setter Property="LineHeight" Value="13"/></Style>
+    <!-- Design.md compliant workspace system. Used only outside Home. -->
+    <Style Selector="TextBlock.WorkspacePageTitle"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="28"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#F2F4F5"/><Setter Property="LineHeight" Value="34"/></Style>
+    <Style Selector="TextBlock.WorkspacePageDescription"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="15"/><Setter Property="Foreground" Value="#A1A9B0"/><Setter Property="LineHeight" Value="22"/></Style>
+    <Style Selector="TextBlock.WorkspaceSectionTitle"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="18"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#E9ECEE"/><Setter Property="LineHeight" Value="24"/></Style>
+    <Style Selector="TextBlock.WorkspaceBody"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="15"/><Setter Property="Foreground" Value="#C5CBD0"/><Setter Property="LineHeight" Value="22"/></Style>
+    <Style Selector="TextBlock.WorkspaceSecondary"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="Foreground" Value="#909AA2"/><Setter Property="LineHeight" Value="20"/></Style>
+    <Style Selector="TextBlock.WorkspaceLabel"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="Medium"/><Setter Property="Foreground" Value="#B8C0C6"/></Style>
+    <Style Selector="TextBlock.WorkspaceValue"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#E6E9EB"/></Style>
+    <Style Selector="Border.WorkspaceSection"><Setter Property="Background" Value="#0C1115"/><Setter Property="BorderBrush" Value="#283139"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="22"/></Style>
+    <Style Selector="Border.WorkspaceToolbar"><Setter Property="Background" Value="#0B1014"/><Setter Property="BorderBrush" Value="#283139"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="10"/></Style>
+    <Style Selector="Border.WorkspaceDivider"><Setter Property="Height" Value="1"/><Setter Property="Background" Value="#283139"/></Style>
+    <Style Selector="Button.WorkspacePrimary"><Setter Property="MinHeight" Value="44"/><Setter Property="Background" Value="#3B82F6"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#3B82F6"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="18 10"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
+    <Style Selector="Button.WorkspacePrimary:pointerover"><Setter Property="Background" Value="#4C8DFF"/><Setter Property="BorderBrush" Value="#4C8DFF"/></Style>
+    <Style Selector="Button.WorkspacePrimary:pressed"><Setter Property="Background" Value="#2E6ED8"/><Setter Property="BorderBrush" Value="#2E6ED8"/></Style>
+    <Style Selector="Button.WorkspaceSecondary"><Setter Property="MinHeight" Value="42"/><Setter Property="Background" Value="#12191E"/><Setter Property="Foreground" Value="#D0D5D9"/><Setter Property="BorderBrush" Value="#354049"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="15 9"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="Medium"/></Style>
+    <Style Selector="Button.WorkspaceSecondary:pointerover"><Setter Property="Background" Value="#182129"/><Setter Property="BorderBrush" Value="#4A5863"/><Setter Property="Foreground" Value="#F0F2F3"/></Style>
+    <Style Selector="Button.WorkspaceDanger"><Setter Property="MinHeight" Value="42"/><Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#E2939B"/><Setter Property="BorderBrush" Value="#663840"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="15 9"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="Medium"/></Style>
+    <Style Selector="Button.WorkspaceDanger:pointerover"><Setter Property="Background" Value="#251619"/><Setter Property="BorderBrush" Value="#8D4B56"/></Style>
+    <Style Selector="Button.WorkspaceTab"><Setter Property="MinHeight" Value="40"/><Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#A6AFB6"/><Setter Property="BorderBrush" Value="Transparent"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="6"/><Setter Property="Padding" Value="15 8"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="Medium"/></Style>
+    <Style Selector="Button.WorkspaceTab:pointerover"><Setter Property="Background" Value="#12191E"/><Setter Property="Foreground" Value="#E0E4E6"/></Style>
+    <Style Selector="Button.WorkspaceTab.Active"><Setter Property="Background" Value="#11233B"/><Setter Property="Foreground" Value="#82B5FF"/><Setter Property="BorderBrush" Value="#315F9E"/></Style>
+    <Style Selector="TextBox.WorkspaceField"><Setter Property="MinHeight" Value="44"/><Setter Property="Background" Value="#0F151A"/><Setter Property="Foreground" Value="#E7EAEC"/><Setter Property="BorderBrush" Value="#354049"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="12 9"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/></Style>
+    <Style Selector="ComboBox.WorkspaceField"><Setter Property="MinHeight" Value="44"/><Setter Property="Background" Value="#0F151A"/><Setter Property="Foreground" Value="#E7EAEC"/><Setter Property="BorderBrush" Value="#354049"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="12 8"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/></Style>
+    <Style Selector="ComboBox.InstanceTargetPicker"><Setter Property="MinHeight" Value="48"/><Setter Property="BorderBrush" Value="#3A6EAF"/><Setter Property="Background" Value="#101B2A"/></Style>
+    <Style Selector="ComboBox.InstanceTargetPicker:pointerover"><Setter Property="BorderBrush" Value="#6599DF"/></Style>
+    <Style Selector="ComboBox.OfficialVersionPicker">
+        <Setter Property="MinHeight" Value="48"/>
+        <Setter Property="Background" Value="#09131B"/>
+        <Setter Property="BorderBrush" Value="#365C78"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="10 7"/>
+        <Setter Property="Foreground" Value="#F4F7F9"/>
+    </Style>
+    <Style Selector="ComboBox.OfficialVersionPicker:pointerover">
+        <Setter Property="Background" Value="#0D1B25"/>
+        <Setter Property="BorderBrush" Value="#5597C7"/>
+    </Style>
+    <Style Selector="ComboBox.OfficialVersionPicker:focus">
+        <Setter Property="BorderBrush" Value="#66B7EF"/>
+    </Style>
+    <Style Selector="ComboBox.OfficialVersionPicker:dropdownopen">
+        <Setter Property="Background" Value="#0D2130"/>
+        <Setter Property="BorderBrush" Value="#6ABBF0"/>
+    </Style>
+    <Style Selector="ComboBox.OfficialVersionPicker:dropdownopen /template/ Border#PopupBorder">
+        <Setter Property="Background" Value="#071018"/>
+        <Setter Property="BorderBrush" Value="#376C92"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Padding" Value="5"/>
+        <Setter Property="Margin" Value="0 7 0 0"/>
+        <Setter Property="BoxShadow" Value="0 14 34 0 #B8000000"/>
+    </Style>
+    <Style Selector="NumericUpDown.WorkspaceField"><Setter Property="MinHeight" Value="44"/><Setter Property="Background" Value="#0F151A"/><Setter Property="Foreground" Value="#E7EAEC"/><Setter Property="BorderBrush" Value="#354049"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/></Style>
+    <Style Selector="Button.WorkspaceInstanceCard"><Setter Property="Background" Value="#0D1216"/><Setter Property="Foreground" Value="#E8EBED"/><Setter Property="BorderBrush" Value="#2B343B"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/></Style>
+    <Style Selector="Button.WorkspaceInstanceCard:pointerover"><Setter Property="Background" Value="#11181D"/><Setter Property="BorderBrush" Value="#46525B"/></Style>
+    <Style Selector="Button.WorkspaceInstanceCard.Selected"><Setter Property="Background" Value="#101A29"/><Setter Property="BorderBrush" Value="#3A6EAF"/></Style>
+    <Style Selector="Border.WorkspaceContentCard"><Setter Property="MinHeight" Value="98"/><Setter Property="Background" Value="#0D1318"/><Setter Property="BorderBrush" Value="#293640"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="10"/></Style>
+    <Style Selector="Button.WorkspaceInstallButton"><Setter Property="MinWidth" Value="112"/><Setter Property="MinHeight" Value="42"/><Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#82B5FF"/><Setter Property="BorderBrush" Value="#3A6EAF"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="16 9"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
+    <Style Selector="Button.WorkspaceInstallButton:pointerover"><Setter Property="Background" Value="#11233B"/><Setter Property="BorderBrush" Value="#6599DF"/></Style>
+    <Style Selector="Button.WorkspaceInstallButton.Installed"><Setter Property="Background" Value="#12243C"/><Setter Property="Foreground" Value="#A9CBFF"/><Setter Property="BorderBrush" Value="#315F9E"/></Style>
+    <Style Selector="Border.ReadableMetricCard"><Setter Property="Background" Value="#0C1115"/><Setter Property="BorderBrush" Value="#2B343B"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="20"/></Style>
+    <Style Selector="Border.ReadableMetricCard.Cpu"><Setter Property="BorderBrush" Value="#304451"/></Style>
+    <Style Selector="Border.ReadableMetricCard.Gpu"><Setter Property="BorderBrush" Value="#403A57"/></Style>
+    <Style Selector="Border.ReadableMetricCard.Memory"><Setter Property="BorderBrush" Value="#30483D"/></Style>
+    <Style Selector="TextBlock.ReadableMetricValue"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="32"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#F2F4F5"/></Style>
+    <Style Selector="TextBlock.ReadableMetricValue.Compact"><Setter Property="FontSize" Value="23"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+    <Style Selector="Border.ReadableChartSurface"><Setter Property="Background" Value="#080C0F"/><Setter Property="BorderBrush" Value="#273139"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="6"/><Setter Property="ClipToBounds" Value="True"/></Style>
+    <Style Selector="TextBlock.ReadableAxisLabel"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="12"/><Setter Property="Foreground" Value="#75818A"/></Style>
+    <Style Selector="TextBlock.ReadableChartCaption"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="12"/><Setter Property="Foreground" Value="#7D8992"/></Style>
+    <Style Selector="Button.ReadablePreset"><Setter Property="MinHeight" Value="118"/><Setter Property="HorizontalAlignment" Value="Stretch"/><Setter Property="VerticalAlignment" Value="Stretch"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="VerticalContentAlignment" Value="Center"/><Setter Property="Background" Value="#10161B"/><Setter Property="Foreground" Value="#E8EBED"/><Setter Property="BorderBrush" Value="#303A42"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="16"/></Style>
+    <Style Selector="Button.ReadablePreset:pointerover"><Setter Property="Background" Value="#151D23"/><Setter Property="BorderBrush" Value="#46535D"/></Style>
+    <Style Selector="Button.ReadablePreset.Active"><Setter Property="Background" Value="#101F33"/><Setter Property="BorderBrush" Value="#3A6EAF"/></Style>
+    <Style Selector="TextBlock.ReadablePresetTitle"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="16"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#EDF0F2"/></Style>
+    <Style Selector="Border.ReadableSkinPreview"><Setter Property="Background" Value="#080C0F"/><Setter Property="BorderBrush" Value="#303A42"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="ClipToBounds" Value="True"/></Style>
+    <Style Selector="Button.CosmeticAddCard"><Setter Property="Background" Value="#0D1317"/><Setter Property="Foreground" Value="#E6E9EB"/><Setter Property="BorderBrush" Value="#3A454D"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="HorizontalContentAlignment" Value="Center"/><Setter Property="VerticalContentAlignment" Value="Center"/></Style>
+    <Style Selector="Button.CosmeticAddCard:pointerover"><Setter Property="Background" Value="#131B20"/><Setter Property="BorderBrush" Value="#56636D"/></Style>
+    <Style Selector="Border.CosmeticItemFrame"><Setter Property="Background" Value="#0D1317"/><Setter Property="BorderBrush" Value="#303A42"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="ClipToBounds" Value="True"/></Style>
+    <Style Selector="Border.CosmeticItemFrame.Selected"><Setter Property="BorderBrush" Value="#4C86D5"/><Setter Property="BorderThickness" Value="2"/></Style>
+    <Style Selector="Button.CosmeticSelectSurface"><Setter Property="Background" Value="Transparent"/><Setter Property="BorderBrush" Value="Transparent"/><Setter Property="BorderThickness" Value="0"/><Setter Property="Padding" Value="0"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="VerticalContentAlignment" Value="Stretch"/></Style>
+    <Style Selector="Button.CosmeticSelectSurface:pointerover"><Setter Property="Background" Value="#0BFFFFFF"/></Style>
+    <Style Selector="Button.CosmeticDeleteButton"><Setter Property="Background" Value="#B64653"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#D45A67"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="6"/><Setter Property="Padding" Value="0"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="18"/></Style>
+    <Style Selector="Button.CosmeticDeleteButton:pointerover"><Setter Property="Background" Value="#CB5260"/></Style>
+    <Style Selector="Border.ReadableServerRow"><Setter Property="Background" Value="#10161A"/><Setter Property="BorderBrush" Value="#303A42"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/></Style>
+    <!-- Settings readability overrides -->
+    <Style Selector="Border.SettingsShell"><Setter Property="MaxWidth" Value="1040"/><Setter Property="Background" Value="#171B20"/><Setter Property="BorderBrush" Value="#3A4249"/><Setter Property="CornerRadius" Value="8"/></Style>
+    <Style Selector="TextBlock.SettingsTitle"><Setter Property="FontSize" Value="26"/></Style>
+    <Style Selector="Button.SettingsCloseButton"><Setter Property="Width" Value="38"/><Setter Property="Height" Value="38"/><Setter Property="CornerRadius" Value="6"/><Setter Property="Background" Value="#22282D"/><Setter Property="BorderBrush" Value="#3A434A"/></Style>
+    <Style Selector="TextBlock.SettingsGroupLabel"><Setter Property="FontSize" Value="14"/><Setter Property="Foreground" Value="#9DA6AD"/><Setter Property="Margin" Value="14 0 0 7"/></Style>
+    <Style Selector="Button.SettingsNavButton"><Setter Property="Height" Value="44"/><Setter Property="CornerRadius" Value="6"/><Setter Property="Padding" Value="14 0"/><Setter Property="FontSize" Value="15"/><Setter Property="FontWeight" Value="Medium"/></Style>
+    <Style Selector="Button.SettingsNavButton.Active"><Setter Property="Background" Value="#142944"/><Setter Property="Foreground" Value="#82B5FF"/></Style>
+    <Style Selector="TextBlock.SettingsPageHeading"><Setter Property="FontSize" Value="24"/></Style>
+    <Style Selector="TextBlock.SettingsSectionTitle"><Setter Property="FontSize" Value="16"/><Setter Property="LineHeight" Value="22"/></Style>
+    <Style Selector="TextBlock.SettingsDescription"><Setter Property="FontSize" Value="14"/><Setter Property="Foreground" Value="#A4ADB4"/><Setter Property="LineHeight" Value="20"/></Style>
+    <Style Selector="Border.SettingsContentCard"><Setter Property="Background" Value="#0E1418"/><Setter Property="BorderBrush" Value="#303A42"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="22"/></Style>
+
+    <!-- Player-focused launcher polish -->
+    <Style Selector="Button.SidebarButton">
+        <Setter Property="Background" Value="#10161C"/>
+        <Setter Property="BorderBrush" Value="#1C2832"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Padding="{TemplateBinding Padding}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="Button.SidebarButton:pointerover">
+        <Setter Property="Background" Value="#17314A"/>
+        <Setter Property="BorderBrush" Value="#3978AD"/>
+    </Style>
+    <Style Selector="Button.SidebarButton.Active">
+        <Setter Property="Background" Value="#1E58A5"/>
+        <Setter Property="BorderBrush" Value="#4B88D4"/>
+    </Style>
+    <Style Selector="Button.SidebarButton.Active:pointerover">
+        <Setter Property="Background" Value="#2867B8"/>
+        <Setter Property="BorderBrush" Value="#70A9EC"/>
+    </Style>
+    <Style Selector="Border.ProfileCard">
+        <Setter Property="Background" Value="#080D12"/>
+        <Setter Property="BorderBrush" Value="#1F5277"/>
+    </Style>
+    <Style Selector="Border.ProfileCard:pointerover">
+        <Setter Property="Background" Value="#0B131A"/>
+        <Setter Property="BorderBrush" Value="#347FB3"/>
+    </Style>
+    <Style Selector="Border.SocialIconHover">
+        <Setter Property="Width" Value="28"/>
+        <Setter Property="Height" Value="28"/>
+        <Setter Property="Padding" Value="2"/>
+    </Style>
+    <Style Selector="Border.SocialIconHover:pointerover">
+        <Setter Property="Background" Value="#173B58"/>
+    </Style>
+    <Style Selector="Button.QuickButton:pointerover">
+        <Setter Property="Background" Value="#173B58"/>
+        <Setter Property="BorderBrush" Value="#3F86BB"/>
+    </Style>
+
+    <Style Selector="TextBlock.WorkspacePageTitle">
+        <Setter Property="FontSize" Value="27"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="#F4F7F9"/>
+    </Style>
+    <Style Selector="TextBlock.WorkspacePageDescription">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="#94A4B0"/>
+    </Style>
+    <Style Selector="Border.WorkspaceSection">
+        <Setter Property="Background" Value="#090F14"/>
+        <Setter Property="BorderBrush" Value="#253642"/>
+        <Setter Property="CornerRadius" Value="10"/>
+    </Style>
+    <Style Selector="Border.WorkspaceToolbar">
+        <Setter Property="Background" Value="#091016"/>
+        <Setter Property="BorderBrush" Value="#273A48"/>
+        <Setter Property="CornerRadius" Value="9"/>
+    </Style>
+    <Style Selector="Button.WorkspacePrimary">
+        <Setter Property="Background" Value="#2764B4"/>
+        <Setter Property="BorderBrush" Value="#3B7BCB"/>
+        <Setter Property="CornerRadius" Value="8"/>
+    </Style>
+    <Style Selector="Button.WorkspacePrimary:pointerover">
+        <Setter Property="Background" Value="#3277CA"/>
+        <Setter Property="BorderBrush" Value="#76B0F1"/>
+    </Style>
+    <Style Selector="Button.WorkspaceSecondary:pointerover">
+        <Setter Property="Background" Value="#182A37"/>
+        <Setter Property="BorderBrush" Value="#4E748E"/>
+    </Style>
+    <Style Selector="Button.WorkspaceTab.Active">
+        <Setter Property="Background" Value="#15365A"/>
+        <Setter Property="Foreground" Value="#A6CEFF"/>
+        <Setter Property="BorderBrush" Value="#3978B7"/>
+    </Style>
+    <Style Selector="TextBox.WorkspaceField">
+        <Setter Property="Background" Value="#0B1218"/>
+        <Setter Property="BorderBrush" Value="#2D4353"/>
+        <Setter Property="CornerRadius" Value="8"/>
+    </Style>
+    <Style Selector="ComboBox.WorkspaceField">
+        <Setter Property="Background" Value="#0B1218"/>
+        <Setter Property="BorderBrush" Value="#2D4353"/>
+        <Setter Property="CornerRadius" Value="8"/>
+    </Style>
+    <Style Selector="NumericUpDown.WorkspaceField">
+        <Setter Property="Background" Value="#0B1218"/>
+        <Setter Property="BorderBrush" Value="#2D4353"/>
+        <Setter Property="CornerRadius" Value="8"/>
+    </Style>
+
+    <Style Selector="Border.WorkspaceHeaderStat">
+        <Setter Property="MinWidth" Value="82"/>
+        <Setter Property="Height" Value="48"/>
+        <Setter Property="Background" Value="#0B131A"/>
+        <Setter Property="BorderBrush" Value="#294052"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="12 6"/>
+    </Style>
+    <Style Selector="TextBlock.WorkspaceStatLabel">
+        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontSize" Value="9.5"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="#708695"/>
+    </Style>
+    <Style Selector="TextBlock.WorkspaceStatValue">
+        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontSize" Value="17"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="#F3F6F8"/>
+    </Style>
+    <Style Selector="TextBlock.WorkspaceBadgeText">
+        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontSize" Value="9.5"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="#9CDDBD"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Border.WorkspaceReadyBadge">
+        <Setter Property="Background" Value="#132B23"/>
+        <Setter Property="BorderBrush" Value="#275A45"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="8 4"/>
+    </Style>
+    <Style Selector="Border.WorkspaceReadyBadge.Default">
+        <Setter Property="Background" Value="#102845"/>
+        <Setter Property="BorderBrush" Value="#397CC1"/>
+    </Style>
+    <Style Selector="Border.WorkspaceReadyBadge.Default TextBlock.WorkspaceBadgeText">
+        <Setter Property="Foreground" Value="#8FC5FF"/>
+    </Style>
+    <Style Selector="Button.WorkspaceInlineButton">
+        <Setter Property="MinWidth" Value="58"/>
+        <Setter Property="MinHeight" Value="26"/>
+        <Setter Property="Padding" Value="9 4"/>
+        <Setter Property="Background" Value="#102238"/>
+        <Setter Property="Foreground" Value="#8FC5FF"/>
+        <Setter Property="BorderBrush" Value="#315F9E"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+    <Style Selector="Button.WorkspaceInlineButton:pointerover">
+        <Setter Property="Background" Value="#173A61"/>
+        <Setter Property="BorderBrush" Value="#68A7E8"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="Button.WorkspaceInstanceCard">
+        <Setter Property="Background" Value="#0A1116"/>
+        <Setter Property="BorderBrush" Value="#263946"/>
+        <Setter Property="CornerRadius" Value="10"/>
+    </Style>
+    <Style Selector="Button.WorkspaceInstanceCard:pointerover">
+        <Setter Property="Background" Value="#0E1921"/>
+        <Setter Property="BorderBrush" Value="#477794"/>
+    </Style>
+    <Style Selector="Button.WorkspaceInstanceCard.Selected">
+        <Setter Property="Background" Value="#0E1D2B"/>
+        <Setter Property="BorderBrush" Value="#3E86D5"/>
+        <Setter Property="BorderThickness" Value="1.5"/>
+    </Style>
+    <Style Selector="Button.WorkspacePrimary.WorkspaceLaunchButton">
+        <Setter Property="MinHeight" Value="48"/>
+        <Setter Property="FontSize" Value="15"/>
+    </Style>
+
+    <Style Selector="ComboBox.WorkspaceSortField">
+        <Setter Property="MinHeight" Value="42"/>
+        <Setter Property="Background" Value="#0D171F"/>
+        <Setter Property="BorderBrush" Value="#31506A"/>
+    </Style>
+    <Style Selector="Border.WorkspaceContentCard">
+        <Setter Property="MinHeight" Value="122"/>
+        <Setter Property="Background" Value="#0A1116"/>
+        <Setter Property="BorderBrush" Value="#263946"/>
+        <Setter Property="CornerRadius" Value="11"/>
+    </Style>
+    <Style Selector="Border.WorkspaceContentCard:pointerover">
+        <Setter Property="Background" Value="#0D171E"/>
+        <Setter Property="BorderBrush" Value="#3A6078"/>
+    </Style>
+    <Style Selector="Border.WorkspaceTagSurface">
+        <Setter Property="Background" Value="#101A21"/>
+        <Setter Property="BorderBrush" Value="#293B47"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="8 3"/>
+    </Style>
+    <Style Selector="Border.ServerMetaPill">
+        <Setter Property="Background" Value="#101A21"/>
+        <Setter Property="BorderBrush" Value="#293B47"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="8 3"/>
+    </Style>
+    <Style Selector="TextBlock.WorkspaceTagText">
+        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="Foreground" Value="#9CACB7"/>
+    </Style>
+    <Style Selector="Button.WorkspaceInstallButton">
+        <Setter Property="MinHeight" Value="40"/>
+        <Setter Property="Background" Value="#102642"/>
+        <Setter Property="Foreground" Value="#A8D0FF"/>
+        <Setter Property="BorderBrush" Value="#3A76B7"/>
+    </Style>
+    <Style Selector="Button.WorkspaceInstallButton:pointerover">
+        <Setter Property="Background" Value="#194276"/>
+        <Setter Property="BorderBrush" Value="#6AA5E8"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <Style Selector="Border.ServerOverviewCard">
+        <Setter Property="MinHeight" Value="72"/>
+        <Setter Property="Background" Value="#090F14"/>
+        <Setter Property="BorderBrush" Value="#253642"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="14"/>
+    </Style>
+    <Style Selector="Border.ServerSafetyBadge">
+        <Setter Property="Background" Value="#0D211B"/>
+        <Setter Property="BorderBrush" Value="#275746"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="14"/>
+        <Setter Property="Padding" Value="12 7"/>
+    </Style>
+    <Style Selector="Border.ReadableServerRow">
+        <Setter Property="Background" Value="#0A1116"/>
+        <Setter Property="BorderBrush" Value="#263946"/>
+        <Setter Property="CornerRadius" Value="10"/>
+    </Style>
+    <Style Selector="Border.ReadableServerRow:pointerover">
+        <Setter Property="Background" Value="#0E1921"/>
+        <Setter Property="BorderBrush" Value="#406A84"/>
+    </Style>
+    <Style Selector="Border.ServerStatusPill">
+        <Setter Property="Background" Value="#2A2115"/>
+        <Setter Property="BorderBrush" Value="#59462A"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="8 3"/>
+    </Style>
+    <Style Selector="Button.ServerActionButton">
+        <Setter Property="MinWidth" Value="106"/>
+        <Setter Property="Height" Value="38"/>
+        <Setter Property="Background" Value="#122237"/>
+        <Setter Property="Foreground" Value="#9BC6FA"/>
+        <Setter Property="BorderBrush" Value="#315D8D"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="7"/>
+        <Setter Property="Padding" Value="13 7"/>
+        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+    <Style Selector="Button.ServerActionButton:pointerover">
+        <Setter Property="Background" Value="#1A4777"/>
+        <Setter Property="BorderBrush" Value="#6AA5E8"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="Button.RelayToggleButton.Stop">
+        <Setter Property="Background" Value="#6D2630"/>
+        <Setter Property="BorderBrush" Value="#A94552"/>
+        <Setter Property="Foreground" Value="#FFFFFF"/>
+    </Style>
+    <Style Selector="Button.RelayToggleButton.Stop:pointerover">
+        <Setter Property="Background" Value="#8B303D"/>
+        <Setter Property="BorderBrush" Value="#E06A78"/>
+    </Style>
+    <Style Selector="Border.ServerHintCard">
+        <Setter Property="Background" Value="#0D1822"/>
+        <Setter Property="BorderBrush" Value="#28435A"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="12"/>
+    </Style>
+    <Style Selector="Border.WorkspaceSection.ServerCreatorPanel">
+        <Setter Property="BorderBrush" Value="#31516B"/>
+    </Style>
+    <Style Selector="Border.ServerActivityStrip">
+        <Setter Property="MinHeight" Value="38"/>
+        <Setter Property="Background" Value="#09131B"/>
+        <Setter Property="BorderBrush" Value="#243A49"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="13 8"/>
+    </Style>
+    <Style Selector="Button.ServerListCard">
+        <Setter Property="MinHeight" Value="112"/>
+        <Setter Property="Background" Value="#0A1116"/>
+        <Setter Property="Foreground" Value="#F2F5F7"/>
+        <Setter Property="BorderBrush" Value="#263946"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="16"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+    </Style>
+    <Style Selector="Button.ServerListCard:pointerover">
+        <Setter Property="Background" Value="#0E1921"/>
+        <Setter Property="BorderBrush" Value="#406A84"/>
+    </Style>
+    <Style Selector="Button.ServerListCard.Selected">
+        <Setter Property="Background" Value="#0D1D2A"/>
+        <Setter Property="BorderBrush" Value="#3E86D5"/>
+        <Setter Property="BorderThickness" Value="1.5"/>
+    </Style>
+    <Style Selector="Button.ServerListCard.Selected:pointerover">
+        <Setter Property="Background" Value="#11263A"/>
+        <Setter Property="BorderBrush" Value="#64A4EA"/>
+    </Style>
+    <Style Selector="Border.ServerStatusPill.Running">
+        <Setter Property="Background" Value="#102E22"/>
+        <Setter Property="BorderBrush" Value="#286447"/>
+    </Style>
+    <Style Selector="Border.ServerStatusPill.Running TextBlock">
+        <Setter Property="Foreground" Value="#71E4AA"/>
+    </Style>
+    <Style Selector="Border.ServerStatusPill.Running Border">
+        <Setter Property="Background" Value="#55D99A"/>
+    </Style>
+    <Style Selector="Border.ServerStatusPill.SetupRequired">
+        <Setter Property="Background" Value="#2B2013"/>
+        <Setter Property="BorderBrush" Value="#634A28"/>
+    </Style>
+    <Style Selector="Border.ServerStatusPill.SetupRequired TextBlock">
+        <Setter Property="Foreground" Value="#EDC47E"/>
+    </Style>
+    <Style Selector="Border.ServerSetupNotice">
+        <Setter Property="Background" Value="#1C160D"/>
+        <Setter Property="BorderBrush" Value="#5A4324"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="13"/>
+    </Style>
+    <Style Selector="Button.ServerPowerButton">
+        <Setter Property="MinHeight" Value="44"/>
+        <Setter Property="Background" Value="#17623E"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="#2C8A5B"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="16 9"/>
+        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+    <Style Selector="Button.ServerPowerButton:pointerover">
+        <Setter Property="Background" Value="#207B4E"/>
+        <Setter Property="BorderBrush" Value="#63D499"/>
+    </Style>
+    <Style Selector="Button.ServerPowerButton.Stop">
+        <Setter Property="Background" Value="#6D2630"/>
+        <Setter Property="BorderBrush" Value="#A94552"/>
+    </Style>
+    <Style Selector="Button.ServerPowerButton.Stop:pointerover">
+        <Setter Property="Background" Value="#8B303D"/>
+        <Setter Property="BorderBrush" Value="#E06A78"/>
+    </Style>
+    <Style Selector="Border.ServerConsoleSurface">
+        <Setter Property="Background" Value="#05090C"/>
+        <Setter Property="BorderBrush" Value="#263A47"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="12"/>
+    </Style>
+    <Style Selector="TextBlock.ServerConsoleText">
+        <Setter Property="FontFamily" Value="Consolas"/>
+        <Setter Property="FontSize" Value="11.5"/>
+        <Setter Property="Foreground" Value="#8FB7CD"/>
+        <Setter Property="LineHeight" Value="18"/>
+    </Style>
+    <Style Selector="Border.ServerNetworkCard">
+        <Setter Property="Background" Value="#081118"/>
+        <Setter Property="BorderBrush" Value="#284355"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="9"/>
+        <Setter Property="Padding" Value="14"/>
+    </Style>
+    <Style Selector="Border.ServerJoinAddressCard">
+        <Setter Property="Background" Value="#0B1920"/>
+        <Setter Property="BorderBrush" Value="#24503F"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="12"/>
+    </Style>
+    <Style Selector="TextBlock.ServerJoinAddress">
+        <Setter Property="FontFamily" Value="Consolas"/>
+        <Setter Property="FontSize" Value="17"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="#DDF8FF"/>
+    </Style>
+    <Style Selector="TextBox.ServerConsoleInput">
+        <Setter Property="FontFamily" Value="Consolas"/>
+        <Setter Property="FontSize" Value="12"/>
+    </Style>
+    <Style Selector="ListBox.ContentCatalogList">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+    </Style>
+    <Style Selector="ListBox.ContentCatalogList > ListBoxItem">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+    </Style>
+    <Style Selector="ListBox.ContentCatalogList > ListBoxItem:pointerover">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+    </Style>
+    <Style Selector="ListBox.ContentCatalogList > ListBoxItem:selected">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+    </Style>
+    <Style Selector="ListBox.ContentCatalogList > ListBoxItem:focus">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+    </Style>
+
+    <!-- Modern classic glass system: final visual overrides -->
+    <Style Selector="Button.SidebarButton">
+        <Setter Property="Background" Value="{DynamicResource SidebarButtonBrush}"/>
+        <Setter Property="BorderBrush" Value="#2B3E4E"/>
+    </Style>
+    <Style Selector="Button.SidebarButton:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SidebarButtonHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="#70C9F8"/>
+    </Style>
+    <Style Selector="Button.SidebarButton.Active">
+        <Setter Property="Background" Value="{DynamicResource BrandGradientBrush}"/>
+        <Setter Property="BorderBrush" Value="#64B4F2"/>
+    </Style>
+    <Style Selector="Button.SidebarButton.Active:pointerover">
+        <Setter Property="Background" Value="{DynamicResource BrandGradientHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="#9ADFFF"/>
+    </Style>
+    <Style Selector="Border.ProfileCard">
+        <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>
+        <Setter Property="BorderBrush" Value="#315675"/>
+    </Style>
+    <Style Selector="Border.ProfileCard:pointerover">
+        <Setter Property="Background" Value="{DynamicResource PanelHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="#5798C6"/>
+    </Style>
+    <Style Selector="Border.SocialIconHover:pointerover">
+        <Setter Property="Background" Value="#65215173"/>
+    </Style>
+    <Style Selector="Button.AddAccountButton">
+        <Setter Property="Background" Value="{DynamicResource GlassInsetBrush}"/>
+        <Setter Property="BorderBrush" Value="#344B5D"/>
+    </Style>
+    <Style Selector="Button.AddAccountButton:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SidebarButtonHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="#69B9EC"/>
+    </Style>
+    <Style Selector="Button.QuickButton:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SidebarButtonHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="#78CDFB"/>
+    </Style>
+
+    <Style Selector="Border.SettingsShell">
+        <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>
+        <Setter Property="BorderBrush" Value="#405B70"/>
+        <Setter Property="CornerRadius" Value="12"/>
+    </Style>
+    <Style Selector="Button.SettingsCloseButton">
+        <Setter Property="Background" Value="{DynamicResource GlassInsetBrush}"/>
+        <Setter Property="BorderBrush" Value="#3A5264"/>
+    </Style>
+    <Style Selector="Button.SettingsCloseButton:pointerover">
+        <Setter Property="Background" Value="#73305F83"/>
+        <Setter Property="BorderBrush" Value="#65B7EA"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="Button.SettingsNavButton:pointerover">
+        <Setter Property="Background" Value="#8F172633"/>
+        <Setter Property="Foreground" Value="#F4FAFF"/>
+    </Style>
+    <Style Selector="Button.SettingsNavButton.Active">
+        <Setter Property="Background" Value="{DynamicResource BrandGradientBrush}"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="Button.SettingsNavButton.Active:pointerover">
+        <Setter Property="Background" Value="{DynamicResource BrandGradientHoverBrush}"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="Border.ThemeChoiceCard">
+        <Setter Property="Background" Value="{DynamicResource GlassInsetBrush}"/>
+        <Setter Property="BorderBrush" Value="#354A5B"/>
+    </Style>
+    <Style Selector="Border.ThemeChoiceCard.Selected">
+        <Setter Property="BorderBrush" Value="#5EA8EA"/>
+    </Style>
+    <Style Selector="Border.SettingsContentCard">
+        <Setter Property="Background" Value="{DynamicResource GlassInsetBrush}"/>
+        <Setter Property="BorderBrush" Value="#334858"/>
+        <Setter Property="CornerRadius" Value="9"/>
+    </Style>
+
+    <Style Selector="Border.InstanceCard">
+        <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>
+        <Setter Property="BorderBrush" Value="#314653"/>
+    </Style>
+    <Style Selector="Border.InstanceCard:pointerover">
+        <Setter Property="Background" Value="{DynamicResource PanelHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="#4A8BB9"/>
+    </Style>
+    <Style Selector="Button.CreateInstanceButton">
+        <Setter Property="Background" Value="{DynamicResource BrandGradientBrush}"/>
+        <Setter Property="BorderBrush" Value="#61A9E8"/>
+    </Style>
+    <Style Selector="Button.CreateInstanceButton:pointerover">
+        <Setter Property="Background" Value="{DynamicResource BrandGradientHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="#9DDFFF"/>
+    </Style>
+    <Style Selector="Button.InstancePlayButton">
+        <Setter Property="Background" Value="{DynamicResource BrandGradientBrush}"/>
+        <Setter Property="BorderBrush" Value="#61A9E8"/>
+    </Style>
+    <Style Selector="Button.InstancePlayButton:pointerover">
+        <Setter Property="Background" Value="{DynamicResource BrandGradientHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="#9DDFFF"/>
+    </Style>
+
+    <Style Selector="Border.ModCard">
+        <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>
+        <Setter Property="BorderBrush" Value="#304451"/>
+    </Style>
+    <Style Selector="Border.ModCard:pointerover">
+        <Setter Property="Background" Value="{DynamicResource PanelHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="#4A8BB9"/>
+    </Style>
+    <Style Selector="Button.ContentTab">
+        <Setter Property="Background" Value="{DynamicResource GlassInsetBrush}"/>
+        <Setter Property="BorderBrush" Value="#354A5A"/>
+    </Style>
+    <Style Selector="Button.ContentTab:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SidebarButtonHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="#78C9F5"/>
+    </Style>
+    <Style Selector="Button.ContentTab.Active">
+        <Setter Property="Background" Value="{DynamicResource BrandGradientBrush}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="#65B6EF"/>
+    </Style>
+    <Style Selector="Button.ContentTab.Active:pointerover">
+        <Setter Property="Background" Value="{DynamicResource BrandGradientHoverBrush}"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="Border.ContentSearchBox">
+        <Setter Property="Background" Value="{DynamicResource GlassInsetBrush}"/>
+        <Setter Property="BorderBrush" Value="#3A5060"/>
+    </Style>
+    <Style Selector="Button.ContentFilterButton">
+        <Setter Property="Background" Value="{DynamicResource GlassInsetBrush}"/>
+        <Setter Property="BorderBrush" Value="#3A5060"/>
+    </Style>
+    <Style Selector="Button.ContentFilterButton:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SidebarButtonHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="#78C9F5"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="TextBlock.ContentPageActive">
+        <Setter Property="Background" Value="#1E58A5"/>
+        <Setter Property="Foreground" Value="#DFF7FF"/>
+    </Style>
+    <Style Selector="Border.ContentResultCard">
+        <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>
+        <Setter Property="BorderBrush" Value="#334958"/>
+    </Style>
+    <Style Selector="Border.ContentResultCard:pointerover">
+        <Setter Property="Background" Value="{DynamicResource PanelHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="#4D8DBB"/>
+    </Style>
+    <Style Selector="Button.ContentInstallButton">
+        <Setter Property="Foreground" Value="#75CFFF"/>
+        <Setter Property="BorderBrush" Value="#3B91D0"/>
+    </Style>
+    <Style Selector="Button.ContentInstallButton:pointerover">
+        <Setter Property="Background" Value="#7330648B"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="#91DAFF"/>
+    </Style>
+
+    <Style Selector="Border.WorkspaceSection">
+        <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>
+        <Setter Property="BorderBrush" Value="#324858"/>
+        <Setter Property="CornerRadius" Value="11"/>
+    </Style>
+    <Style Selector="Border.WorkspaceToolbar">
+        <Setter Property="Background" Value="{DynamicResource GlassInsetBrush}"/>
+        <Setter Property="BorderBrush" Value="#344B5B"/>
+    </Style>
+    <Style Selector="Border.WorkspaceHeaderStat">
+        <Setter Property="Background" Value="{DynamicResource GlassInsetBrush}"/>
+        <Setter Property="BorderBrush" Value="#385166"/>
+    </Style>
+    <Style Selector="Button.WorkspacePrimary">
+        <Setter Property="Background" Value="{DynamicResource BrandGradientBrush}"/>
+        <Setter Property="BorderBrush" Value="#61A9E8"/>
+    </Style>
+    <Style Selector="Button.WorkspacePrimary:pointerover">
+        <Setter Property="Background" Value="{DynamicResource BrandGradientHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="#9DDFFF"/>
+    </Style>
+    <Style Selector="Button.WorkspaceTab.Active">
+        <Setter Property="Background" Value="#A31B4D79"/>
+        <Setter Property="Foreground" Value="#BEE7FF"/>
+        <Setter Property="BorderBrush" Value="#4D8FC5"/>
+    </Style>
+    <Style Selector="TextBox.WorkspaceField">
+        <Setter Property="Background" Value="{DynamicResource GlassInsetBrush}"/>
+        <Setter Property="BorderBrush" Value="#344B5B"/>
+    </Style>
+    <Style Selector="ComboBox.WorkspaceField">
+        <Setter Property="Background" Value="{DynamicResource GlassInsetBrush}"/>
+        <Setter Property="BorderBrush" Value="#344B5B"/>
+    </Style>
+    <Style Selector="NumericUpDown.WorkspaceField">
+        <Setter Property="Background" Value="{DynamicResource GlassInsetBrush}"/>
+        <Setter Property="BorderBrush" Value="#344B5B"/>
+    </Style>
+    <Style Selector="Button.WorkspaceInstanceCard">
+        <Setter Property="Background" Value="{DynamicResource GlassInsetBrush}"/>
+        <Setter Property="BorderBrush" Value="#314858"/>
+    </Style>
+    <Style Selector="Button.WorkspaceInstanceCard:pointerover">
+        <Setter Property="Background" Value="{DynamicResource PanelHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="#518CB4"/>
+    </Style>
+    <Style Selector="Button.WorkspaceInstanceCard.Selected">
+        <Setter Property="Background" Value="#A3122B42"/>
+        <Setter Property="BorderBrush" Value="#52A5E8"/>
+    </Style>
+    <Style Selector="Border.WorkspaceContentCard">
+        <Setter Property="Background" Value="#090F14"/>
+        <Setter Property="BorderBrush" Value="#293F4E"/>
+        <Setter Property="BoxShadow" Value="0 5 16 0 #38000000"/>
+    </Style>
+    <Style Selector="Border.WorkspaceContentCard:pointerover">
+        <Setter Property="Background" Value="#090F14"/>
+        <Setter Property="BorderBrush" Value="#4A91BE"/>
+        <Setter Property="BoxShadow" Value="0 7 20 0 #332A78A8"/>
+    </Style>
+    <Style Selector="Button.WorkspaceInstallButton">
+        <Setter Property="MinHeight" Value="42"/>
+        <Setter Property="Background" Value="{DynamicResource BrandGradientBrush}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="#5EA9E5"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="9"/>
+        <Setter Property="Padding" Value="12 7"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Button.WorkspaceInstallButton:pointerover">
+        <Setter Property="Background" Value="{DynamicResource BrandGradientHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="#9DDFFF"/>
+    </Style>
+    <Style Selector="Button.WorkspaceInstallButton:pressed">
+        <Setter Property="Background" Value="#174A83"/>
+        <Setter Property="BorderBrush" Value="#73BDF0"/>
+    </Style>
+    <Style Selector="Button.WorkspaceInstallButton:disabled">
+        <Setter Property="Opacity" Value="1"/>
+    </Style>
+    <Style Selector="Button.WorkspaceInstallButton.Installing">
+        <Setter Property="Background" Value="#132B3E"/>
+        <Setter Property="Foreground" Value="#9BD9FF"/>
+        <Setter Property="BorderBrush" Value="#3D789F"/>
+    </Style>
+    <Style Selector="Button.WorkspaceInstallButton.Installed">
+        <Setter Property="Background" Value="#10251F"/>
+        <Setter Property="Foreground" Value="#7CE0B3"/>
+        <Setter Property="BorderBrush" Value="#2E7158"/>
+    </Style>
+
+    <Style Selector="Border.ServerOverviewCard">
+        <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>
+        <Setter Property="BorderBrush" Value="#324858"/>
+    </Style>
+    <Style Selector="Border.ReadableServerRow">
+        <Setter Property="Background" Value="{DynamicResource GlassInsetBrush}"/>
+        <Setter Property="BorderBrush" Value="#314858"/>
+    </Style>
+    <Style Selector="Border.ReadableServerRow:pointerover">
+        <Setter Property="Background" Value="{DynamicResource PanelHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="#4C86AA"/>
+    </Style>
+    <Style Selector="Button.ServerListCard">
+        <Setter Property="Background" Value="{DynamicResource GlassInsetBrush}"/>
+        <Setter Property="BorderBrush" Value="#314858"/>
+    </Style>
+    <Style Selector="Button.ServerListCard:pointerover">
+        <Setter Property="Background" Value="{DynamicResource PanelHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="#4C86AA"/>
+    </Style>
+    <Style Selector="Border.ServerConsoleSurface">
+        <Setter Property="Background" Value="#E904090D"/>
+        <Setter Property="BorderBrush" Value="#304A5D"/>
+    </Style>
+    <Style Selector="Border.ServerNetworkCard">
+        <Setter Property="Background" Value="{DynamicResource GlassInsetBrush}"/>
+        <Setter Property="BorderBrush" Value="#335064"/>
+    </Style>
+
+    <!-- Premium coherence pass. Layout and Customize page styles intentionally unchanged. -->
+    <Style Selector="Button.SidebarButton">
+        <Setter Property="Background" Value="#0C141B"/>
+        <Setter Property="Foreground" Value="#F4F8FB"/>
+        <Setter Property="BorderBrush" Value="#223643"/>
+    </Style>
+    <Style Selector="Button.SidebarButton:pointerover">
+        <Setter Property="Background" Value="#102433"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="#3D769D"/>
+    </Style>
+    <Style Selector="Button.SidebarButton:pressed">
+        <Setter Property="Background" Value="#0B1B27"/>
+        <Setter Property="BorderBrush" Value="#2F6385"/>
+    </Style>
+    <Style Selector="Button.SidebarButton.Active">
+        <Setter Property="Background" Value="{DynamicResource BrandGradientBrush}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="#5CA9E6"/>
+    </Style>
+    <Style Selector="Button.SidebarButton.Active:pointerover">
+        <Setter Property="Background" Value="{DynamicResource BrandGradientHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="#8FD6FF"/>
+    </Style>
+
+    <Style Selector="Border.ProfileCard">
+        <Setter Property="Background" Value="#081219"/>
+        <Setter Property="BorderBrush" Value="#27485D"/>
+    </Style>
+    <Style Selector="Border.ProfileCard:pointerover">
+        <Setter Property="Background" Value="#0A1822"/>
+        <Setter Property="BorderBrush" Value="#3D779A"/>
+    </Style>
+    <Style Selector="Border.SocialIconHover:pointerover">
+        <Setter Property="Background" Value="#17364B"/>
+    </Style>
+
+    <Style Selector="Border.HeroCard">
+        <Setter Property="Background" Value="#081219"/>
+        <Setter Property="BorderBrush" Value="#315F7F"/>
+    </Style>
+    <Style Selector="Border.PanelCard">
+        <Setter Property="Background" Value="#081119"/>
+        <Setter Property="BorderBrush" Value="#273C4A"/>
+    </Style>
+    <Style Selector="Border.CurrentInstanceCard">
+        <Setter Property="BorderBrush" Value="#31566E"/>
+    </Style>
+    <Style Selector="Border.MetricCard">
+        <Setter Property="Background" Value="#091218"/>
+        <Setter Property="BorderBrush" Value="#243945"/>
+    </Style>
+    <Style Selector="Border.Tag">
+        <Setter Property="Background" Value="#101B24"/>
+        <Setter Property="BorderBrush" Value="#2A4353"/>
+    </Style>
+    <Style Selector="Button.QuickButton">
+        <Setter Property="Background" Value="#0B151C"/>
+        <Setter Property="BorderBrush" Value="#263B48"/>
+    </Style>
+    <Style Selector="Button.QuickButton:pointerover">
+        <Setter Property="Background" Value="#102638"/>
+        <Setter Property="BorderBrush" Value="#4382AC"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="Button.QuickButton:pressed">
+        <Setter Property="Background" Value="#0C1C29"/>
+        <Setter Property="BorderBrush" Value="#326988"/>
+    </Style>
+    <Style Selector="Button.DetailsButton">
+        <Setter Property="Background" Value="#0B1821"/>
+        <Setter Property="Foreground" Value="#79CFFF"/>
+        <Setter Property="BorderBrush" Value="#25465B"/>
+    </Style>
+    <Style Selector="Button.DetailsButton:pointerover">
+        <Setter Property="Background" Value="#12314A"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="#4B91BE"/>
+    </Style>
+    <Style Selector="Button.RecentInstanceCard">
+        <Setter Property="Background" Value="#081219"/>
+        <Setter Property="BorderBrush" Value="#263B48"/>
+    </Style>
+    <Style Selector="Button.RecentInstanceCard:pointerover">
+        <Setter Property="Background" Value="#0B1A24"/>
+        <Setter Property="BorderBrush" Value="#3F7B9F"/>
+    </Style>
+    <Style Selector="Button.RecentServerRow:pointerover">
+        <Setter Property="Background" Value="#0F2635"/>
+        <Setter Property="BorderBrush" Value="#376F91"/>
+    </Style>
+    <Style Selector="Button.ServerRow:pointerover">
+        <Setter Property="Background" Value="#0F2635"/>
+        <Setter Property="BorderBrush" Value="#3D7CA5"/>
+    </Style>
+
+    <Style Selector="Border.WorkspaceSection">
+        <Setter Property="Background" Value="#081118"/>
+        <Setter Property="BorderBrush" Value="#263A48"/>
+        <Setter Property="CornerRadius" Value="11"/>
+    </Style>
+    <Style Selector="Border.WorkspaceToolbar">
+        <Setter Property="Background" Value="#09131A"/>
+        <Setter Property="BorderBrush" Value="#2A4252"/>
+    </Style>
+    <Style Selector="Border.WorkspaceHeaderStat">
+        <Setter Property="Background" Value="#0A151D"/>
+        <Setter Property="BorderBrush" Value="#2C4659"/>
+    </Style>
+    <Style Selector="Button.WorkspacePrimary">
+        <Setter Property="Background" Value="{DynamicResource BrandGradientBrush}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="#5DA9E7"/>
+    </Style>
+    <Style Selector="Button.WorkspacePrimary:pointerover">
+        <Setter Property="Background" Value="{DynamicResource BrandGradientHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="#91D8FF"/>
+    </Style>
+    <Style Selector="Button.WorkspacePrimary:pressed">
+        <Setter Property="Background" Value="#174A83"/>
+        <Setter Property="BorderBrush" Value="#6EB4E8"/>
+    </Style>
+    <Style Selector="Button.WorkspaceSecondary">
+        <Setter Property="Background" Value="#0C151B"/>
+        <Setter Property="Foreground" Value="#D8E1E7"/>
+        <Setter Property="BorderBrush" Value="#2A3F4C"/>
+    </Style>
+    <Style Selector="Button.WorkspaceSecondary:pointerover">
+        <Setter Property="Background" Value="#102638"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="#41789A"/>
+    </Style>
+    <Style Selector="Button.WorkspaceSecondary:pressed">
+        <Setter Property="Background" Value="#0B1C28"/>
+        <Setter Property="BorderBrush" Value="#315E79"/>
+    </Style>
+    <Style Selector="Button.WorkspaceTab:pointerover">
+        <Setter Property="Background" Value="#0E1D27"/>
+        <Setter Property="Foreground" Value="#EDF7FD"/>
+        <Setter Property="BorderBrush" Value="#2B5269"/>
+    </Style>
+    <Style Selector="Button.WorkspaceTab.Active">
+        <Setter Property="Background" Value="#12345A"/>
+        <Setter Property="Foreground" Value="#C6EAFF"/>
+        <Setter Property="BorderBrush" Value="#4688BD"/>
+    </Style>
+    <Style Selector="Button.WorkspaceTab.Active:pointerover">
+        <Setter Property="Background" Value="#184775"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="#65A9DB"/>
+    </Style>
+    <Style Selector="TextBox.WorkspaceField">
+        <Setter Property="Background" Value="#081219"/>
+        <Setter Property="BorderBrush" Value="#2B4353"/>
+    </Style>
+    <Style Selector="TextBox.WorkspaceField:pointerover">
+        <Setter Property="BorderBrush" Value="#3B6883"/>
+    </Style>
+    <Style Selector="TextBox.WorkspaceField:focus">
+        <Setter Property="BorderBrush" Value="#4B91BE"/>
+    </Style>
+    <Style Selector="ComboBox.WorkspaceField">
+        <Setter Property="Background" Value="#081219"/>
+        <Setter Property="BorderBrush" Value="#2B4353"/>
+    </Style>
+    <Style Selector="ComboBox.WorkspaceField:pointerover">
+        <Setter Property="Background" Value="#0B1922"/>
+        <Setter Property="BorderBrush" Value="#3B6883"/>
+    </Style>
+    <Style Selector="ComboBox.WorkspaceField:focus">
+        <Setter Property="BorderBrush" Value="#4B91BE"/>
+    </Style>
+    <Style Selector="NumericUpDown.WorkspaceField">
+        <Setter Property="Background" Value="#081219"/>
+        <Setter Property="BorderBrush" Value="#2B4353"/>
+    </Style>
+    <Style Selector="Button.WorkspaceInstanceCard">
+        <Setter Property="Background" Value="#081119"/>
+        <Setter Property="BorderBrush" Value="#263B48"/>
+    </Style>
+    <Style Selector="Button.WorkspaceInstanceCard:pointerover">
+        <Setter Property="Background" Value="#0A1821"/>
+        <Setter Property="BorderBrush" Value="#427A9B"/>
+    </Style>
+    <Style Selector="Button.WorkspaceInstanceCard.Selected">
+        <Setter Property="Background" Value="#0C2030"/>
+        <Setter Property="BorderBrush" Value="#4A95D0"/>
+    </Style>
+    <Style Selector="Border.WorkspaceTagSurface">
+        <Setter Property="Background" Value="#0C1921"/>
+        <Setter Property="BorderBrush" Value="#273F4D"/>
+    </Style>
+
+    <Style Selector="Border.ReadableMetricCard">
+        <Setter Property="Background" Value="#091218"/>
+        <Setter Property="BorderBrush" Value="#273C49"/>
+        <Setter Property="CornerRadius" Value="10"/>
+    </Style>
+    <Style Selector="Border.ReadableMetricCard.Cpu">
+        <Setter Property="BorderBrush" Value="#28516F"/>
+    </Style>
+    <Style Selector="Border.ReadableMetricCard.Gpu">
+        <Setter Property="BorderBrush" Value="#473A67"/>
+    </Style>
+    <Style Selector="Border.ReadableMetricCard.Memory">
+        <Setter Property="BorderBrush" Value="#285C48"/>
+    </Style>
+    <Style Selector="Border.ReadableChartSurface">
+        <Setter Property="Background" Value="#060B0F"/>
+        <Setter Property="BorderBrush" Value="#20333F"/>
+        <Setter Property="CornerRadius" Value="8"/>
+    </Style>
+    <Style Selector="Button.ReadablePreset">
+        <Setter Property="Background" Value="#0A1319"/>
+        <Setter Property="BorderBrush" Value="#283C48"/>
+        <Setter Property="CornerRadius" Value="9"/>
+    </Style>
+    <Style Selector="Button.ReadablePreset:pointerover">
+        <Setter Property="Background" Value="#0D1C26"/>
+        <Setter Property="BorderBrush" Value="#3D6D89"/>
+    </Style>
+    <Style Selector="Button.ReadablePreset.Active">
+        <Setter Property="Background" Value="#102B49"/>
+        <Setter Property="BorderBrush" Value="#4B91C9"/>
+    </Style>
+
+    <Style Selector="Border.ServerOverviewCard">
+        <Setter Property="Background" Value="#09131A"/>
+        <Setter Property="BorderBrush" Value="#293F4E"/>
+    </Style>
+    <Style Selector="Border.ServerActivityStrip">
+        <Setter Property="Background" Value="#08141C"/>
+        <Setter Property="BorderBrush" Value="#294457"/>
+    </Style>
+    <Style Selector="Border.ServerHintCard">
+        <Setter Property="Background" Value="#0A1822"/>
+        <Setter Property="BorderBrush" Value="#2D4B60"/>
+    </Style>
+    <Style Selector="Border.ReadableServerRow">
+        <Setter Property="Background" Value="#081219"/>
+        <Setter Property="BorderBrush" Value="#273D4B"/>
+    </Style>
+    <Style Selector="Border.ReadableServerRow:pointerover">
+        <Setter Property="Background" Value="#0B1A24"/>
+        <Setter Property="BorderBrush" Value="#3F7595"/>
+    </Style>
+    <Style Selector="Button.ServerListCard">
+        <Setter Property="Background" Value="#081219"/>
+        <Setter Property="BorderBrush" Value="#273D4B"/>
+    </Style>
+    <Style Selector="Button.ServerListCard:pointerover">
+        <Setter Property="Background" Value="#0B1A24"/>
+        <Setter Property="BorderBrush" Value="#3F7595"/>
+    </Style>
+    <Style Selector="Button.ServerActionButton">
+        <Setter Property="Background" Value="#10243A"/>
+        <Setter Property="Foreground" Value="#B5DAFF"/>
+        <Setter Property="BorderBrush" Value="#35648F"/>
+    </Style>
+    <Style Selector="Button.ServerActionButton:pointerover">
+        <Setter Property="Background" Value="#184775"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="#6AABE2"/>
+    </Style>
+
+    <Style Selector="Border.SettingsShell">
+        <Setter Property="Background" Value="#09131B"/>
+        <Setter Property="BorderBrush" Value="#34566C"/>
+    </Style>
+    <Style Selector="Border.SettingsContentCard">
+        <Setter Property="Background" Value="#0A141B"/>
+        <Setter Property="BorderBrush" Value="#2A3F4D"/>
+        <Setter Property="CornerRadius" Value="10"/>
+    </Style>
+    <Style Selector="Border.SettingsDivider">
+        <Setter Property="Background" Value="#20333F"/>
+    </Style>
+    <Style Selector="Button.SettingsNavButton:pointerover">
+        <Setter Property="Background" Value="#102536"/>
+        <Setter Property="Foreground" Value="#F4FAFE"/>
+    </Style>
+    <Style Selector="Button.SettingsNavButton.Active">
+        <Setter Property="Background" Value="{DynamicResource BrandGradientBrush}"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="Button.SettingsNavButton.Active:pointerover">
+        <Setter Property="Background" Value="{DynamicResource BrandGradientHoverBrush}"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="Button.SettingsCloseButton">
+        <Setter Property="Background" Value="#0B1720"/>
+        <Setter Property="Foreground" Value="#B9C9D3"/>
+        <Setter Property="BorderBrush" Value="#2D485A"/>
+    </Style>
+    <Style Selector="Button.SettingsCloseButton:pointerover">
+        <Setter Property="Background" Value="#3A1720"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="#824052"/>
+    </Style>
+
+    <Style Selector="Button.ManagedContentTab">
+        <Setter Property="MinHeight" Value="42"/>
+        <Setter Property="Padding" Value="14 8"/>
+    </Style>
+    <Style Selector="Border.ManagedContentCountBadge">
+        <Setter Property="MinWidth" Value="23"/>
+        <Setter Property="Height" Value="20"/>
+        <Setter Property="Padding" Value="6 1"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Background" Value="#14232D"/>
+        <Setter Property="BorderBrush" Value="#2D4657"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    <Style Selector="Button.ManagedContentTab.Active Border.ManagedContentCountBadge">
+        <Setter Property="Background" Value="#1B4D73"/>
+        <Setter Property="BorderBrush" Value="#4A8DBB"/>
+    </Style>
+    <Style Selector="ListBox.ManagedContentList">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+    </Style>
+    <Style Selector="ListBox.ManagedContentList > ListBoxItem">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+    </Style>
+    <Style Selector="ListBox.ManagedContentList > ListBoxItem:pointerover">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+    </Style>
+    <Style Selector="ListBox.ManagedContentList > ListBoxItem:selected">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+    </Style>
+    <Style Selector="Border.ManagedContentRow">
+        <Setter Property="MinHeight" Value="72"/>
+        <Setter Property="Padding" Value="13 15"/>
+        <Setter Property="CornerRadius" Value="11"/>
+        <Setter Property="Background" Value="#080E13"/>
+        <Setter Property="BorderBrush" Value="#26323B"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Opacity" Value="0.78"/>
+    </Style>
+    <Style Selector="Border.ManagedContentRow.Enabled">
+        <Setter Property="Background" Value="#09141B"/>
+        <Setter Property="BorderBrush" Value="#2B4656"/>
+        <Setter Property="Opacity" Value="1"/>
+    </Style>
+    <Style Selector="Border.ManagedContentRow:pointerover">
+        <Setter Property="Background" Value="#0A1821"/>
+        <Setter Property="BorderBrush" Value="#3D7596"/>
+    </Style>
+    <Style Selector="Button.ManagedContentToggle">
+        <Setter Property="Width" Value="62"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="CornerRadius" Value="15"/>
+        <Setter Property="Background" Value="#1A2227"/>
+        <Setter Property="Foreground" Value="#AEB8BE"/>
+        <Setter Property="BorderBrush" Value="#46545D"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Button.ManagedContentToggle:pointerover">
+        <Setter Property="Background" Value="#222E35"/>
+        <Setter Property="BorderBrush" Value="#71818B"/>
+    </Style>
+    <Style Selector="Button.ManagedContentToggle.Enabled">
+        <Setter Property="Background" Value="#10B962"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="#52E99A"/>
+    </Style>
+    <Style Selector="Button.ManagedContentToggle.Enabled:pointerover">
+        <Setter Property="Background" Value="#16C96C"/>
+        <Setter Property="BorderBrush" Value="#83F1B7"/>
+    </Style>
+    <Style Selector="Button.ManagedContentToggle:disabled">
+        <Setter Property="Opacity" Value="0.65"/>
+    </Style>
+    <Style Selector="Button.InstanceArtworkButton">
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="11"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Button.InstanceArtworkButton:pointerover">
+        <Setter Property="Background" Value="#12263A"/>
+        <Setter Property="BorderBrush" Value="#3D78A4"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    <Style Selector="Button.InstanceArtworkButton:pressed">
+        <Setter Property="Background" Value="#0D1D2B"/>
+        <Setter Property="BorderBrush" Value="#62AFE3"/>
+    </Style>
+    <Style Selector="Button.InstanceArtworkButton Border.InstanceArtworkHover">
+        <Setter Property="Opacity" Value="0"/>
+    </Style>
+    <Style Selector="Button.InstanceArtworkButton:pointerover Border.InstanceArtworkHover">
+        <Setter Property="Opacity" Value="1"/>
+    </Style>
+
+    <Style Selector="Button.AccountModalBackdrop">
+        <Setter Property="Background" Value="#A600070C"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    <Style Selector="Button.AccountModalBackdrop:pointerover">
+        <Setter Property="Background" Value="#A600070C"/>
+    </Style>
+    <Style Selector="Button.AccountModalBackdrop:pressed">
+        <Setter Property="Background" Value="#A600070C"/>
+    </Style>
+    <Style Selector="Border.AccountModalCard">
+        <Setter Property="Padding" Value="28"/>
+        <Setter Property="CornerRadius" Value="16"/>
+        <Setter Property="Background" Value="#F20A151D"/>
+        <Setter Property="BorderBrush" Value="#476F88"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BoxShadow" Value="0 24 70 0 #B0000000, 0 0 34 0 #251E94D2"/>
+    </Style>
+    <Style Selector="TextBlock.AccountModalTitle">
+        <Setter Property="FontFamily" Value="Minecraft Ten"/>
+        <Setter Property="FontSize" Value="23"/>
+        <Setter Property="Foreground" Value="#F5FBFF"/>
+    </Style>
+    <Style Selector="TextBlock.AccountModalSubtitle">
+        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontSize" Value="11.5"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Foreground" Value="#8095A3"/>
+    </Style>
+    <Style Selector="Button.AccountModalCloseButton">
+        <Setter Property="Width" Value="34"/>
+        <Setter Property="Height" Value="34"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Background" Value="#101F29"/>
+        <Setter Property="BorderBrush" Value="#294252"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Foreground" Value="#AFC1CB"/>
+    </Style>
+    <Style Selector="Button.AccountModalCloseButton:pointerover">
+        <Setter Property="Background" Value="#351923"/>
+        <Setter Property="BorderBrush" Value="#874557"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="Button.AccountChoiceButton">
+        <Setter Property="MinHeight" Value="178"/>
+        <Setter Property="Padding" Value="20"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Background" Value="#0B1821"/>
+        <Setter Property="BorderBrush" Value="#2B4658"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    <Style Selector="Button.AccountChoiceButton:pointerover">
+        <Setter Property="Background" Value="#102533"/>
+        <Setter Property="BorderBrush" Value="#69B9EC"/>
+    </Style>
+    <Style Selector="Button.AccountChoiceButton:pressed">
+        <Setter Property="Background" Value="#0D202D"/>
+        <Setter Property="BorderBrush" Value="#9DDCFF"/>
+    </Style>
+    <Style Selector="Border.AccountChoiceIcon">
+        <Setter Property="Width" Value="48"/>
+        <Setter Property="Height" Value="48"/>
+        <Setter Property="CornerRadius" Value="11"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Border.AccountChoiceIcon.Microsoft">
+        <Setter Property="Background" Value="#176CC0"/>
+        <Setter Property="BorderBrush" Value="#5FAAEF"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    <Style Selector="Border.AccountChoiceIcon.Offline">
+        <Setter Property="Background" Value="#17374A"/>
+        <Setter Property="BorderBrush" Value="#4E94BC"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    <Style Selector="TextBlock.AccountChoiceTitle">
+        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="#F4FAFD"/>
+    </Style>
+    <Style Selector="TextBlock.AccountChoiceDescription">
+        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Foreground" Value="#8295A2"/>
+        <Setter Property="LineHeight" Value="17"/>
+    </Style>
+    <Style Selector="Border.AccountSecurityNote">
+        <Setter Property="Padding" Value="12 10"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Background" Value="#0B1A23"/>
+        <Setter Property="BorderBrush" Value="#223C4C"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    <Style Selector="Button.AccountBackButton">
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="#8FB1C5"/>
+    </Style>
+    <Style Selector="Button.AccountBackButton:pointerover">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="#D5F1FF"/>
+    </Style>
+    <Style Selector="Border.OfflineAccountPanel">
+        <Setter Property="Padding" Value="16"/>
+        <Setter Property="CornerRadius" Value="11"/>
+        <Setter Property="Background" Value="#0B1922"/>
+        <Setter Property="BorderBrush" Value="#294657"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    <Style Selector="TextBlock.AccountFieldLabel">
+        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="#8CA9BA"/>
+    </Style>
+    <Style Selector="TextBox.AccountUsernameInput">
+        <Setter Property="Height" Value="44"/>
+        <Setter Property="Padding" Value="13 10"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Background" Value="#071117"/>
+        <Setter Property="BorderBrush" Value="#35576B"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontSize" Value="13"/>
+    </Style>
+    <Style Selector="TextBox.AccountUsernameInput:focus">
+        <Setter Property="BorderBrush" Value="#59B8F1"/>
+    </Style>
+    <Style Selector="TextBlock.AccountStatusText">
+        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="Foreground" Value="#87CFFF"/>
+    </Style>
+    <Style Selector="Button.AccountPrimaryButton, Button.AccountSecondaryButton">
+        <Setter Property="Height" Value="42"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+    <Style Selector="Button.AccountPrimaryButton">
+        <Setter Property="Background" Value="#225EAC"/>
+        <Setter Property="BorderBrush" Value="#4A94DE"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="Button.AccountPrimaryButton:pointerover">
+        <Setter Property="Background" Value="#2A70C6"/>
+        <Setter Property="BorderBrush" Value="#81C3FF"/>
+    </Style>
+    <Style Selector="Button.AccountSecondaryButton">
+        <Setter Property="Background" Value="#111E27"/>
+        <Setter Property="BorderBrush" Value="#304957"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Foreground" Value="#B7C5CD"/>
+    </Style>
+    <Style Selector="Button.AccountSecondaryButton:pointerover">
+        <Setter Property="Background" Value="#182A36"/>
+        <Setter Property="BorderBrush" Value="#56798E"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <Style Selector="Button.WorkspaceInstallButton">
+        <Setter Property="MinHeight" Value="46"/>
+        <Setter Property="Padding" Value="16 9"/>
+    </Style>
+    <Style Selector="TextBlock.WorkspacePageDescription">
+        <Setter Property="Foreground" Value="#BAC8D1"/>
+    </Style>
+    <Style Selector="TextBlock.WorkspaceBody">
+        <Setter Property="Foreground" Value="#D6DEE4"/>
+    </Style>
+    <Style Selector="TextBlock.WorkspaceSecondary">
+        <Setter Property="Foreground" Value="#A7B7C2"/>
+    </Style>
+    <Style Selector="TextBlock.WorkspaceLabel">
+        <Setter Property="Foreground" Value="#CCD7DE"/>
+    </Style>
+    <Style Selector="TextBlock.WorkspaceValue">
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="Foreground" Value="#F5F8FA"/>
+    </Style>
+    <Style Selector="TextBlock.WorkspaceStatLabel">
+        <Setter Property="FontSize" Value="10.5"/>
+        <Setter Property="Foreground" Value="#91AABA"/>
+    </Style>
+    <Style Selector="TextBlock.WorkspaceTagText">
+        <Setter Property="FontSize" Value="11.5"/>
+        <Setter Property="Foreground" Value="#B3C5D0"/>
+    </Style>
+    <Style Selector="TextBlock.InstanceDashboardRuntime">
+        <Setter Property="FontSize" Value="10.5"/>
+        <Setter Property="Foreground" Value="#A1E2BF"/>
+    </Style>
+    <Style Selector="TextBlock.InstanceDashboardActivity">
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="Foreground" Value="#91A2AD"/>
+    </Style>
+    <Style Selector="Border.InstanceReadyBadge TextBlock">
+        <Setter Property="FontSize" Value="8.5"/>
+        <Setter Property="Foreground" Value="#91E6B5"/>
+    </Style>
+    <Style Selector="TextBlock.InstanceCardStatLabel">
+        <Setter Property="FontSize" Value="8.5"/>
+        <Setter Property="Foreground" Value="#8398A6"/>
+    </Style>
+    <Style Selector="TextBlock.InstanceCardStatValue">
+        <Setter Property="FontSize" Value="10.5"/>
+        <Setter Property="Foreground" Value="#D4DEE4"/>
+    </Style>
+    <Style Selector="TextBlock.InstanceInspectLabel, TextBlock.InstanceStatusText, TextBlock.InstanceResultCount">
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="Foreground" Value="#93A6B2"/>
+    </Style>
+    <Style Selector="TextBlock.InstanceDetailLabel, TextBlock.InstanceDetailValue">
+        <Setter Property="FontSize" Value="10.5"/>
+    </Style>
+    <Style Selector="TextBlock.PerformancePageDescription">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="#A7B5BF"/>
+    </Style>
+    <Style Selector="TextBlock.PerformanceHeaderLoad">
+        <Setter Property="FontSize" Value="9.5"/>
+        <Setter Property="Foreground" Value="#8C9BA6"/>
+    </Style>
+    <Style Selector="TextBlock.PerformanceMetricContext, TextBlock.PerformanceChartCaption">
+        <Setter Property="FontSize" Value="8.5"/>
+        <Setter Property="Foreground" Value="#7F929F"/>
+    </Style>
+    <Style Selector="TextBlock.PerformanceMetricHint, TextBlock.PerformanceAxisLabel, TextBlock.PerformanceChartMeta">
+        <Setter Property="FontSize" Value="9"/>
+        <Setter Property="Foreground" Value="#7F909B"/>
+    </Style>
+    <Style Selector="TextBox.WorkspaceField">
+        <Setter Property="PlaceholderForeground" Value="#8198A8"/>
+    </Style>
+    <Style Selector="ComboBox.WorkspaceField">
+        <Setter Property="PlaceholderForeground" Value="#91A6B4"/>
+    </Style>
+    <Style Selector="TextBox.AccountUsernameInput">
+        <Setter Property="PlaceholderForeground" Value="#8198A8"/>
     </Style>
 </Styles>

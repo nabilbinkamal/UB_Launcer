@@ -45,7 +45,7 @@ public partial class CustomizeViewModel : ViewModelBase
     {
         public string? SkinPath { get; set; }
         public string? CapePath { get; set; }
-        public bool UseSlimModel { get; set; }
+        public bool? UseSlimModel { get; set; }
     }
 
     [ObservableProperty] private string _skinPath = DefaultStevePath;
@@ -76,10 +76,13 @@ public partial class CustomizeViewModel : ViewModelBase
 
     public CustomizeViewModel()
     {
+        OfflineAccountStore.AccountChanged += RefreshUsername;
         LoadSavedSkins();
         LoadSavedCapes();
         RestoreSelection();
     }
+
+    private void RefreshUsername() => OnPropertyChanged(nameof(Username));
 
     public void ImportSkin(string selectedPath, bool isSlim)
     {
@@ -170,7 +173,7 @@ public partial class CustomizeViewModel : ViewModelBase
             {
                 Name = defaultSkin.Name,
                 ImagePath = defaultSkin.ImagePath,
-                IsSlim = defaultSkin.IsSlim
+                IsSlim = UseSlimModel
             });
             SetSelectedSkin(defaultSkin);
             SaveCape();
@@ -226,7 +229,7 @@ public partial class CustomizeViewModel : ViewModelBase
         selectedSkin ??= DefaultSkins[0];
         SkinPath = selectedSkin.ImagePath;
         SelectedSkinName = selectedSkin.Name;
-        UseSlimModel = selectedSkin.IsSlim;
+        UseSlimModel = selection?.UseSlimModel ?? selectedSkin.IsSlim;
         SetSelectedSkin(selectedSkin);
 
         var selectedCapePath = selection?.CapePath;

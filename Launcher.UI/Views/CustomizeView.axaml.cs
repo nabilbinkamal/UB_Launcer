@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Launcher.UI.Views;
 
-public partial class CustomizeView : UserControl
+public partial class CustomizeView : UserControl, INavigationAwarePage
 {
     public CustomizeView()
     {
@@ -29,6 +29,11 @@ public partial class CustomizeView : UserControl
 
         var scale = Math.Clamp(width / 1120d, 1d, 1.35d);
         PreviewPanel.Width = 285 * scale;
+    }
+
+    public void SetNavigationActive(bool isActive)
+    {
+        PlayerPreview.SetNavigationActive(isActive);
     }
 
     private async void OnBrowseSkinClick(object? sender, RoutedEventArgs eventArgs)

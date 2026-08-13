@@ -1,7 +1,9 @@
 using System;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using Launcher.Core.Services;
 using Launcher.Core.ViewModels;
 using Launcher.UI.Views;
@@ -38,8 +40,20 @@ public partial class App : Application
             {
                 DataContext = mainViewModel,
             };
+
+            _ = RefreshPublicConfigurationAsync(mainViewModel);
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private static async Task RefreshPublicConfigurationAsync(MainWindowViewModel mainViewModel)
+    {
+        if (!await LauncherRemoteConfiguration.RefreshAsync())
+        {
+            return;
+        }
+
+        await Dispatcher.UIThread.InvokeAsync(mainViewModel.ApplyRemoteConfiguration);
     }
 }

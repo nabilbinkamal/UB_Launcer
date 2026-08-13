@@ -2,25 +2,81 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
+using Launcher.Core.ViewModels;
 using System;
+using System.Collections.Generic;
 
 namespace Launcher.UI.Views;
 
 public partial class MainWindow : Window
 {
     private double appliedScale;
+    private bool scaleUpdateQueued;
+    private double pendingScaleWidth;
+    private readonly Queue<Action<MainWindowViewModel>> pagePreloadQueue = new();
+    private readonly DispatcherTimer pagePreloadTimer;
 
     public MainWindow()
     {
         InitializeComponent();
+
+        pagePreloadTimer = new DispatcherTimer(DispatcherPriority.Background)
+        {
+            Interval = TimeSpan.FromMilliseconds(160)
+        };
+        pagePreloadTimer.Tick += OnPagePreloadTick;
+
         SizeChanged += OnWindowSizeChanged;
-        AttachedToVisualTree += (_, _) => ApplyResponsiveScale(Bounds.Width);
+        AttachedToVisualTree += (_, _) =>
+        {
+            ApplyResponsiveScale(Bounds.Width);
+            BeginPagePreload();
+        };
+        DetachedFromVisualTree += (_, _) => pagePreloadTimer.Stop();
+    }
+
+    private void BeginPagePreload()
+    {
+        if (DataContext is not MainWindowViewModel)
+        {
+            return;
+        }
+
+        pagePreloadQueue.Enqueue(viewModel => viewModel.Navigation.Preload<ProfilesViewModel>());
+        pagePreloadQueue.Enqueue(viewModel => viewModel.Navigation.Preload<CustomizeViewModel>());
+        pagePreloadQueue.Enqueue(viewModel => viewModel.Navigation.Preload<ModsViewModel>());
+        pagePreloadQueue.Enqueue(viewModel => viewModel.Navigation.Preload<PerformanceViewModel>());
+        pagePreloadQueue.Enqueue(viewModel => viewModel.Navigation.Preload<CreateServerViewModel>());
+        pagePreloadTimer.Start();
+    }
+
+    private void OnPagePreloadTick(object? sender, EventArgs eventArgs)
+    {
+        if (DataContext is not MainWindowViewModel viewModel || pagePreloadQueue.Count == 0)
+        {
+            pagePreloadTimer.Stop();
+            return;
+        }
+
+        pagePreloadQueue.Dequeue()(viewModel);
     }
 
     private void OnWindowSizeChanged(object? sender, SizeChangedEventArgs e)
     {
-        ApplyResponsiveScale(e.NewSize.Width);
+        pendingScaleWidth = e.NewSize.Width;
+        if (scaleUpdateQueued)
+        {
+            return;
+        }
+
+        scaleUpdateQueued = true;
+        Dispatcher.UIThread.Post(() =>
+        {
+            scaleUpdateQueued = false;
+            ApplyResponsiveScale(pendingScaleWidth);
+        }, DispatcherPriority.Render);
     }
 
     private void ApplyResponsiveScale(double width)

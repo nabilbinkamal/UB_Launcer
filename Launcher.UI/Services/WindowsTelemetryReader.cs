@@ -9,8 +9,14 @@ namespace Launcher.UI.Services;
 [SupportedOSPlatform("windows")]
 public sealed class WindowsTelemetryReader : IDisposable
 {
+    private static readonly TimeSpan GpuSampleInterval = TimeSpan.FromSeconds(2);
+    private readonly object readLock = new();
     private readonly PerformanceCounter? cpuCounter;
     private readonly List<PerformanceCounter> gpuCounters = new();
+    private long lastGpuSampleTimestamp;
+    private double cachedGpuUsage;
+
+    public static WindowsTelemetryReader Shared { get; } = new();
 
     public WindowsTelemetryReader()
     {
@@ -52,16 +58,26 @@ public sealed class WindowsTelemetryReader : IDisposable
 
     public WindowsTelemetrySnapshot Read()
     {
-        var cpuUsage = ReadCounter(cpuCounter);
-        var gpuUsage = 0d;
-
-        foreach (var counter in gpuCounters)
+        lock (readLock)
         {
-            gpuUsage += ReadCounter(counter);
-        }
+            var cpuUsage = ReadCounter(cpuCounter);
+            var now = Stopwatch.GetTimestamp();
+            if (lastGpuSampleTimestamp == 0 ||
+                Stopwatch.GetElapsedTime(lastGpuSampleTimestamp, now) >= GpuSampleInterval)
+            {
+                var gpuUsage = 0d;
+                foreach (var counter in gpuCounters)
+                {
+                    gpuUsage += ReadCounter(counter);
+                }
 
-        var memory = ReadMemory();
-        return new WindowsTelemetrySnapshot(cpuUsage, Math.Clamp(gpuUsage, 0, 100), memory.UsedGb, memory.TotalGb);
+                cachedGpuUsage = Math.Clamp(gpuUsage, 0, 100);
+                lastGpuSampleTimestamp = now;
+            }
+
+            var memory = ReadMemory();
+            return new WindowsTelemetrySnapshot(cpuUsage, cachedGpuUsage, memory.UsedGb, memory.TotalGb);
+        }
     }
 
     public void Dispose()

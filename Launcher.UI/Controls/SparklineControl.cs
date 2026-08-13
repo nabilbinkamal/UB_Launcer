@@ -11,15 +11,27 @@ public sealed class SparklineControl : Control
     public static readonly StyledProperty<IReadOnlyList<double>?> ValuesProperty =
         AvaloniaProperty.Register<SparklineControl, IReadOnlyList<double>?>(nameof(Values));
 
-    private static readonly Color GlowColor = Color.FromArgb(70, 75, 128, 255);
-    private static readonly Color FillColor = Color.FromArgb(32, 56, 104, 212);
-    private static readonly Color StrokeColor = Color.FromRgb(99, 139, 255);
+    public static readonly StyledProperty<Color> AccentColorProperty =
+        AvaloniaProperty.Register<SparklineControl, Color>(nameof(AccentColor), Color.FromRgb(99, 139, 255));
+
+    private static readonly Pen GridPen = new(
+        new SolidColorBrush(Color.FromArgb(32, 137, 154, 169)),
+        1);
+    private SolidColorBrush fillBrush = null!;
+    private SolidColorBrush dotGlowBrush = null!;
+    private SolidColorBrush dotBrush = null!;
+    private Pen glowPen = null!;
+    private Pen strokePen = null!;
+    private double[]? displayedValues;
 
     public SparklineControl()
     {
-        Width = 122;
-        Height = 42;
+        MinWidth = 120;
+        MinHeight = 64;
+        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
         ClipToBounds = true;
+        RebuildPalette(AccentColor);
+
     }
 
     public IReadOnlyList<double>? Values
@@ -28,36 +40,79 @@ public sealed class SparklineControl : Control
         set => SetValue(ValuesProperty, value);
     }
 
+    public Color AccentColor
+    {
+        get => GetValue(AccentColorProperty);
+        set => SetValue(AccentColorProperty, value);
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
 
         if (change.Property == ValuesProperty)
         {
+            BeginAnimation(change.NewValue as IReadOnlyList<double>);
+        }
+        else if (change.Property == AccentColorProperty)
+        {
+            RebuildPalette(change.NewValue is Color color ? color : AccentColor);
             InvalidateVisual();
         }
+    }
+
+    private void BeginAnimation(IReadOnlyList<double>? targetValues)
+    {
+        if (targetValues is null || targetValues.Count == 0)
+        {
+            displayedValues = null;
+            InvalidateVisual();
+            return;
+        }
+
+        displayedValues = CopyValues(targetValues);
+        InvalidateVisual();
+    }
+
+    private static double[] CopyValues(IReadOnlyList<double> values)
+    {
+        var result = new double[values.Count];
+        for (var index = 0; index < values.Count; index++)
+        {
+            result[index] = Math.Clamp(values[index], 0, 1);
+        }
+
+        return result;
     }
 
     public override void Render(DrawingContext context)
     {
         base.Render(context);
 
-        var values = Values;
+        var values = displayedValues ?? Values;
         if (values is null || values.Count < 2 || Bounds.Width < 20 || Bounds.Height < 12)
         {
             return;
         }
 
+        var chartLeft = 3d;
+        var chartRight = Math.Max(chartLeft, Bounds.Width - 3);
+        for (var line = 1; line <= 3; line++)
+        {
+            var y = 4 + (Bounds.Height - 8) * line / 4d;
+            context.DrawLine(GridPen, new Point(chartLeft, y), new Point(chartRight, y));
+        }
+
         var lineGeometry = CreateGeometry(values, false);
         var fillGeometry = CreateGeometry(values, true);
 
-        context.DrawGeometry(new SolidColorBrush(FillColor), null, fillGeometry);
-        context.DrawGeometry(null, new Pen(new SolidColorBrush(GlowColor), 4, lineCap: PenLineCap.Round, lineJoin: PenLineJoin.Round), lineGeometry);
-        context.DrawGeometry(null, new Pen(new SolidColorBrush(StrokeColor), 1.5, lineCap: PenLineCap.Round, lineJoin: PenLineJoin.Round), lineGeometry);
+        context.DrawGeometry(fillBrush, null, fillGeometry);
+        context.DrawGeometry(null, glowPen, lineGeometry);
+        context.DrawGeometry(null, strokePen, lineGeometry);
 
         var lastPoint = GetPoint(values, values.Count - 1);
-        context.DrawEllipse(new SolidColorBrush(Color.FromArgb(100, 99, 139, 255)), null, lastPoint, 3.5, 3.5);
-        context.DrawEllipse(Brushes.White, null, lastPoint, 1.25, 1.25);
+        context.DrawEllipse(dotGlowBrush, null, lastPoint, 4, 4);
+        context.DrawEllipse(dotBrush, null, lastPoint, 1.5, 1.5);
     }
 
     private StreamGeometry CreateGeometry(IReadOnlyList<double> values, bool fill)
@@ -117,5 +172,22 @@ public sealed class SparklineControl : Control
         var x = horizontalPadding + width * index / (values.Count - 1);
         var y = verticalPadding + (1 - Math.Clamp(values[index], 0, 1)) * height;
         return new Point(x, y);
+    }
+
+    private void RebuildPalette(Color accent)
+    {
+        fillBrush = new SolidColorBrush(Color.FromArgb(32, accent.R, accent.G, accent.B));
+        dotGlowBrush = new SolidColorBrush(Color.FromArgb(115, accent.R, accent.G, accent.B));
+        dotBrush = new SolidColorBrush(accent);
+        glowPen = new Pen(
+            new SolidColorBrush(Color.FromArgb(65, accent.R, accent.G, accent.B)),
+            5,
+            lineCap: PenLineCap.Round,
+            lineJoin: PenLineJoin.Round);
+        strokePen = new Pen(
+            new SolidColorBrush(accent),
+            1.8,
+            lineCap: PenLineCap.Round,
+            lineJoin: PenLineJoin.Round);
     }
 }

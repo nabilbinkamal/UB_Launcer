@@ -3,91 +3,450 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Launcher.Core.ViewModels"
-             mc:Ignorable="d" d:DesignWidth="1120" d:DesignHeight="850"
+             xmlns:controls="using:Launcher.UI.Controls"
+             mc:Ignorable="d"
+             d:DesignWidth="1180" d:DesignHeight="860"
              x:Class="Launcher.UI.Views.ProfilesView"
              x:DataType="vm:ProfilesViewModel">
-    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-        <Grid RowDefinitions="Auto,*" Margin="30 46 30 24" RowSpacing="18">
-            <Grid ColumnDefinitions="*,Auto">
-                <StackPanel Spacing="4">
-                    <TextBlock Text="INSTANCES" Classes="PageTitle" Foreground="#00D9FF"/>
-                    <TextBlock Text="Manage your Minecraft installations" Classes="PageSubtitle" Foreground="#89929B"/>
+    <Grid>
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto"
+                  IsVisible="{Binding !IsContentManagerVisible}">
+        <Grid Margin="32 28 32 36" RowDefinitions="Auto,Auto,Auto,*" RowSpacing="20">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="18">
+                <StackPanel Spacing="6">
+                    <TextBlock Text="Instances" Classes="WorkspacePageTitle"/>
+                    <TextBlock Text="Create and manage separate Minecraft setups for different versions and content." Classes="WorkspacePageDescription"/>
                 </StackPanel>
-                <Button Grid.Column="1" Content="+  Create instance" Classes="CreateInstanceButton" Command="{Binding FocusCreateCommand}"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="9" VerticalAlignment="Center">
+                    <Border Classes="WorkspaceHeaderStat">
+                        <StackPanel Spacing="1">
+                            <TextBlock Text="INSTANCES" Classes="WorkspaceStatLabel"/>
+                            <TextBlock Text="{Binding TotalInstances}" Classes="WorkspaceStatValue"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Classes="WorkspaceHeaderStat">
+                        <StackPanel Spacing="1">
+                            <TextBlock Text="MODDED" Classes="WorkspaceStatLabel"/>
+                            <TextBlock Text="{Binding ModdedInstances}" Classes="WorkspaceStatValue"/>
+                        </StackPanel>
+                    </Border>
+                    <Button Content="Import pack" Classes="WorkspaceSecondary"
+                            Click="OnImportInstanceClick"
+                            IsEnabled="{Binding !IsArchiveBusy}"
+                            ToolTip.Tip="Import a UB Pack or Modrinth pack"/>
+                    <Button Content="+  New instance" Classes="WorkspacePrimary" Command="{Binding ShowCreatePanelCommand}" VerticalAlignment="Center"/>
+                </StackPanel>
             </Grid>
 
-            <Grid Grid.Row="1" ColumnDefinitions="*,330" ColumnSpacing="14">
-                <Border Grid.Column="0" Classes="PanelCard" Padding="18 16">
-                    <Grid RowDefinitions="Auto,*">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <TextBlock Text="Your instances" Classes="PanelTitle" Foreground="White"/>
-                            <TextBlock Grid.Column="1" Text="{Binding Profiles.Count, StringFormat='{}{0} instances'}" FontFamily="Poppins" FontSize="11" Foreground="#737981" VerticalAlignment="Center"/>
-                        </Grid>
-                        <ScrollViewer Grid.Row="1" Margin="0 14 0 0">
-                            <ItemsControl ItemsSource="{Binding Profiles}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Classes="InstanceCard" Margin="0 0 0 10" Padding="13">
-                                            <Grid ColumnDefinitions="70,*,Auto" ColumnSpacing="13">
-                                                <Border Width="64" Height="64" Background="#6C4533" CornerRadius="7" VerticalAlignment="Center">
-                                                    <Grid>
-                                                        <Border Background="#72D65D" Height="27" VerticalAlignment="Top" CornerRadius="7 7 0 0"/>
-                                                        <Border Background="#9B684D" Height="38" VerticalAlignment="Bottom" CornerRadius="0 0 7 7"/>
-                                                        <Border Background="#4F9E48" Width="42" Height="9" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0 20 0 0"/>
-                                                        <Border Background="#C08B61" Width="18" Height="11" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10 4 0 0"/>
-                                                    </Grid>
-                                                </Border>
-                                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="5">
-                                                    <TextBlock Text="{Binding Name}" Classes="InstanceCardTitle" Foreground="White"/>
-                                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                                        <TextBlock Text="{Binding Version}" Classes="InstanceCardMeta" Foreground="#D7D7D7"/>
-                                                        <TextBlock Text="•" Classes="InstanceCardMeta" Foreground="#5F6870"/>
-                                                        <TextBlock Text="{Binding LoaderType}" Classes="InstanceCardMeta" Foreground="#87E3F2"/>
-                                                    </StackPanel>
-                                                    <TextBlock Text="{Binding LastPlayed, StringFormat='Last played: {0}'}" Classes="InstanceCardSmall" Foreground="#737981"/>
-                                                </StackPanel>
-                                                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="7" VerticalAlignment="Center">
-                                                    <Button Content="▶" Classes="InstancePlayButton" Command="{Binding $parent[UserControl].((vm:ProfilesViewModel)DataContext).LaunchProfileCommand}" CommandParameter="{Binding}"/>
-                                                    <Button Content="⋮" Classes="InstanceMoreButton" Command="{Binding $parent[UserControl].((vm:ProfilesViewModel)DataContext).SelectProfileCommand}" CommandParameter="{Binding}"/>
-                                                </StackPanel>
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </ScrollViewer>
+            <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+                <ItemsControl ItemsSource="{Binding Categories}">
+                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="6"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:InstanceCategory">
+                            <Button Content="{Binding Name}" Classes="WorkspaceTab" Classes.Active="{Binding IsSelected}"
+                                    Command="{Binding $parent[UserControl].((vm:ProfilesViewModel)DataContext).SelectCategoryCommand}"
+                                    CommandParameter="{Binding}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBlock Grid.Column="1" Text="{Binding StatusText}" Classes="WorkspaceSecondary" VerticalAlignment="Center" MaxWidth="420" TextTrimming="CharacterEllipsis"/>
+            </Grid>
+
+            <Border Grid.Row="2" Classes="WorkspaceToolbar">
+                <Grid RowDefinitions="Auto,Auto" RowSpacing="10">
+                    <Grid ColumnDefinitions="*,190,200" ColumnSpacing="10">
+                        <TextBox Text="{Binding SearchQuery}" PlaceholderText="Search instances by name, version, or loader" Classes="WorkspaceField"/>
+                        <ComboBox Grid.Column="1" ItemsSource="{Binding LoaderFilters}" SelectedItem="{Binding SelectedLoaderFilter}" Classes="WorkspaceField"/>
+                        <ComboBox Grid.Column="2" ItemsSource="{Binding SortOptions}" SelectedItem="{Binding SelectedSortOption}" Classes="WorkspaceField"/>
                     </Grid>
+                    <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="12" IsVisible="{Binding IsArchiveProgressVisible}">
+                        <ProgressBar Minimum="0" Maximum="100" Value="{Binding ArchiveProgress}" Height="5" Foreground="#3B82F6" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" Text="{Binding ArchiveProgressLabel}" Classes="WorkspaceStatLabel" Foreground="#82B5FF" VerticalAlignment="Center"/>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="3" ColumnDefinitions="*,340" ColumnSpacing="18">
+                <Grid RowDefinitions="Auto,*">
+                    <Grid ColumnDefinitions="*,Auto" Margin="0 0 0 12">
+                        <TextBlock Text="Instance library" Classes="WorkspaceSectionTitle"/>
+                        <TextBlock Grid.Column="1" Text="{Binding ResultSummary}" Classes="WorkspaceSecondary" VerticalAlignment="Center"/>
+                    </Grid>
+                    <ItemsControl Grid.Row="1" ItemsSource="{Binding VisibleProfiles}">
+                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:GameProfile">
+                                <Button Width="360" MinHeight="148" Margin="0 0 12 12" Padding="18"
+                                        HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                                        Classes="WorkspaceInstanceCard" Classes.Selected="{Binding IsSelected}"
+                                        Command="{Binding $parent[UserControl].((vm:ProfilesViewModel)DataContext).OpenContentManagerCommand}"
+                                        CommandParameter="{Binding}">
+                                    <Grid RowDefinitions="Auto,Auto" RowSpacing="16">
+                                        <Grid ColumnDefinitions="58,*,Auto" ColumnSpacing="14">
+                                            <Border Width="56" Height="56" CornerRadius="7" Background="{Binding Accent}" ClipToBounds="True">
+                                                <Grid>
+                                                    <TextBlock Text="{Binding Initials}" IsVisible="{Binding !HasIcon}" FontFamily="Inter" FontSize="16" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    <controls:RemoteImage SourceUrl="{Binding IconUrl}" IsVisible="{Binding HasIcon}" Stretch="UniformToFill"/>
+                                                </Grid>
+                                            </Border>
+                                            <StackPanel Grid.Column="1" Spacing="5" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Name}" FontFamily="Inter" FontSize="16" FontWeight="SemiBold" Foreground="#F0F2F3" TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Text="{Binding RuntimeLabel}" Classes="WorkspaceSecondary" Foreground="#8DBAFF"/>
+                                                <TextBlock Text="{Binding ActivityLabel}" Classes="WorkspaceSecondary"/>
+                                            </StackPanel>
+                                            <Border Grid.Column="2" Classes="WorkspaceReadyBadge" Classes.Default="{Binding IsDefault}" VerticalAlignment="Top">
+                                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                                    <Border Width="6" Height="6" CornerRadius="3" Background="#58D68D" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding StateBadgeLabel}" Classes="WorkspaceBadgeText"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </Grid>
+                                        <Grid Grid.Row="1" ColumnDefinitions="*,*,Auto">
+                                            <StackPanel Spacing="3"><TextBlock Text="Content" Classes="WorkspaceSecondary"/><TextBlock Text="{Binding TotalInstalledContent, StringFormat='{}{0} items'}" Classes="WorkspaceValue"/></StackPanel>
+                                            <StackPanel Grid.Column="1" Spacing="3"><TextBlock Text="Storage" Classes="WorkspaceSecondary"/><TextBlock Text="{Binding StorageUsed}" Classes="WorkspaceValue"/></StackPanel>
+                                            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="7" VerticalAlignment="Bottom">
+                                                <TextBlock Text="Manage content" Classes="WorkspaceLabel" Foreground="#82B5FF"/>
+                                                <TextBlock Text="›" FontFamily="Inter" FontSize="19" Foreground="#82B5FF" Margin="0 -5 0 0"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Grid>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Border Grid.Row="1" Classes="WorkspaceSection" MinHeight="220" IsVisible="{Binding IsEmptyStateVisible}">
+                        <StackPanel Spacing="8" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="No instances found" Classes="WorkspaceSectionTitle" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Clear a filter or search for a different name." Classes="WorkspaceSecondary"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <Border Grid.Column="1" Classes="WorkspaceSection" VerticalAlignment="Top" IsVisible="{Binding IsDetailsPanelVisible}">
+                    <StackPanel Spacing="20">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="4">
+                            <TextBlock Text="Active instance" Classes="WorkspaceSectionTitle"/>
+                            <TextBlock Text="Review this setup before launching or changing its files." Classes="WorkspaceSecondary" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <Border Grid.Column="1" Classes="WorkspaceReadyBadge" Classes.Default="{Binding IsSelectedProfileDefault}" VerticalAlignment="Top"><TextBlock Text="{Binding SelectedProfile.StateBadgeLabel}" Classes="WorkspaceBadgeText"/></Border>
+                        </Grid>
+                        <Grid ColumnDefinitions="62,*" ColumnSpacing="14">
+                            <Button Width="62" Height="62"
+                                    Classes="InstanceArtworkButton"
+                                    Click="OnChangeInstanceIconClick"
+                                    AutomationProperties.Name="Change instance picture"
+                                    ToolTip.Tip="Change instance picture"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center">
+                                <Grid Width="60" Height="60">
+                                    <Border Width="56" Height="56" CornerRadius="9" Background="{Binding SelectedProfile.Accent}" ClipToBounds="True"
+                                            HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Grid>
+                                            <TextBlock Text="{Binding SelectedProfile.Initials}" IsVisible="{Binding !SelectedProfile.HasIcon}" FontFamily="Inter" FontSize="16" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <controls:RemoteImage SourceUrl="{Binding SelectedProfile.IconUrl}" IsVisible="{Binding SelectedProfile.HasIcon}" Stretch="UniformToFill"/>
+                                            <Border Classes="InstanceArtworkHover" Background="#B20A1118">
+                                                <Border Width="27" Height="27" CornerRadius="9"
+                                                        Background="#1E58A5" BorderBrush="#A6D9FF" BorderThickness="1"
+                                                        HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <TextBlock Text="&#x270E;" FontFamily="Segoe UI Symbol" FontSize="14" Foreground="White"
+                                                               HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 -1 0 0"/>
+                                                </Border>
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </Button>
+                            <StackPanel Grid.Column="1" Spacing="5" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding SelectedProfile.Name}" FontFamily="Inter" FontSize="17" FontWeight="SemiBold" Foreground="#F0F2F3" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Text="{Binding SelectedProfile.RuntimeLabel}" Classes="WorkspaceSecondary" Foreground="#8DBAFF"/>
+                                            <TextBlock Text="Click the picture to customize" FontFamily="Inter" FontSize="10.5" Foreground="#91AFC2"/>
+                            </StackPanel>
+                        </Grid>
+                        <Button Classes="WorkspaceSecondary" HorizontalAlignment="Stretch"
+                                Command="{Binding SetDefaultProfileCommand}"
+                                IsEnabled="{Binding !IsSelectedProfileDefault}">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
+                                <TextBlock Text="★" FontFamily="Segoe UI Symbol" FontSize="13"/>
+                                <TextBlock Text="{Binding DefaultActionLabel}"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="WorkspacePrimary WorkspaceLaunchButton" HorizontalAlignment="Stretch" IsEnabled="{Binding !IsLaunching}" Command="{Binding LaunchProfileCommand}" CommandParameter="{Binding SelectedProfile}">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+                                <TextBlock Text="▶" FontFamily="Segoe UI Symbol" FontSize="15" Foreground="White" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding LaunchButtonLabel}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <ProgressBar Minimum="0" Maximum="100" Value="{Binding LaunchProgress}" Height="5" Foreground="#3B82F6" IsVisible="{Binding IsLaunching}"/>
+                        <Border Classes="WorkspaceDivider"/>
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Installed content" Classes="WorkspaceSectionTitle" FontSize="16"/>
+                            <Grid ColumnDefinitions="*,Auto"><TextBlock Text="Mods" Classes="WorkspaceBody"/><TextBlock Grid.Column="1" Text="{Binding SelectedProfile.ModCount}" Classes="WorkspaceValue"/></Grid>
+                            <Grid ColumnDefinitions="*,Auto"><TextBlock Text="Resource packs" Classes="WorkspaceBody"/><TextBlock Grid.Column="1" Text="{Binding SelectedProfile.ResourcePackCount}" Classes="WorkspaceValue"/></Grid>
+                            <Grid ColumnDefinitions="*,Auto"><TextBlock Text="Shaders" Classes="WorkspaceBody"/><TextBlock Grid.Column="1" Text="{Binding SelectedProfile.ShaderPackCount}" Classes="WorkspaceValue"/></Grid>
+                            <Grid ColumnDefinitions="*,Auto"><TextBlock Text="Data packs" Classes="WorkspaceBody"/><TextBlock Grid.Column="1" Text="{Binding SelectedProfile.DataPackCount}" Classes="WorkspaceValue"/></Grid>
+                            <Button Content="Manage content"
+                                    Classes="WorkspaceSecondary"
+                                    HorizontalAlignment="Stretch"
+                                    Command="{Binding OpenContentManagerCommand}"
+                                    CommandParameter="{Binding SelectedProfile}"/>
+                        </StackPanel>
+                        <Border Classes="WorkspaceDivider"/>
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Environment" Classes="WorkspaceSectionTitle" FontSize="16"/>
+                            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
+                                <TextBlock Text="Minecraft" Classes="WorkspaceSecondary" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="{Binding SelectedProfile.Version}" Classes="WorkspaceValue" VerticalAlignment="Center"/>
+                                <Button Grid.Column="2" Content="Change" Classes="WorkspaceInlineButton" Command="{Binding ShowVersionEditorCommand}"/>
+                            </Grid>
+                            <Border Background="#0B141C" BorderBrush="#2E536F" BorderThickness="1" CornerRadius="8" Padding="12"
+                                    IsVisible="{Binding IsVersionEditorVisible}">
+                                <StackPanel Spacing="9">
+                                    <TextBlock Text="{Binding VersionPickerStatus}" Classes="WorkspaceLabel"/>
+                                    <ComboBox ItemsSource="{Binding AvailableMinecraftVersions}"
+                                              SelectedItem="{Binding VersionDraft}"
+                                              Classes="WorkspaceField OfficialVersionPicker"
+                                              HorizontalAlignment="Stretch"
+                                              MinWidth="250"
+                                              MaxDropDownHeight="360"
+                                              IsEnabled="{Binding !IsLoadingVersions}"
+                                              PlaceholderText="Choose a Minecraft release">
+                                        <ComboBox.Styles>
+                                            <Style Selector="ComboBoxItem">
+                                                <Setter Property="MinHeight" Value="42"/>
+                                                <Setter Property="Margin" Value="3 2"/>
+                                                <Setter Property="Padding" Value="0"/>
+                                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                                <Setter Property="CornerRadius" Value="8"/>
+                                                <Setter Property="FontFamily" Value="Inter"/>
+                                            </Style>
+                                            <Style Selector="ComboBoxItem /template/ ContentPresenter">
+                                                <Setter Property="Background" Value="Transparent"/>
+                                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                                <Setter Property="BorderThickness" Value="1"/>
+                                                <Setter Property="CornerRadius" Value="8"/>
+                                            </Style>
+                                            <Style Selector="ComboBoxItem:pointerover /template/ ContentPresenter">
+                                                <Setter Property="Background" Value="#142C40"/>
+                                                <Setter Property="BorderBrush" Value="#315F82"/>
+                                            </Style>
+                                            <Style Selector="ComboBoxItem:selected /template/ ContentPresenter">
+                                                <Setter Property="Background" Value="#174C79"/>
+                                                <Setter Property="BorderBrush" Value="#55A8E7"/>
+                                            </Style>
+                                            <Style Selector="ComboBoxItem:selected:pointerover /template/ ContentPresenter">
+                                                <Setter Property="Background" Value="#1B588B"/>
+                                                <Setter Property="BorderBrush" Value="#7CC4F5"/>
+                                            </Style>
+                                        </ComboBox.Styles>
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" MinWidth="218" Margin="11 3">
+                                                    <TextBlock Text="{Binding}" FontFamily="Inter" FontSize="13" FontWeight="SemiBold" Foreground="#F5F8FA" VerticalAlignment="Center"/>
+                                                    <Border Grid.Column="1" Background="#102A24" BorderBrush="#245743" BorderThickness="1" CornerRadius="8" Padding="7 3" VerticalAlignment="Center">
+                                                        <TextBlock Text="RELEASE" FontFamily="Inter" FontSize="8" FontWeight="Bold" Foreground="#75D9AA"/>
+                                                    </Border>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                    <TextBlock Text="Applying a version downloads its Minecraft files immediately. Check installed content compatibility before changing versions."
+                                               Classes="WorkspaceSecondary" FontSize="11" TextWrapping="Wrap"/>
+                                    <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                                        <Button Content="Cancel" Classes="WorkspaceSecondary" Command="{Binding CancelVersionEditCommand}" IsEnabled="{Binding !IsChangingVersion}"/>
+                                        <Button Grid.Column="1" Content="{Binding VersionActionLabel}" Classes="WorkspacePrimary" Command="{Binding SaveVersionCommand}" IsEnabled="{Binding !IsChangingVersion}"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                            <Grid ColumnDefinitions="*,Auto"><TextBlock Text="Loader" Classes="WorkspaceSecondary"/><TextBlock Grid.Column="1" Text="{Binding SelectedProfile.LoaderType}" Classes="WorkspaceValue"/></Grid>
+                            <Grid ColumnDefinitions="*,Auto"><TextBlock Text="Disk usage" Classes="WorkspaceSecondary"/><TextBlock Grid.Column="1" Text="{Binding SelectedProfile.StorageUsed}" Classes="WorkspaceValue"/></Grid>
+                            <Grid ColumnDefinitions="*,Auto"><TextBlock Text="Last active" Classes="WorkspaceSecondary"/><TextBlock Grid.Column="1" Text="{Binding SelectedProfile.LastPlayed}" Classes="WorkspaceValue"/></Grid>
+                        </StackPanel>
+                        <StackPanel Spacing="7">
+                            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                                <Button Content="Open folder" Classes="WorkspaceSecondary" HorizontalAlignment="Stretch" Command="{Binding OpenInstanceFolderCommand}"/>
+                                <Button Grid.Column="1" Content="Export pack" Classes="WorkspaceSecondary" HorizontalAlignment="Stretch"
+                                        Click="OnExportInstanceClick"
+                                        IsEnabled="{Binding !IsArchiveBusy}"
+                                        ToolTip.Tip="Create a portable UB Pack"/>
+                                <Button Grid.Column="2" Content="Duplicate" Classes="WorkspaceSecondary" HorizontalAlignment="Stretch" Command="{Binding DuplicateProfileCommand}"/>
+                            </Grid>
+                            <TextBlock Text="Portable exports include mods, configs and packs; worlds and Minecraft runtime files stay private."
+                                       Classes="WorkspaceSecondary" FontSize="10" TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <Button Content="Remove from launcher" Classes="WorkspaceDanger" HorizontalAlignment="Stretch" Command="{Binding RequestDeleteCommand}"/>
+                        <Border Background="#1D1215" BorderBrush="#653841" BorderThickness="1" CornerRadius="7" Padding="16" IsVisible="{Binding IsDeleteConfirmationVisible}">
+                            <StackPanel Spacing="12">
+                                <TextBlock Text="Remove this instance?" Classes="WorkspaceSectionTitle" FontSize="16"/>
+                                <TextBlock Text="The launcher entry will be removed. Existing game files will stay on disk." Classes="WorkspaceSecondary" TextWrapping="Wrap"/>
+                                <Grid ColumnDefinitions="*,*" ColumnSpacing="10"><Button Content="Cancel" Classes="WorkspaceSecondary" Command="{Binding CancelDeleteCommand}"/><Button Grid.Column="1" Content="Remove" Classes="WorkspaceDanger" Command="{Binding ConfirmDeleteCommand}"/></Grid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
                 </Border>
 
-                <StackPanel Grid.Column="1" Spacing="12">
-                    <Border Classes="PanelCard" Padding="18 16">
-                        <StackPanel Spacing="12">
-                            <TextBlock Text="NEW INSTANCE" Classes="PanelTitle" Foreground="White"/>
-                            <TextBlock Text="Create a clean profile for a version, loader, and mod setup." TextWrapping="Wrap" FontFamily="Poppins" FontSize="11" Foreground="#89929B"/>
-                            <TextBlock Text="Instance name" Classes="FormLabel" Foreground="#89929B"/>
-                            <TextBox Text="{Binding NewProfileName}" PlaceholderText="e.g. UB Optimize"/>
-                            <TextBlock Text="Minecraft version" Classes="FormLabel" Foreground="#89929B"/>
-                            <TextBox Text="{Binding NewProfileVersion}"/>
-                            <TextBlock Text="Mod loader" Classes="FormLabel" Foreground="#89929B"/>
-                            <ComboBox ItemsSource="{Binding Loaders}" SelectedItem="{Binding NewProfileLoader}" HorizontalAlignment="Stretch"/>
-                            <Button Content="Create instance" Classes="CreateInstanceButton" HorizontalAlignment="Stretch" Padding="0 12" Command="{Binding AddProfileCommand}"/>
-                        </StackPanel>
-                    </Border>
-
-                    <Border Classes="PanelCard" Padding="18 16">
-                        <StackPanel Spacing="11">
-                            <TextBlock Text="OFFLINE ACCOUNT" Classes="PanelTitle" Foreground="White"/>
-                            <TextBlock Text="Play single-player with a local username." TextWrapping="Wrap" FontFamily="Poppins" FontSize="11" Foreground="#89929B"/>
-                            <TextBox Text="{Binding OfflineUsername}" PlaceholderText="Username"/>
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <Button Content="Login Offline" Classes="CreateInstanceButton" Padding="13 7" Command="{Binding LoginOfflineCommand}"/>
-                                <Button Content="Logout" Classes="InstanceMoreButton" Padding="13 7" Command="{Binding LogoutOfflineCommand}"/>
-                            </StackPanel>
-                            <TextBlock Text="{Binding AccountStatus}" FontFamily="Poppins" FontSize="10" Foreground="#87E3F2" TextWrapping="Wrap"/>
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
+                <Border Grid.Column="1" Classes="WorkspaceSection" VerticalAlignment="Top" IsVisible="{Binding IsCreatePanelVisible}">
+                    <StackPanel Spacing="18">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="4"><TextBlock Text="New instance" Classes="WorkspaceSectionTitle"/><TextBlock Text="Create a clean setup for a version and loader." Classes="WorkspaceSecondary" TextWrapping="Wrap"/></StackPanel>
+                            <Button Grid.Column="1" Content="Close" Classes="WorkspaceSecondary" Command="{Binding CancelCreateCommand}"/>
+                        </Grid>
+                        <StackPanel Spacing="8"><TextBlock Text="Instance name" Classes="WorkspaceLabel"/><TextBox Text="{Binding NewProfileName}" PlaceholderText="Performance setup" Classes="WorkspaceField"/></StackPanel>
+                        <StackPanel Spacing="8"><TextBlock Text="Minecraft version" Classes="WorkspaceLabel"/><TextBox Text="{Binding NewProfileVersion}" PlaceholderText="1.20.4" Classes="WorkspaceField"/></StackPanel>
+                        <StackPanel Spacing="8"><TextBlock Text="Mod loader" Classes="WorkspaceLabel"/><ComboBox ItemsSource="{Binding Loaders}" SelectedItem="{Binding NewProfileLoader}" Classes="WorkspaceField"/></StackPanel>
+                        <TextBlock Text="After creation, install compatible mods and packs from the Content page." Classes="WorkspaceSecondary" TextWrapping="Wrap"/>
+                        <Button Content="Create instance" Classes="WorkspacePrimary" HorizontalAlignment="Stretch" Command="{Binding AddProfileCommand}"/>
+                    </StackPanel>
+                </Border>
             </Grid>
         </Grid>
     </ScrollViewer>
+
+    <Grid IsVisible="{Binding IsContentManagerVisible}"
+          Margin="32 28 32 36"
+          RowDefinitions="Auto,Auto,Auto,*"
+          RowSpacing="18">
+        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
+            <Button Content="‹  Back to instances"
+                    Classes="WorkspaceSecondary"
+                    Command="{Binding CloseContentManagerCommand}"
+                    VerticalAlignment="Center"/>
+            <Grid Grid.Column="1" ColumnDefinitions="58,*" ColumnSpacing="14">
+                <Border Width="56" Height="56" CornerRadius="9" Background="{Binding SelectedProfile.Accent}" ClipToBounds="True">
+                    <Grid>
+                        <TextBlock Text="{Binding SelectedProfile.Initials}"
+                                   IsVisible="{Binding !SelectedProfile.HasIcon}"
+                                   FontFamily="Inter" FontSize="16" FontWeight="Bold" Foreground="White"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <controls:RemoteImage SourceUrl="{Binding SelectedProfile.IconUrl}"
+                                              IsVisible="{Binding SelectedProfile.HasIcon}"
+                                              Stretch="UniformToFill"/>
+                    </Grid>
+                </Border>
+                <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
+                    <TextBlock Text="Manage content" Classes="WorkspacePageTitle" FontSize="24"/>
+                    <StackPanel Orientation="Horizontal" Spacing="7">
+                        <TextBlock Text="{Binding SelectedProfile.Name}" Classes="WorkspaceLabel" Foreground="#EAF5FC"/>
+                        <TextBlock Text="/" Classes="WorkspaceSecondary"/>
+                        <TextBlock Text="{Binding SelectedProfile.RuntimeLabel}" Classes="WorkspaceSecondary" Foreground="#8DBAFF"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="9" VerticalAlignment="Center">
+                <Border Classes="WorkspaceHeaderStat">
+                    <StackPanel Spacing="1"><TextBlock Text="TOTAL" Classes="WorkspaceStatLabel"/><TextBlock Text="{Binding ManagedContentCount}" Classes="WorkspaceStatValue"/></StackPanel>
+                </Border>
+                <Border Classes="WorkspaceHeaderStat">
+                    <StackPanel Spacing="1"><TextBlock Text="ENABLED" Classes="WorkspaceStatLabel"/><TextBlock Text="{Binding EnabledManagedContentCount}" Classes="WorkspaceStatValue" Foreground="#73E0AC"/></StackPanel>
+                </Border>
+                <Border Classes="WorkspaceHeaderStat">
+                    <StackPanel Spacing="1"><TextBlock Text="DISABLED" Classes="WorkspaceStatLabel"/><TextBlock Text="{Binding DisabledManagedContentCount}" Classes="WorkspaceStatValue" Foreground="#9EACB6"/></StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
+
+        <ItemsControl Grid.Row="1" ItemsSource="{Binding ContentCategories}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="7"/></ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:ManagedContentCategory">
+                    <Button Classes="WorkspaceTab ManagedContentTab"
+                            Classes.Active="{Binding IsSelected}"
+                            Command="{Binding $parent[UserControl].((vm:ProfilesViewModel)DataContext).SelectManagedContentCategoryCommand}"
+                            CommandParameter="{Binding}">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                            <Border Classes="ManagedContentCountBadge">
+                                <TextBlock Text="{Binding Count}" FontFamily="Inter" FontSize="10" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            </Border>
+                        </StackPanel>
+                    </Button>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <Border Grid.Row="2" Classes="WorkspaceToolbar">
+            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12">
+                <TextBox Text="{Binding ContentSearchQuery}"
+                         PlaceholderText="Search installed content"
+                         Classes="WorkspaceField"/>
+                <StackPanel Grid.Column="1" Spacing="2" MinWidth="210" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding ManagedContentSummary}" Classes="WorkspaceLabel" HorizontalAlignment="Right"/>
+                    <TextBlock Text="{Binding ContentManagerStatus}" Classes="WorkspaceSecondary" MaxWidth="360" TextTrimming="CharacterEllipsis" HorizontalAlignment="Right"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                    <Button Content="Open folder" Classes="WorkspaceSecondary" Command="{Binding OpenInstanceFolderCommand}"/>
+                    <Button Content="Refresh" Classes="WorkspaceSecondary" Command="{Binding RefreshManagedContentCommand}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="3">
+            <ListBox ItemsSource="{Binding VisibleManagedContent}"
+                     Classes="ManagedContentList"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate><VirtualizingStackPanel/></ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ManagedContentItem">
+                        <Border Classes="ManagedContentRow" Classes.Enabled="{Binding IsEnabled}" Margin="0 0 0 9">
+                            <Grid ColumnDefinitions="50,*,Auto" ColumnSpacing="14">
+                                <Border Width="50" Height="50" CornerRadius="11" Background="{Binding Accent}" BorderBrush="#385367" BorderThickness="1"
+                                        ClipToBounds="True" VerticalAlignment="Center">
+                                    <Grid>
+                                        <controls:RemoteImage SourceUrl="{Binding IconSource}" IsVisible="{Binding HasIcon}" Stretch="UniformToFill"/>
+                                        <TextBlock Text="{Binding IconLabel}" IsVisible="{Binding !HasIcon}" FontFamily="Inter" FontSize="10" FontWeight="Bold" Foreground="White"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                                <StackPanel Grid.Column="1" Spacing="5" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Name}" FontFamily="Inter" FontSize="15" FontWeight="SemiBold" Foreground="#F1F6F9" TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock Text="{Binding DetailsLabel}" Classes="WorkspaceSecondary" TextTrimming="CharacterEllipsis"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Button Classes="ManagedContentToggle"
+                                            Classes.Enabled="{Binding IsEnabled}"
+                                            Command="{Binding $parent[UserControl].((vm:ProfilesViewModel)DataContext).ToggleManagedContentCommand}"
+                                            CommandParameter="{Binding}"
+                                            IsEnabled="{Binding !IsBusy}"
+                                            ToolTip.Tip="Turn this content on or off"
+                                            VerticalAlignment="Center">
+                                        <Grid Width="56" Height="26">
+                                            <TextBlock Text="ON" IsVisible="{Binding IsEnabled}" Margin="9 0 0 0"
+                                                       FontFamily="Inter" FontSize="9" FontWeight="Bold" Foreground="White"
+                                                       HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <TextBlock Text="OFF" IsVisible="{Binding !IsEnabled}" Margin="0 0 7 0"
+                                                       FontFamily="Inter" FontSize="9" FontWeight="Bold" Foreground="#AEB8BE"
+                                                       HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                            <Border Width="20" Height="20" CornerRadius="10" Margin="3"
+                                                    IsVisible="{Binding IsEnabled}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                    Background="#F5FBF8" BorderBrush="#D8EEE4" BorderThickness="1"/>
+                                            <Border Width="20" Height="20" CornerRadius="10" Margin="3"
+                                                    IsVisible="{Binding !IsEnabled}" HorizontalAlignment="Left" VerticalAlignment="Center"
+                                                    Background="#F2F5F6" BorderBrush="#D4DADC" BorderThickness="1"/>
+                                        </Grid>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <Border Classes="WorkspaceSection" IsVisible="{Binding IsManagedContentEmpty}">
+                <StackPanel Spacing="9" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Border Width="50" Height="50" CornerRadius="14" Background="#10283A" BorderBrush="#315D78" BorderThickness="1">
+                        <TextBlock Text="◇" FontFamily="Segoe UI Symbol" FontSize="22" Foreground="#72BCE9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="No content in this category" Classes="WorkspaceSectionTitle" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Install compatible content from the Content page, then manage it here." Classes="WorkspaceSecondary" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+    </Grid>
 </UserControl>

@@ -48,6 +48,7 @@ public sealed class SkinPreviewControl : Control
     private double animationPhase;
     private double yawDegrees = FrontPreviewYaw;
     private bool isDragging;
+    private bool isNavigationActive = true;
     private Point lastPointerPosition;
 
     public SkinPreviewControl()
@@ -199,7 +200,8 @@ public sealed class SkinPreviewControl : Control
                 pitch,
                 Zoom,
                 VerticalOffset,
-                IsSlim || detectedSlim,
+                IsSlim,
+                detectedSlim,
                 bob,
                 armSwing,
                 IsAnimated ? animationPhase : 0)));
@@ -244,10 +246,16 @@ public sealed class SkinPreviewControl : Control
 
     private void UpdateAnimationState()
     {
-        if (IsAnimated && VisualRoot is not null)
+        if (IsAnimated && isNavigationActive && VisualRoot is not null && IsEffectivelyVisible)
             animationTimer.Start();
         else
             animationTimer.Stop();
+    }
+
+    public void SetNavigationActive(bool isActive)
+    {
+        isNavigationActive = isActive;
+        UpdateAnimationState();
     }
 
     private void OnAnimationTick(object? sender, EventArgs e)

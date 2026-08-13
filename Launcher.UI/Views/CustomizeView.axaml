@@ -79,7 +79,8 @@
                                                VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
-                            <controls:SkinPreviewControl Source="{Binding SkinPath}"
+                            <controls:SkinPreviewControl x:Name="PlayerPreview"
+                                                         Source="{Binding SkinPath}"
                                                          CapeSource="{Binding CapePath}"
                                                          IsSlim="{Binding UseSlimModel}"
                                                          IsAnimated="True"

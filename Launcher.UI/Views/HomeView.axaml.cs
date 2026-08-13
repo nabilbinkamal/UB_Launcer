@@ -5,16 +5,24 @@ using Avalonia.Layout;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Launcher.UI.Services;
+using Launcher.UI.Controls;
+using Launcher.Core.Services;
 using Launcher.Core.ViewModels;
 using System.Runtime.Versioning;
+using System.Threading.Tasks;
 
 namespace Launcher.UI.Views;
 
 [SupportedOSPlatform("windows")]
-public partial class HomeView : UserControl
+public partial class HomeView : UserControl, INavigationAwarePage
 {
     private const double CompactBreakpoint = 1180;
     private bool? isCompact;
+    private bool isAttached;
+    private bool telemetryReadInProgress;
+    private bool responsiveLayoutQueued;
+    private bool isNavigationActive;
+    private Size pendingResponsiveSize;
     private readonly DispatcherTimer telemetryTimer;
     private readonly WindowsTelemetryReader telemetryReader;
 
@@ -26,7 +34,7 @@ public partial class HomeView : UserControl
             performanceGrid.RowDefinitions = new RowDefinitions("Auto,*,*,*,*");
         }
 
-        telemetryReader = new WindowsTelemetryReader();
+        telemetryReader = WindowsTelemetryReader.Shared;
         telemetryTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
         telemetryTimer.Tick += OnTelemetryTick;
 
@@ -37,31 +45,109 @@ public partial class HomeView : UserControl
 
     private void OnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
     {
+        isAttached = true;
         ApplyResponsiveLayout(Bounds.Width, Bounds.Height);
-        OnTelemetryTick(this, EventArgs.Empty);
-        telemetryTimer.Start();
+        UpdateTelemetryState();
     }
 
     private void OnDetachedFromVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
     {
+        isAttached = false;
         telemetryTimer.Stop();
     }
 
-    private void OnTelemetryTick(object? sender, EventArgs e)
+    private void UpdateTelemetryState()
     {
-        if (DataContext is not HomeViewModel viewModel)
+        if (!isAttached || !isNavigationActive)
+        {
+            telemetryTimer.Stop();
+            return;
+        }
+
+        OnTelemetryTick(this, EventArgs.Empty);
+        telemetryTimer.Start();
+    }
+
+    public void SetNavigationActive(bool isActive)
+    {
+        isNavigationActive = isActive;
+        UpdateTelemetryState();
+    }
+
+    private async void OnTelemetryTick(object? sender, EventArgs e)
+    {
+        if (!isAttached || !isNavigationActive || telemetryReadInProgress ||
+            TopLevel.GetTopLevel(this) is Window { WindowState: WindowState.Minimized })
         {
             return;
         }
 
-        var snapshot = telemetryReader.Read();
-        viewModel.UpdateTelemetry(snapshot.CpuUsage, snapshot.GpuUsage, snapshot.UsedMemoryGb, snapshot.TotalMemoryGb);
-        viewModel.RefreshTotalPlaytime();
+        telemetryReadInProgress = true;
+        try
+        {
+            // PerformanceCounter.NextValue can briefly block. Keep it off the UI thread so
+            // native window move/resize remains responsive.
+            var snapshot = await Task.Run(telemetryReader.Read);
+            if (!isAttached || DataContext is not HomeViewModel viewModel)
+            {
+                return;
+            }
+
+            viewModel.UpdateTelemetry(snapshot.CpuUsage, snapshot.GpuUsage, snapshot.UsedMemoryGb, snapshot.TotalMemoryGb);
+            viewModel.RefreshTotalPlaytime();
+            viewModel.RefreshRecentData();
+        }
+        finally
+        {
+            telemetryReadInProgress = false;
+        }
     }
 
     private void OnSizeChanged(object? sender, SizeChangedEventArgs e)
     {
-        ApplyResponsiveLayout(e.NewSize.Width, e.NewSize.Height);
+        pendingResponsiveSize = e.NewSize;
+        if (responsiveLayoutQueued)
+        {
+            return;
+        }
+
+        responsiveLayoutQueued = true;
+        Dispatcher.UIThread.Post(() =>
+        {
+            responsiveLayoutQueued = false;
+            ApplyResponsiveLayout(pendingResponsiveSize.Width, pendingResponsiveSize.Height);
+        }, DispatcherPriority.Render);
+    }
+
+    private void OnRecentInstanceClick(object? sender, Avalonia.Interactivity.RoutedEventArgs eventArgs)
+    {
+        if (sender is not Button { DataContext: GameProfile profile } ||
+            TopLevel.GetTopLevel(this)?.DataContext is not MainWindowViewModel mainViewModel)
+        {
+            return;
+        }
+
+        InstanceStore.SelectedProfile = profile;
+        if (mainViewModel.NavigateProfilesCommand.CanExecute(null))
+        {
+            mainViewModel.NavigateProfilesCommand.Execute(null);
+        }
+    }
+
+    private void OnRecentServerClick(object? sender, Avalonia.Interactivity.RoutedEventArgs eventArgs)
+    {
+        if (sender is not Button { DataContext: LocalServerItem server } ||
+            TopLevel.GetTopLevel(this)?.DataContext is not MainWindowViewModel mainViewModel)
+        {
+            return;
+        }
+
+        ServerStore.Touch(server);
+        ServerStore.SelectedServer = server;
+        if (mainViewModel.NavigateCreateServerCommand.CanExecute(null))
+        {
+            mainViewModel.NavigateCreateServerCommand.Execute(null);
+        }
     }
 
     private void ApplyResponsiveLayout(double width, double height)

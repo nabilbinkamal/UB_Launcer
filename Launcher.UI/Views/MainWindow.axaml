@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Launcher.Core.ViewModels"
         xmlns:controls="using:Launcher.UI.Controls"
+        xmlns:views="using:Launcher.UI.Views"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
@@ -21,12 +22,25 @@
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaTitleBarHeightHint="-1">
 
-    <Grid x:Name="MainLayout" ColumnDefinitions="230,*" Background="{DynamicResource PageBrush}">
-        <Border x:Name="Sidebar" Grid.Column="0" Background="{DynamicResource SidebarBrush}" BorderBrush="#18212A" BorderThickness="0 0 1 0">
+    <Grid>
+    <Grid x:Name="MainLayout" ColumnDefinitions="230,*" Background="{DynamicResource PageBrush}"
+          Classes.ModalOpen="{Binding IsAnyModalOpen}"
+          Opacity="{Binding MainContentOpacity}" IsHitTestVisible="{Binding !IsAnyModalOpen}">
+        <Grid.Styles>
+            <Style Selector="Grid.ModalOpen">
+                <Setter Property="Effect">
+                    <BlurEffect Radius="10"/>
+                </Setter>
+            </Style>
+        </Grid.Styles>
+        <Border x:Name="Sidebar" Classes="SidebarGlass" Grid.Column="0">
             <Grid RowDefinitions="Auto,*,Auto">
                 <StackPanel x:Name="LogoStack" Grid.Row="0" Margin="28 34 22 1" Spacing="10">
                     <StackPanel Orientation="Horizontal" Spacing="4">
-                        <Image Source="/Assets/UB.png" Width="43" Height="38" Stretch="Uniform" Margin="0 -2 0 0"/>
+                        <Image Source="/Assets/UB.png" Width="43" Height="38" Stretch="Uniform" Margin="0 -2 0 0"
+                               IsVisible="{Binding !HasRemoteLogoImage}"/>
+                        <controls:RemoteImage SourceUrl="{Binding RemoteLogoImageUrl}" Width="43" Height="38" Stretch="Uniform"
+                                              DecodePixelWidth="512" Margin="0 -2 0 0" IsVisible="{Binding HasRemoteLogoImage}"/>
                         <TextBlock Text="LAUNCHER" FontFamily="Minecraft Ten" FontSize="22" FontWeight="Medium" Foreground="#87E3F2" VerticalAlignment="Center" Margin="0 5 0 0"/>
                     </StackPanel>
                     <Border Height="1" Background="Transparent" Margin="0 14 0 0"/>
@@ -35,83 +49,136 @@
                 <StackPanel x:Name="SidebarNavigation" Grid.Row="1" Margin="30 0 21 0" Spacing="12">
                     <Button Classes="SidebarButton" Classes.Active="{Binding IsHomeActive}" Command="{Binding NavigateHomeCommand}">
                         <StackPanel Orientation="Horizontal" Spacing="14">
-                            <controls:SvgPathIcon Source="/Assets/home.svg"/>
+                            <controls:SvgPathIcon Source="{Binding HomeIconSource}"/>
                             <TextBlock Text="Home" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                     <Button Classes="SidebarButton" Classes.Active="{Binding IsInstanceActive}" Command="{Binding NavigateProfilesCommand}">
                         <StackPanel Orientation="Horizontal" Spacing="14">
-                            <controls:SvgPathIcon Source="/Assets/instance.svg"/>
+                            <controls:SvgPathIcon Source="{Binding InstanceIconSource}"/>
                             <TextBlock Text="Instance" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                     <Button Classes="SidebarButton" Classes.Active="{Binding IsModsActive}" Command="{Binding NavigateModsCommand}">
                         <StackPanel Orientation="Horizontal" Spacing="14">
-                            <controls:SvgPathIcon Source="/Assets/mods.svg"/>
+                            <controls:SvgPathIcon Source="{Binding ModsIconSource}"/>
                             <TextBlock Text="Content" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                     <Button Classes="SidebarButton" Classes.Active="{Binding IsCustomizeActive}" Command="{Binding NavigateCustomizeCommand}">
                         <StackPanel Orientation="Horizontal" Spacing="14">
-                            <controls:SvgPathIcon Source="/Assets/customize.svg"/>
+                            <controls:SvgPathIcon Source="{Binding CustomizeIconSource}"/>
                             <TextBlock Text="Customize" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                     <Button Classes="SidebarButton" Classes.Active="{Binding IsPerformanceActive}" Command="{Binding NavigatePerformanceCommand}">
                         <StackPanel Orientation="Horizontal" Spacing="14">
-                            <controls:SvgPathIcon Source="/Assets/performance.svg"/>
+                            <controls:SvgPathIcon Source="{Binding PerformanceIconSource}"/>
                             <TextBlock Text="Performance" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                     <Button Classes="SidebarButton" Classes.Active="{Binding IsCreateServerActive}" Command="{Binding NavigateCreateServerCommand}">
                         <StackPanel Orientation="Horizontal" Spacing="14">
-                            <controls:SvgPathIcon Source="/Assets/createserver.svg"/>
+                            <controls:SvgPathIcon Source="{Binding ServerIconSource}"/>
                             <TextBlock Text="Create server" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                     <Button Classes="SidebarButton" Classes.Active="{Binding IsSettingsActive}" Command="{Binding NavigateSettingsCommand}">
                         <StackPanel Orientation="Horizontal" Spacing="14">
-                            <controls:SvgPathIcon Source="/Assets/settings.svg"/>
+                            <controls:SvgPathIcon Source="{Binding SettingsIconSource}"/>
                             <TextBlock Text="Settings" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                 </StackPanel>
 
-                <Border x:Name="ProfilePanel" Classes="ProfileCard" Grid.Row="2" Width="179" Height="109" HorizontalAlignment="Left" Margin="30 18 0 18">
-                    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto">
-                        <Border Grid.Row="0" Grid.RowSpan="2" Width="40" Height="40" CornerRadius="5" Background="#E9E9E9" VerticalAlignment="Center" Margin="0 0 10 0"/>
-                        <TextBlock Grid.Column="1" Text="{Binding Username}" FontSize="12" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Bottom"/>
-                        <TextBlock Grid.Column="1" Grid.Row="1" Text="Premium" Classes="PremiumLabel" Margin="0 2 0 0"/>
-                        <TextBlock Grid.Column="2" Text="⌄" FontSize="20" Foreground="#DDE8F1" VerticalAlignment="Center"/>
-                        <StackPanel Grid.Row="2" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="18" Margin="0 14 0 0">
-                            <TextBlock Text="◉" Foreground="White" FontSize="15"/>
-                            <TextBlock Text="♪" Foreground="White" FontSize="17"/>
-                            <TextBlock Text="▶" Foreground="White" FontSize="14"/>
-                            <TextBlock Text="◎" Foreground="White" FontSize="16"/>
-                        </StackPanel>
-                        <Border Grid.RowSpan="3" Grid.ColumnSpan="3" Background="#090D12">
-                            <Grid RowDefinitions="40,*" ColumnDefinitions="40,*,Auto">
-                                <Border Width="40" Height="40" CornerRadius="5" Background="#E9E9E9"/>
-                                <StackPanel Grid.Column="1" Margin="10 3 0 0" Spacing="1">
-                                    <TextBlock Text="{Binding Username}" Classes="PlayerNameLabel" TextTrimming="CharacterEllipsis"/>
-                                    <TextBlock Text="Premium" Classes="PremiumLabel"/>
-                                </StackPanel>
-                                <TextBlock Grid.Column="2" Text="⌄" Classes="PlayerChevron"/>
-                                <StackPanel Grid.Row="1" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="19" Margin="0 16 0 0">
-                                    <controls:SvgPathIcon Source="/Assets/discord.svg" Width="23" Height="23"/>
-                                    <controls:SvgPathIcon Source="/Assets/tiktok.svg" Width="23" Height="23"/>
-                                    <controls:SvgPathIcon Source="/Assets/youtube.svg" Width="23" Height="23"/>
-                                    <controls:SvgPathIcon Source="/Assets/web.svg" Width="23" Height="23"/>
-                                </StackPanel>
-                            </Grid>
+                <Border x:Name="ProfilePanel" Classes="ProfileCard" Grid.Row="2" Width="179" HorizontalAlignment="Left" Margin="30 18 0 18" Padding="0">
+                    <Grid RowDefinitions="Auto,Auto,Auto">
+                        <Border IsVisible="{Binding IsAccountMenuOpen}" Padding="8 10 8 8">
+                            <StackPanel Spacing="7">
+                                <Grid ColumnDefinitions="*,Auto" Margin="4 0 3 1">
+                                    <TextBlock Text="SAVED ACCOUNTS" Classes="AccountMenuTitle"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding SavedAccounts.Count}" FontFamily="Poppins" FontSize="9" Foreground="#777D83"
+                                               VerticalAlignment="Center"/>
+                                </Grid>
+
+                                <ScrollViewer MaxHeight="150" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                    <ItemsControl ItemsSource="{Binding SavedAccounts}" IsVisible="{Binding HasSavedAccounts}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:SavedAccountItem">
+                                                <Button Classes="SavedAccountButton"
+                                                        Classes.Active="{Binding IsActive}"
+                                                        Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).SelectSavedAccountCommand}"
+                                                        CommandParameter="{Binding}">
+                                                    <Grid ColumnDefinitions="12,28,*" ColumnSpacing="7">
+                                                        <Border Width="9" Height="9" CornerRadius="5" BorderBrush="#00D9FF" BorderThickness="1.25" VerticalAlignment="Center">
+                                                            <Border Width="5" Height="5" CornerRadius="3" Background="#00D9FF" IsVisible="{Binding IsActive}"/>
+                                                        </Border>
+                                                        <Border Grid.Column="1" Width="26" Height="26" CornerRadius="5" Background="#E3E5E6"/>
+                                                        <TextBlock Grid.Column="2" Text="{Binding Username}" Classes="PlayerNameLabel" FontSize="10.5"
+                                                                   TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                                                    </Grid>
+                                                </Button>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+
+                                <TextBlock Text="No saved accounts yet"
+                                           IsVisible="{Binding !HasSavedAccounts}"
+                                           FontFamily="Poppins" FontSize="10" Foreground="#77838E"
+                                           HorizontalAlignment="Center" Margin="0 8"/>
+
+                                <Button Classes="AddAccountButton" Command="{Binding AddAccountCommand}">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock Text="+" FontFamily="Poppins" FontSize="14" Foreground="#E8EAEC" VerticalAlignment="Center" Margin="0 -2 0 0"/>
+                                        <TextBlock Text="Add account" FontFamily="Poppins" FontSize="9.5" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
                         </Border>
+
+                        <Border Grid.Row="1" Height="1" Background="#273945" IsVisible="{Binding IsAccountMenuOpen}" Margin="9 0"/>
+
+                        <Grid Grid.Row="2" RowDefinitions="Auto,Auto" Margin="10 10 10 11">
+                            <Button Classes="ProfileToggleButton" Command="{Binding ToggleAccountMenuCommand}"
+                                    AutomationProperties.Name="Account menu">
+                                <Grid ColumnDefinitions="40,*,20" ColumnSpacing="9">
+                                    <Border Width="40" Height="40" CornerRadius="6" Background="#E3E5E6"/>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="1">
+                                        <TextBlock Text="{Binding Username}" Classes="PlayerNameLabel" FontSize="11" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding UserRank}" Classes="PremiumLabel"/>
+                                    </StackPanel>
+                                    <controls:SvgPathIcon Grid.Column="2" Source="/Assets/arrow-outlined.svg" Width="16" Height="8"
+                                                          HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="50%,50%">
+                                        <controls:SvgPathIcon.RenderTransform>
+                                            <RotateTransform Angle="{Binding AccountArrowAngle}"/>
+                                        </controls:SvgPathIcon.RenderTransform>
+                                    </controls:SvgPathIcon>
+                                </Grid>
+                            </Button>
+
+                            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15" Margin="0 14 0 0">
+                                <Border Classes="SocialIconHover" ToolTip.Tip="Discord">
+                                    <controls:SvgPathIcon Source="{Binding DiscordIconSource}" Width="23" Height="23"/>
+                                </Border>
+                                <Border Classes="SocialIconHover" ToolTip.Tip="TikTok">
+                                    <controls:SvgPathIcon Source="{Binding TiktokIconSource}" Width="23" Height="23"/>
+                                </Border>
+                                <Border Classes="SocialIconHover" ToolTip.Tip="YouTube">
+                                    <controls:SvgPathIcon Source="{Binding YoutubeIconSource}" Width="23" Height="23"/>
+                                </Border>
+                                <Border Classes="SocialIconHover" ToolTip.Tip="Website">
+                                    <controls:SvgPathIcon Source="{Binding WebIconSource}" Width="23" Height="23"/>
+                                </Border>
+                            </StackPanel>
+                        </Grid>
                     </Grid>
                 </Border>
             </Grid>
         </Border>
 
-        <Grid Grid.Column="1" RowDefinitions="32,*" Background="{DynamicResource PageBrush}">
-            <Border Grid.Row="0" Background="#050505" PointerPressed="OnTitleBarPointerPressed">
+        <Grid Grid.Column="1" RowDefinitions="32,*" Background="Transparent">
+            <Border Grid.Row="0" Classes="TitleBarGlass" PointerPressed="OnTitleBarPointerPressed">
                 <Grid ColumnDefinitions="*,Auto">
                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Stretch">
                         <Button Classes="WindowButton" ToolTip.Tip="Minimize" Click="OnMinimizeClick">
@@ -126,7 +193,134 @@
                     </StackPanel>
                 </Grid>
             </Border>
-            <ContentControl Grid.Row="1" Content="{Binding Navigation.CurrentView}"/>
+            <controls:NavigationHost Grid.Row="1"
+                                     ItemsSource="{Binding Navigation.Views}"
+                                     CurrentView="{Binding Navigation.CurrentView}"/>
+        </Grid>
+    </Grid>
+
+        <Border Background="#75040709" IsVisible="{Binding IsSettingsOpen}">
+            <views:SettingsView DataContext="{Binding Settings}"/>
+        </Border>
+
+        <Grid IsVisible="{Binding IsUpdatePopupVisible}" Background="#B8000000">
+            <Border Width="520" Padding="30" CornerRadius="14" Background="#0C1925" BorderBrush="#2877B5" BorderThickness="1"
+                    HorizontalAlignment="Center" VerticalAlignment="Center" BoxShadow="0 14 42 0 #90000000">
+                <StackPanel Spacing="14">
+                    <TextBlock Text="UB LAUNCHER UPDATE" FontSize="12" FontWeight="Bold" Foreground="#56C7FF"/>
+                    <TextBlock Text="{Binding UpdateTitle}" FontSize="23" FontWeight="SemiBold" Foreground="White" TextWrapping="Wrap"/>
+                    <TextBlock Text="{Binding UpdateMessage}" FontSize="14" Foreground="#C5D4E1" TextWrapping="Wrap"/>
+                    <TextBlock Text="This update is required before you can continue." FontSize="12" Foreground="#FFB0A0"
+                               IsVisible="{Binding IsMandatoryUpdate}"/>
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10" Margin="0 8 0 0">
+                        <Button Content="Later" Command="{Binding DismissUpdateCommand}" IsVisible="{Binding !IsMandatoryUpdate}"
+                                Background="Transparent" BorderBrush="#38536A" BorderThickness="1" Foreground="#D7E4ED" Padding="20 11"/>
+                        <Button Grid.Column="1" Content="Update now" Command="{Binding OpenUpdateCommand}" IsEnabled="{Binding HasUpdateUrl}"
+                                Background="#167AC0" BorderBrush="#56BEF4" BorderThickness="1" Foreground="White" FontWeight="SemiBold" Padding="22 11"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Grid IsVisible="{Binding IsAccountDialogOpen}">
+            <Button Classes="AccountModalBackdrop" Command="{Binding CloseAccountDialogCommand}"/>
+
+            <Border Classes="AccountModalCard" Width="620" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid RowDefinitions="Auto,*">
+                    <Grid ColumnDefinitions="*,Auto" Margin="0 0 0 24">
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="ADD ACCOUNT" Classes="AccountModalTitle"/>
+                            <TextBlock Text="Choose how you want to play Minecraft." Classes="AccountModalSubtitle"/>
+                        </StackPanel>
+                        <Button Grid.Column="1" Classes="AccountModalCloseButton" Command="{Binding CloseAccountDialogCommand}" ToolTip.Tip="Close">
+                            <TextBlock Text="×" FontFamily="Poppins" FontSize="21" Margin="0 -3 0 0"/>
+                        </Button>
+                    </Grid>
+
+                    <Grid Grid.Row="1">
+                        <StackPanel IsVisible="{Binding IsAccountChoiceVisible}" Spacing="18">
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="14">
+                                <Button Classes="AccountChoiceButton Microsoft" Command="{Binding SignInWithMicrosoftCommand}">
+                                    <Grid RowDefinitions="Auto,Auto,Auto" HorizontalAlignment="Stretch">
+                                        <Border Classes="AccountChoiceIcon Microsoft" HorizontalAlignment="Left">
+                                            <TextBlock Text="M" FontFamily="Poppins" FontSize="22" FontWeight="SemiBold" Foreground="White"/>
+                                        </Border>
+                                        <TextBlock Grid.Row="1" Text="Microsoft login" Classes="AccountChoiceTitle" Margin="0 18 0 0"/>
+                                        <TextBlock Grid.Row="2" Text="Use your official Minecraft account through secure browser sign-in."
+                                                   Classes="AccountChoiceDescription" Margin="0 7 0 0" TextWrapping="Wrap"/>
+                                    </Grid>
+                                </Button>
+
+                                <Button Grid.Column="1" Classes="AccountChoiceButton Offline" Command="{Binding ShowOfflineAccountEntryCommand}">
+                                    <Grid RowDefinitions="Auto,Auto,Auto" HorizontalAlignment="Stretch">
+                                        <Border Classes="AccountChoiceIcon Offline" HorizontalAlignment="Left">
+                                            <Grid Width="24" Height="24">
+                                                <Border Width="9" Height="9" CornerRadius="5" Background="#EAF8FF" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                                                <Border Width="19" Height="10" CornerRadius="5 5 3 3" Background="#EAF8FF" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+                                            </Grid>
+                                        </Border>
+                                        <TextBlock Grid.Row="1" Text="Offline account" Classes="AccountChoiceTitle" Margin="0 18 0 0"/>
+                                        <TextBlock Grid.Row="2" Text="Create a local username and play without signing in online."
+                                                   Classes="AccountChoiceDescription" Margin="0 7 0 0" TextWrapping="Wrap"/>
+                                    </Grid>
+                                </Button>
+                            </Grid>
+
+                            <Border Classes="AccountSecurityNote">
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                    <TextBlock Text="✓" FontFamily="Poppins" FontSize="13" Foreground="#77CEFF" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" Text="UB Launcher never asks for or stores your Microsoft password."
+                                               FontFamily="Poppins" FontSize="11" Foreground="#8CA0AE" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel IsVisible="{Binding IsOfflineAccountEntryVisible}" Spacing="20">
+                            <Button Classes="AccountBackButton" Command="{Binding ShowAccountChoicesCommand}" HorizontalAlignment="Left">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock Text="‹" FontFamily="Poppins" FontSize="20" Margin="0 -4 0 0"/>
+                                    <TextBlock Text="Back" FontFamily="Poppins" FontSize="12" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Border Classes="OfflineAccountPanel">
+                                <Grid ColumnDefinitions="62,*" ColumnSpacing="18">
+                                    <Border Classes="AccountChoiceIcon Offline" Width="62" Height="62">
+                                        <Grid Width="28" Height="28">
+                                            <Border Width="11" Height="11" CornerRadius="6" Background="#EAF8FF" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                                            <Border Width="23" Height="12" CornerRadius="6 6 3 3" Background="#EAF8FF" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+                                        </Grid>
+                                    </Border>
+                                    <StackPanel Grid.Column="1" Spacing="5" VerticalAlignment="Center">
+                                        <TextBlock Text="Offline account" Classes="AccountChoiceTitle"/>
+                                        <TextBlock Text="This username is saved locally on this PC." Classes="AccountChoiceDescription"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="MINECRAFT USERNAME" Classes="AccountFieldLabel"/>
+                                <TextBox Text="{Binding NewOfflineUsername}" Classes="AccountUsernameInput"
+                                         PlaceholderText="Enter username" MaxLength="16"/>
+                                <TextBlock Text="3–16 characters · letters, numbers, and underscores only"
+                                           Classes="AccountModalSubtitle" FontSize="10.5"/>
+                            </StackPanel>
+
+                            <TextBlock Text="{Binding AccountDialogStatus}" Classes="AccountStatusText"
+                                       IsVisible="{Binding !!AccountDialogStatus}" TextWrapping="Wrap"/>
+
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                                <Button Content="Cancel" Classes="AccountSecondaryButton" Command="{Binding CloseAccountDialogCommand}"/>
+                                <Button Grid.Column="1" Content="Add offline account" Classes="AccountPrimaryButton" Command="{Binding SaveOfflineAccountCommand}"/>
+                            </Grid>
+                        </StackPanel>
+
+                        <TextBlock Text="{Binding AccountDialogStatus}" Classes="AccountStatusText"
+                                   IsVisible="{Binding IsAccountChoiceVisible}" HorizontalAlignment="Center"
+                                   Margin="0 226 0 0" TextWrapping="Wrap"/>
+                    </Grid>
+                </Grid>
+            </Border>
         </Grid>
     </Grid>
 </Window>
