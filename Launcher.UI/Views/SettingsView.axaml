@@ -54,7 +54,7 @@
                             <StackPanel IsVisible="{Binding IsPrivacySelected}" Spacing="20">
                                 <StackPanel Spacing="5"><TextBlock Text="Privacy" Classes="SettingsPageHeading"/><TextBlock Text="Choose what diagnostic information the launcher may collect." Classes="SettingsDescription"/></StackPanel>
                                 <Border Classes="SettingsContentCard"><StackPanel Spacing="20">
-                                    <Grid ColumnDefinitions="*,Auto"><StackPanel Spacing="5"><TextBlock Text="Anonymous diagnostics" Classes="SettingsSectionTitle"/><TextBlock Text="Share anonymous launcher performance information." Classes="SettingsDescription"/></StackPanel><ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableAnonymousTelemetry}"/></Grid><Border Classes="SettingsDivider"/>
+                                    <Grid ColumnDefinitions="*,Auto"><StackPanel Spacing="5"><TextBlock Text="Anonymous usage analytics" Classes="SettingsSectionTitle"/><TextBlock Text="Share launcher version, OS, sessions, and game-launch counts. Username, email, and hardware IDs are never sent." Classes="SettingsDescription" TextWrapping="Wrap"/></StackPanel><ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableAnonymousTelemetry}"/></Grid><Border Classes="SettingsDivider"/>
                                     <Grid ColumnDefinitions="*,Auto"><StackPanel Spacing="5"><TextBlock Text="Crash reports" Classes="SettingsSectionTitle"/><TextBlock Text="Send technical crash details to help improve stability." Classes="SettingsDescription"/></StackPanel><ToggleSwitch Grid.Column="1" IsChecked="{Binding ShareCrashReports}"/></Grid>
                                 </StackPanel></Border>
                             </StackPanel>

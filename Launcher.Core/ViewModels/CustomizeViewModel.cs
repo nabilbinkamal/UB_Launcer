@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -25,6 +26,14 @@ public partial class CapeLibraryItem : ObservableObject
     public string Name { get; init; } = string.Empty;
     public string ImagePath { get; init; } = string.Empty;
 
+    /// <summary>True for capes fetched from the Microsoft/Mojang profile (not user-imported files).</summary>
+    [JsonIgnore]
+    public bool IsOwned { get; init; }
+
+    /// <summary>Remote texture URL (only set for owned capes; empty for local file capes).</summary>
+    [JsonIgnore]
+    public string TextureUrl { get; init; } = string.Empty;
+
     [property: JsonIgnore]
     [ObservableProperty]
     private bool _isSelected;
@@ -40,6 +49,9 @@ public partial class CustomizeViewModel : ViewModelBase
     private static readonly string SavedCapesManifestPath = Path.Combine(CosmeticsDirectory, "saved-capes.json");
     private static readonly string SavedCapePath = Path.Combine(CosmeticsDirectory, "cape.png");
     private static readonly string CosmeticsSelectionPath = Path.Combine(CosmeticsDirectory, "selection.json");
+    private static readonly string OwnedCapesDirectory = Path.Combine(CosmeticsDirectory, "owned-capes");
+
+    private static readonly HttpClient TextureClient = new() { Timeout = TimeSpan.FromSeconds(15) };
 
     private sealed class CosmeticSelectionState
     {
@@ -56,6 +68,10 @@ public partial class CustomizeViewModel : ViewModelBase
 
     public ObservableCollection<SkinLibraryItem> SavedSkins { get; } = [];
     public ObservableCollection<CapeLibraryItem> SavedCapes { get; } = [];
+    public ObservableCollection<CapeLibraryItem> MicrosoftOwnedCapes { get; } = [];
+
+    [ObservableProperty]
+    private bool _hasMicrosoftOwnedCapes;
 
     public ObservableCollection<SkinLibraryItem> DefaultSkins { get; } =
     [
@@ -77,12 +93,16 @@ public partial class CustomizeViewModel : ViewModelBase
     public CustomizeViewModel()
     {
         OfflineAccountStore.AccountChanged += RefreshUsername;
+        MicrosoftAccountStore.SessionChanged += OnMicrosoftSessionChanged;
         LoadSavedSkins();
         LoadSavedCapes();
         RestoreSelection();
+        _ = LoadMicrosoftOwnedCapesAsync();
     }
 
     private void RefreshUsername() => OnPropertyChanged(nameof(Username));
+
+    private void OnMicrosoftSessionChanged() => _ = LoadMicrosoftOwnedCapesAsync();
 
     public void ImportSkin(string selectedPath, bool isSlim)
     {
@@ -154,12 +174,150 @@ public partial class CustomizeViewModel : ViewModelBase
     [RelayCommand]
     private void SelectSavedCape(CapeLibraryItem cape)
     {
-        foreach (var savedCape in SavedCapes)
-            savedCape.IsSelected = ReferenceEquals(savedCape, cape);
+        // Toggle: clicking the already-selected cape deselects it.
+        if (cape.IsSelected)
+        {
+            cape.IsSelected = false;
+            CapePath = string.Empty;
+            // Also deselect any owned cape that might have been selected.
+            foreach (var oc in MicrosoftOwnedCapes)
+                oc.IsSelected = false;
+            SaveSelection();
+            StatusText = $"{cape.Name} deselected.";
+            return;
+        }
 
+        // Deselect everything, then select the tapped cape.
+        foreach (var c in SavedCapes) c.IsSelected = false;
+        foreach (var c in MicrosoftOwnedCapes) c.IsSelected = false;
+        cape.IsSelected = true;
         CapePath = cape.ImagePath;
         SaveSelection();
         StatusText = $"{cape.Name} selected from saved capes.";
+    }
+
+    [RelayCommand]
+    private void SelectOwnedCape(CapeLibraryItem cape)
+    {
+        // Toggle: clicking the already-selected owned cape deselects it.
+        if (cape.IsSelected)
+        {
+            cape.IsSelected = false;
+            CapePath = string.Empty;
+            foreach (var sc in SavedCapes) sc.IsSelected = false;
+            SaveSelection();
+            StatusText = $"{cape.Name} deselected.";
+            return;
+        }
+
+        foreach (var c in SavedCapes) c.IsSelected = false;
+        foreach (var c in MicrosoftOwnedCapes) c.IsSelected = false;
+        cape.IsSelected = true;
+        CapePath = cape.ImagePath;
+        SaveSelection();
+        StatusText = $"{cape.Name} selected from owned capes.";
+    }
+
+    /// <summary>
+    /// Downloads and caches cape textures from the stored Microsoft session,
+    /// then populates <see cref="MicrosoftOwnedCapes"/>.
+    /// Safe to call multiple times — rebuilds the list from scratch each time.
+    /// </summary>
+    private async Task LoadMicrosoftOwnedCapesAsync()
+    {
+        MicrosoftOwnedCapes.Clear();
+
+        if (!MicrosoftAccountStore.HasSession)
+        {
+            HasMicrosoftOwnedCapes = false;
+            return;
+        }
+
+        var capes = MicrosoftAccountStore.Capes;
+        if (capes.Count == 0)
+        {
+            HasMicrosoftOwnedCapes = false;
+            return;
+        }
+
+        Directory.CreateDirectory(OwnedCapesDirectory);
+
+        foreach (var cape in capes)
+        {
+            var localPath = await DownloadCapeTextureAsync(cape.Id, cape.TextureUrl);
+            if (localPath is null) continue;
+
+            // Use the alias as the display name, falling back to the cape ID.
+            var displayName = string.IsNullOrWhiteSpace(cape.Alias) ? cape.Id : cape.Alias;
+
+            var item = new CapeLibraryItem
+            {
+                Name = displayName,
+                ImagePath = localPath,
+                IsOwned = true,
+                TextureUrl = cape.TextureUrl
+            };
+
+            // Restore selection: if this cape's local file is the current CapePath, select it.
+            item.IsSelected = !string.IsNullOrWhiteSpace(CapePath)
+                && localPath.Equals(CapePath, StringComparison.OrdinalIgnoreCase);
+
+            MicrosoftOwnedCapes.Add(item);
+        }
+
+        // If nothing was previously selected from owned capes but the active cape was
+        // originally an owned one (matched by file content), restore the selection.
+        if (MicrosoftOwnedCapes.All(c => !c.IsSelected) && File.Exists(CapePath))
+        {
+            foreach (var item in MicrosoftOwnedCapes)
+            {
+                if (!File.Exists(item.ImagePath)) continue;
+                try
+                {
+                    var a = SHA256.HashData(File.ReadAllBytes(item.ImagePath));
+                    var b = SHA256.HashData(File.ReadAllBytes(CapePath));
+                    if (a.SequenceEqual(b))
+                    {
+                        item.IsSelected = true;
+                        break;
+                    }
+                }
+                catch { /* ignore */ }
+            }
+        }
+
+        HasMicrosoftOwnedCapes = MicrosoftOwnedCapes.Count > 0;
+    }
+
+    /// <summary>
+    /// Download a cape texture from <paramref name="textureUrl"/> and cache it under
+    /// <see cref="OwnedCapesDirectory"/>/<paramref name="capeId"/>.png.
+    /// Returns the local path, or null on failure.
+    /// </summary>
+    private static async Task<string?> DownloadCapeTextureAsync(string capeId, string textureUrl)
+    {
+        if (string.IsNullOrWhiteSpace(textureUrl)) return null;
+
+        var safeName = string.Concat(capeId.Where(c => char.IsLetterOrDigit(c) || c == '-' || c == '_'));
+        if (string.IsNullOrWhiteSpace(safeName)) safeName = Convert.ToHexString(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(textureUrl))).ToLowerInvariant();
+
+        var localPath = Path.Combine(OwnedCapesDirectory, $"{safeName}.png");
+
+        // Use cached file if it is less than 24 hours old to avoid hammering the API.
+        if (File.Exists(localPath) && (DateTime.UtcNow - File.GetLastWriteTimeUtc(localPath)).TotalHours < 24)
+            return localPath;
+
+        try
+        {
+            var bytes = await TextureClient.GetByteArrayAsync(textureUrl);
+            await File.WriteAllBytesAsync(localPath, bytes);
+            return localPath;
+        }
+        catch
+        {
+            // If download fails but we have an old cached copy, use it.
+            return File.Exists(localPath) ? localPath : null;
+        }
     }
 
     [RelayCommand]
@@ -210,6 +368,8 @@ public partial class CustomizeViewModel : ViewModelBase
         SelectedSkinName = "Steve";
         UseSlimModel = false;
         foreach (var cape in SavedCapes)
+            cape.IsSelected = false;
+        foreach (var cape in MicrosoftOwnedCapes)
             cape.IsSelected = false;
         SetSelectedSkin(DefaultSkins[0]);
         if (File.Exists(SavedCapePath)) File.Delete(SavedCapePath);
@@ -398,6 +558,12 @@ public partial class CustomizeViewModel : ViewModelBase
                         && File.Exists(selectedCapePath)
                         && Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(cape.ImagePath)))
                             .Equals(Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(selectedCapePath))), StringComparison.OrdinalIgnoreCase)));
+        }
+
+        foreach (var cape in MicrosoftOwnedCapes)
+        {
+            cape.IsSelected = !string.IsNullOrWhiteSpace(selectedCapePath)
+                && cape.ImagePath.Equals(selectedCapePath, StringComparison.OrdinalIgnoreCase);
         }
     }
 

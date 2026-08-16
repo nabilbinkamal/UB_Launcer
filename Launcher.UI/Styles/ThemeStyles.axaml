@@ -70,22 +70,22 @@
         <Setter Property="Width" Value="179"/>
         <Setter Property="Height" Value="39"/>
         <Setter Property="MinHeight" Value="0"/>
-        <Setter Property="Background" Value="{DynamicResource SidebarButtonBrush}"/>
-        <Setter Property="Foreground" Value="#F0F0F0"/>
-        <Setter Property="BorderBrush" Value="#243442"/>
-        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Background" Value="#1AFFFFFF"/>
+        <Setter Property="Foreground" Value="#FFFFFF"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Padding" Value="14 0"/>
-        <Setter Property="FontSize" Value="14"/>
-        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="CornerRadius" Value="5"/>
     </Style>
     <Style Selector="Button.SidebarButton StackPanel">
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
     <Style Selector="Button.SidebarButton TextBlock">
         <Setter Property="FontFamily" Value="Minecraft"/>
-        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontSize" Value="13"/>
         <Setter Property="FontWeight" Value="Medium"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="RenderTransform">
@@ -140,7 +140,7 @@
     </Style>
     <Style Selector="TextBlock.PlayerNameLabel">
         <Setter Property="FontFamily" Value="Minecraft"/>
-        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontSize" Value="13.5"/>
         <Setter Property="FontWeight" Value="Medium"/>
         <Setter Property="Foreground" Value="#FFFFFF"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
@@ -173,17 +173,17 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
     <Style Selector="Button.SidebarButton:pointerover">
-        <Setter Property="Background" Value="{DynamicResource SidebarButtonHoverBrush}"/>
-        <Setter Property="BorderBrush" Value="#70C9F8"/>
+        <Setter Property="Background" Value="#2AFFFFFF"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="Foreground" Value="White"/>
     </Style>
     <Style Selector="Button.SidebarButton.Active">
-        <Setter Property="Background" Value="{DynamicResource BrandGradientBrush}"/>
-        <Setter Property="BorderBrush" Value="#5CA7EB"/>
+        <Setter Property="Background" Value="#1E58A5"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
     <Style Selector="Button.SidebarButton.Active:pointerover">
-        <Setter Property="Background" Value="{DynamicResource BrandGradientHoverBrush}"/>
-        <Setter Property="BorderBrush" Value="#8ED7FF"/>
+        <Setter Property="Background" Value="#2868B8"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
 
     <Style Selector="Button.WindowButton">
@@ -203,27 +203,15 @@
     <Style Selector="Border.StatPill">
         <Setter Property="Width" Value="135"/>
         <Setter Property="Height" Value="45"/>
-        <Setter Property="Background">
-            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#1FFFFFFF" Offset="0"/>
-                <GradientStop Color="#18182735" Offset="0.58"/>
-                <GradientStop Color="#11112431" Offset="1"/>
-            </LinearGradientBrush>
-        </Setter>
-        <Setter Property="BorderBrush">
-            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#4AFFFFFF" Offset="0"/>
-                <GradientStop Color="#3F75BCEB" Offset="0.48"/>
-                <GradientStop Color="#334A718E" Offset="1"/>
-            </LinearGradientBrush>
-        </Setter>
-        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Background" Value="#1AFFFFFF"/>
+        <Setter Property="BorderBrush" Value="#33FFFFFF"/>
+        <Setter Property="BorderThickness" Value="2"/>
         <Setter Property="CornerRadius" Value="10"/>
-        <Setter Property="Padding" Value="11 6"/>
+        <Setter Property="Padding" Value="6 5"/>
     </Style>
     <Style Selector="Border.HeroCard">
-        <Setter Property="Background" Value="#0A121A"/>
-        <Setter Property="BorderBrush" Value="#35658A"/>
+        <Setter Property="Background" Value="#000000"/>
+        <Setter Property="BorderBrush" Value="#1AFFFFFF"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="10"/>
         <Setter Property="Padding" Value="0"/>
@@ -246,20 +234,25 @@
     <Style Selector="Border.CurrentInstanceCard">
         <Setter Property="Background">
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#152838" Offset="0"/>
-                <GradientStop Color="#0B1219" Offset="0.48"/>
-                <GradientStop Color="#0D1B25" Offset="1"/>
+                <GradientStop Color="#07131D" Offset="0"/>
+                <GradientStop Color="#091A28" Offset="0.46"/>
+                <GradientStop Color="#0B2D42" Offset="0.76"/>
+                <GradientStop Color="#0D506A" Offset="1"/>
             </LinearGradientBrush>
         </Setter>
-        <Setter Property="BorderBrush" Value="#3B5870"/>
+        <Setter Property="BorderBrush" Value="#315D76"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Effect">
+            <DropShadowEffect Color="#436CCBFF" BlurRadius="20" Opacity="0.16" OffsetX="0" OffsetY="8"/>
+        </Setter>
     </Style>
     <Style Selector="Border.MetricCard">
-        <Setter Property="Background" Value="{DynamicResource GlassInsetBrush}"/>
-        <Setter Property="BorderBrush" Value="#293B49"/>
+        <Setter Property="Background" Value="#0DFFFFFF"/>
+        <Setter Property="BorderBrush" Value="#0DFFFFFF"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Margin" Value="-2 0"/>
         <Setter Property="Padding" Value="12 7"/>
         <Setter Property="MinHeight" Value="76"/>
     </Style>
@@ -270,23 +263,43 @@
         <Setter Property="Foreground" Value="#66FFFFFF"/>
     </Style>
     <Style Selector="Border.Tag">
-        <Setter Property="Background" Value="#B817222C"/>
-        <Setter Property="BorderBrush" Value="#344958"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="CornerRadius" Value="12"/>
-        <Setter Property="Padding" Value="8 4"/>
+        <Setter Property="Height" Value="26"/>
+        <Setter Property="Background" Value="#1AFFFFFF"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="13"/>
+        <Setter Property="Padding" Value="0"/>
     </Style>
     <Style Selector="Button.PlayButton">
-        <Setter Property="Background" Value="{DynamicResource BrandGradientBrush}"/>
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#105CD6" Offset="0"/>
+                <GradientStop Color="#0A42A0" Offset="0.55"/>
+                <GradientStop Color="#072B6B" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="BorderBrush" Value="#5AA5EA"/>
-        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="CornerRadius" Value="8"/>
         <Setter Property="Height" Value="55"/>
         <Setter Property="Padding" Value="0"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Effect">
+            <DropShadowEffect Color="#0044BB" BlurRadius="12" Opacity="0.3" OffsetX="0" OffsetY="2"/>
+        </Setter>
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.1"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Button.PlayButton /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
     <Style Selector="TextBlock.PlayLabel">
         <Setter Property="FontFamily" Value="Minecraft Ten"/>
@@ -302,15 +315,91 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
     <Style Selector="Button.PlayButton:pointerover">
-        <Setter Property="Background" Value="{DynamicResource BrandGradientBrush}"/>
-        <Setter Property="BorderBrush" Value="#5AA5EA"/>
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#1A74FF" Offset="0"/>
+                <GradientStop Color="#105CD6" Offset="0.55"/>
+                <GradientStop Color="#0C4CB8" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="#FFFFFF"/>
+        <Setter Property="CornerRadius" Value="8"/>
         <Setter Property="Effect">
-            <DropShadowEffect Color="#78A8E8FF" BlurRadius="18" Opacity="0.78" OffsetX="0" OffsetY="0"/>
+            <DropShadowEffect Color="#0088FF" BlurRadius="22" Opacity="0.85" OffsetX="0" OffsetY="3"/>
         </Setter>
     </Style>
-    <Style Selector="Button.PlayButton:pressed"><Setter Property="Background" Value="#17447F"/><Setter Property="BorderBrush" Value="#4B88D4"/></Style>
-    <Style Selector="Button.PlayButton:disabled"><Setter Property="Background" Value="#1C375D"/><Setter Property="Foreground" Value="#8EA0B7"/></Style>
+    <Style Selector="Button.PlayButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#1A74FF" Offset="0"/>
+                <GradientStop Color="#105CD6" Offset="0.55"/>
+                <GradientStop Color="#0C4CB8" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="#FFFFFF"/>
+        <Setter Property="CornerRadius" Value="8"/>
+    </Style>
+    <Style Selector="Button.PlayButton:pressed">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#08377C" Offset="0"/>
+                <GradientStop Color="#052658" Offset="0.55"/>
+                <GradientStop Color="#031A3D" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="#D6E4FF"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Opacity" Value="0.88"/>
+        <Setter Property="Effect">
+            <DropShadowEffect Color="#002266" BlurRadius="6" Opacity="0.4" OffsetX="0" OffsetY="1"/>
+        </Setter>
+    </Style>
+    <Style Selector="Button.PlayButton:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#08377C" Offset="0"/>
+                <GradientStop Color="#052658" Offset="0.55"/>
+                <GradientStop Color="#031A3D" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="#D6E4FF"/>
+        <Setter Property="CornerRadius" Value="8"/>
+    </Style>
+    <Style Selector="Button.PlayButton:disabled">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#105CD6" Offset="0"/>
+                <GradientStop Color="#0A42A0" Offset="0.55"/>
+                <GradientStop Color="#072B6B" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="Foreground" Value="#FFFFFF"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Opacity" Value="0.9"/>
+    </Style>
+    <Style Selector="Button.PlayButton:disabled /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#105CD6" Offset="0"/>
+                <GradientStop Color="#0A42A0" Offset="0.55"/>
+                <GradientStop Color="#072B6B" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="Foreground" Value="#FFFFFF"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="8"/>
+    </Style>
     <Style Selector="Button.IconButton">
         <Setter Property="Width" Value="28"/><Setter Property="Height" Value="28"/><Setter Property="Background" Value="#252525"/><Setter Property="Foreground" Value="White"/><Setter Property="Padding" Value="0"/><Setter Property="CornerRadius" Value="5"/>
     </Style>
@@ -323,7 +412,7 @@
     <Style Selector="Button.InstanceEditButton:pressed"><Setter Property="Background" Value="#142333"/></Style>
     <Style Selector="ComboBox.HomeInstancePicker">
         <Setter Property="MinHeight" Value="34"/>
-        <Setter Property="MinWidth" Value="230"/>
+        <Setter Property="MinWidth" Value="0"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -376,24 +465,24 @@
         <Setter Property="BoxShadow" Value="0 16 36 0 #B8000000"/>
     </Style>
     <Style Selector="Button.ServerRow">
-        <Setter Property="Background" Value="Transparent"/><Setter Property="Padding" Value="4 2"/><Setter Property="HorizontalAlignment" Value="Stretch"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="Height" Value="31"/><Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="Background" Value="Transparent"/><Setter Property="Padding" Value="0"/><Setter Property="HorizontalAlignment" Value="Stretch"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="Height" Value="31"/><Setter Property="CornerRadius" Value="6"/><Setter Property="BorderThickness" Value="0"/>
     </Style>
-    <Style Selector="Button.ServerRow:pointerover"><Setter Property="Background" Value="#1C3C59"/><Setter Property="BorderBrush" Value="#4D9BD5"/><Setter Property="BorderThickness" Value="1"/></Style>
-    <Style Selector="Button.ServerRow:pressed"><Setter Property="Background" Value="#0E1A25"/></Style>
+    <Style Selector="Button.ServerRow:pointerover"><Setter Property="Background" Value="Transparent"/><Setter Property="BorderBrush" Value="Transparent"/><Setter Property="BorderThickness" Value="0"/></Style>
+    <Style Selector="Button.ServerRow:pressed"><Setter Property="Background" Value="Transparent"/></Style>
     <Style Selector="Button.RecentInstanceCard">
-        <Setter Property="MinHeight" Value="132"/>
-        <Setter Property="Padding" Value="10"/>
-        <Setter Property="Background" Value="#0B1218"/>
-        <Setter Property="BorderBrush" Value="#233744"/>
+        <Setter Property="MinHeight" Value="112"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="#33FFFFFF"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="CornerRadius" Value="9"/>
+        <Setter Property="CornerRadius" Value="5"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         <Setter Property="VerticalContentAlignment" Value="Stretch"/>
     </Style>
     <Style Selector="Button.RecentInstanceCard:pointerover">
-        <Setter Property="Background" Value="#101F2A"/>
-        <Setter Property="BorderBrush" Value="#4C91C2"/>
+        <Setter Property="Background" Value="#0DFFFFFF"/>
+        <Setter Property="BorderBrush" Value="#66FFFFFF"/>
     </Style>
     <Style Selector="Button.RecentInstanceCard:pressed">
         <Setter Property="Background" Value="#0B1720"/>
@@ -404,31 +493,31 @@
         <Setter Property="Padding" Value="4 3"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
-        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="CornerRadius" Value="7"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
     </Style>
     <Style Selector="Button.RecentServerRow:pointerover">
-        <Setter Property="Background" Value="#102432"/>
-        <Setter Property="BorderBrush" Value="#315E7D"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
     </Style>
     <Style Selector="Button.RecentServerRow:pressed">
-        <Setter Property="Background" Value="#0A1821"/>
-        <Setter Property="BorderBrush" Value="#5AAEE4"/>
+        <Setter Property="Background" Value="Transparent"/>
     </Style>
     <Style Selector="Border.RecentCard">
         <Setter Property="Background" Value="{DynamicResource GlassInsetBrush}"/><Setter Property="BorderBrush" Value="#293946"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="10"/>
     </Style>
     <Style Selector="Border.RecentCard:pointerover"><Setter Property="Background" Value="{DynamicResource PanelHoverBrush}"/><Setter Property="BorderBrush" Value="#4786B6"/></Style>
     <Style Selector="Button.DetailsButton">
-        <Setter Property="Background" Value="#0C1C29"/><Setter Property="Foreground" Value="#63C4FF"/><Setter Property="BorderBrush" Value="#20394D"/><Setter Property="BorderThickness" Value="1"/><Setter Property="Padding" Value="11 5"/><Setter Property="FontSize" Value="10"/><Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="Width" Value="86"/><Setter Property="Height" Value="27"/><Setter Property="Background" Value="#1AFFFFFF"/><Setter Property="Foreground" Value="#14C0FF"/><Setter Property="BorderBrush" Value="#0DFFFFFF"/><Setter Property="BorderThickness" Value="1"/><Setter Property="Padding" Value="10"/><Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontWeight" Value="Medium"/><Setter Property="FontSize" Value="10"/><Setter Property="CornerRadius" Value="6"/>
     </Style>
     <Style Selector="Button.DetailsButton:pointerover"><Setter Property="Background" Value="#1B527A"/><Setter Property="BorderBrush" Value="#69C2FF"/><Setter Property="Foreground" Value="White"/></Style>
     <Style Selector="Button.QuickButton">
-        <Setter Property="Height" Value="38"/><Setter Property="Background" Value="{DynamicResource SidebarButtonBrush}"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#304353"/><Setter Property="BorderThickness" Value="1"/><Setter Property="HorizontalAlignment" Value="Stretch"/><Setter Property="HorizontalContentAlignment" Value="Left"/><Setter Property="Padding" Value="11 6"/><Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Height" Value="38"/><Setter Property="Background" Value="#1AFFFFFF"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#1AFFFFFF"/><Setter Property="BorderThickness" Value="1"/><Setter Property="HorizontalAlignment" Value="Stretch"/><Setter Property="HorizontalContentAlignment" Value="Left"/><Setter Property="Padding" Value="10"/><Setter Property="FontFamily" Value="Minecraft"/><Setter Property="FontSize" Value="12"/><Setter Property="CornerRadius" Value="8"/>
     </Style>
-    <Style Selector="Button.QuickButton:pointerover"><Setter Property="Background" Value="{DynamicResource SidebarButtonHoverBrush}"/><Setter Property="BorderBrush" Value="#78CDFB"/><Setter Property="Foreground" Value="White"/></Style>
+    <Style Selector="Button.QuickButton:pointerover"><Setter Property="Background" Value="#2AFFFFFF"/><Setter Property="BorderBrush" Value="#33FFFFFF"/><Setter Property="Foreground" Value="White"/></Style>
     <Style Selector="Button.QuickButton:pressed"><Setter Property="Background" Value="#102034"/></Style>
     <Style Selector="Border.DiscordCard">
         <Setter Property="Background" Value="#100B1E"/><Setter Property="BorderBrush" Value="#322060"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="MinHeight" Value="132"/>
@@ -440,8 +529,8 @@
     <Style Selector="Button.JoinButton:pressed"><Setter Property="Background" Value="#3A1760"/><Setter Property="BorderBrush" Value="#E1A2FF"/></Style>
     <Style Selector="Border.ProfileCard">
         <Setter Property="Padding" Value="11 13"/>
-        <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>
-        <Setter Property="BorderBrush" Value="#31506A"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="#661C53A3"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="8"/>
     </Style>
@@ -466,9 +555,9 @@
         <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
     <Style Selector="Border.SocialIconHover">
-        <Setter Property="Width" Value="26"/>
-        <Setter Property="Height" Value="26"/>
-        <Setter Property="Padding" Value="3"/>
+        <Setter Property="Width" Value="23"/>
+        <Setter Property="Height" Value="23"/>
+        <Setter Property="Padding" Value="0"/>
         <Setter Property="CornerRadius" Value="5"/>
         <Setter Property="Background" Value="Transparent"/>
     </Style>
@@ -477,13 +566,13 @@
     </Style>
     <Style Selector="TextBlock.AccountMenuTitle">
         <Setter Property="FontFamily" Value="Poppins"/>
-        <Setter Property="FontSize" Value="8.5"/>
+        <Setter Property="FontSize" Value="10.5"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Foreground" Value="#777D83"/>
+        <Setter Property="Foreground" Value="#A8C7D8"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
     <Style Selector="Button.SavedAccountButton">
-        <Setter Property="Height" Value="34"/>
+        <Setter Property="Height" Value="38"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="3"/>
@@ -1106,6 +1195,36 @@
     <Style Selector="Button.WorkspacePrimary"><Setter Property="MinHeight" Value="44"/><Setter Property="Background" Value="#3B82F6"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#3B82F6"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="18 10"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
     <Style Selector="Button.WorkspacePrimary:pointerover"><Setter Property="Background" Value="#4C8DFF"/><Setter Property="BorderBrush" Value="#4C8DFF"/></Style>
     <Style Selector="Button.WorkspacePrimary:pressed"><Setter Property="Background" Value="#2E6ED8"/><Setter Property="BorderBrush" Value="#2E6ED8"/></Style>
+    <Style Selector="Button.UpdateExitButton">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#152434" Offset="0"/>
+                <GradientStop Color="#0D1722" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="Foreground" Value="#E5F2FC"/>
+        <Setter Property="BorderBrush" Value="#466A83"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="9"/>
+        <Setter Property="Padding" Value="20 0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+    <Style Selector="Button.UpdateExitButton:pointerover">
+        <Setter Property="Background" Value="#183047"/>
+        <Setter Property="BorderBrush" Value="#69A6CE"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Effect">
+            <DropShadowEffect Color="#423E9CD6" BlurRadius="12" Opacity="0.28" OffsetX="0" OffsetY="3"/>
+        </Setter>
+    </Style>
+    <Style Selector="Button.UpdateExitButton:pressed">
+        <Setter Property="Background" Value="#0B1722"/>
+        <Setter Property="BorderBrush" Value="#3C6D8D"/>
+    </Style>
     <Style Selector="Button.WorkspaceSecondary"><Setter Property="MinHeight" Value="42"/><Setter Property="Background" Value="#12191E"/><Setter Property="Foreground" Value="#D0D5D9"/><Setter Property="BorderBrush" Value="#354049"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="15 9"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="Medium"/></Style>
     <Style Selector="Button.WorkspaceSecondary:pointerover"><Setter Property="Background" Value="#182129"/><Setter Property="BorderBrush" Value="#4A5863"/><Setter Property="Foreground" Value="#F0F2F3"/></Style>
     <Style Selector="Button.WorkspaceDanger"><Setter Property="MinHeight" Value="42"/><Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#E2939B"/><Setter Property="BorderBrush" Value="#663840"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="15 9"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="Medium"/></Style>
@@ -1192,7 +1311,8 @@
     <!-- Player-focused launcher polish -->
     <Style Selector="Button.SidebarButton">
         <Setter Property="Background" Value="#10161C"/>
-        <Setter Property="BorderBrush" Value="#1C2832"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Template">
             <ControlTemplate>
                 <Border Background="{TemplateBinding Background}"
@@ -1210,15 +1330,18 @@
     </Style>
     <Style Selector="Button.SidebarButton:pointerover">
         <Setter Property="Background" Value="#17314A"/>
-        <Setter Property="BorderBrush" Value="#3978AD"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
     </Style>
     <Style Selector="Button.SidebarButton.Active">
         <Setter Property="Background" Value="#1E58A5"/>
-        <Setter Property="BorderBrush" Value="#4B88D4"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
     </Style>
     <Style Selector="Button.SidebarButton.Active:pointerover">
         <Setter Property="Background" Value="#2867B8"/>
-        <Setter Property="BorderBrush" Value="#70A9EC"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
     </Style>
     <Style Selector="Border.ProfileCard">
         <Setter Property="Background" Value="#080D12"/>
@@ -1633,19 +1756,23 @@
     <!-- Modern classic glass system: final visual overrides -->
     <Style Selector="Button.SidebarButton">
         <Setter Property="Background" Value="{DynamicResource SidebarButtonBrush}"/>
-        <Setter Property="BorderBrush" Value="#2B3E4E"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
     </Style>
     <Style Selector="Button.SidebarButton:pointerover">
         <Setter Property="Background" Value="{DynamicResource SidebarButtonHoverBrush}"/>
-        <Setter Property="BorderBrush" Value="#70C9F8"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
     </Style>
     <Style Selector="Button.SidebarButton.Active">
         <Setter Property="Background" Value="{DynamicResource BrandGradientBrush}"/>
-        <Setter Property="BorderBrush" Value="#64B4F2"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
     </Style>
     <Style Selector="Button.SidebarButton.Active:pointerover">
         <Setter Property="Background" Value="{DynamicResource BrandGradientHoverBrush}"/>
-        <Setter Property="BorderBrush" Value="#9ADFFF"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
     </Style>
     <Style Selector="Border.ProfileCard">
         <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>
@@ -2005,12 +2132,12 @@
         <Setter Property="BorderBrush" Value="#3F7B9F"/>
     </Style>
     <Style Selector="Button.RecentServerRow:pointerover">
-        <Setter Property="Background" Value="#0F2635"/>
-        <Setter Property="BorderBrush" Value="#376F91"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
     <Style Selector="Button.ServerRow:pointerover">
-        <Setter Property="Background" Value="#0F2635"/>
-        <Setter Property="BorderBrush" Value="#3D7CA5"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
 
     <Style Selector="Border.WorkspaceSection">
@@ -2579,5 +2706,293 @@
     </Style>
     <Style Selector="TextBox.AccountUsernameInput">
         <Setter Property="PlaceholderForeground" Value="#8198A8"/>
+    </Style>
+
+    <!-- Figma Home frame 201:3 fidelity overrides. Keep these last so broader theme passes cannot override them. -->
+    <Style Selector="Border.SidebarGlass">
+        <Setter Property="Background" Value="#000000"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="Border.TitleBarGlass">
+        <Setter Property="Background" Value="#000000"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="Button.SidebarButton">
+        <Setter Property="Background" Value="#1AFFFFFF"/>
+        <Setter Property="Foreground" Value="#FFFFFF"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="5"/>
+    </Style>
+    <Style Selector="Button.SidebarButton:pointerover">
+        <Setter Property="Background" Value="#26FFFFFF"/>
+        <Setter Property="Foreground" Value="#FFFFFF"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="Button.SidebarButton:pressed">
+        <Setter Property="Background" Value="#105CD6"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="Button.SidebarButton.Active">
+        <Setter Property="Background" Value="#105CD6"/>
+        <Setter Property="Foreground" Value="#FFFFFF"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="Button.SidebarButton.Active:pointerover">
+        <Setter Property="Background" Value="#1766E5"/>
+        <Setter Property="Foreground" Value="#FFFFFF"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+    <Style Selector="Border.ProfileCard">
+        <Setter Property="Background" Value="#000000"/>
+        <Setter Property="BorderBrush" Value="#661C53A3"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+    </Style>
+    <Style Selector="Border.ProfileCard:pointerover">
+        <Setter Property="Background" Value="#000000"/>
+        <Setter Property="BorderBrush" Value="#801C63B5"/>
+    </Style>
+    <Style Selector="Border.SocialIconHover:pointerover">
+        <Setter Property="Background" Value="#1AFFFFFF"/>
+    </Style>
+
+    <Style Selector="Border.StatPill">
+        <Setter Property="Background" Value="#1AFFFFFF"/>
+        <Setter Property="BorderBrush" Value="#33FFFFFF"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="CornerRadius" Value="10"/>
+    </Style>
+    <Style Selector="Border.HeroCard">
+        <Setter Property="Background" Value="#000000"/>
+        <Setter Property="BorderBrush" Value="#1AFFFFFF"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="10"/>
+    </Style>
+    <Style Selector="Border.HomePanel">
+        <Setter Property="Background" Value="#000000"/>
+        <Setter Property="BorderBrush" Value="#33FFFFFF"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="10"/>
+    </Style>
+    <Style Selector="Border.PartnerPanel">
+        <Setter Property="Background" Value="#000000"/>
+        <Setter Property="BorderBrush" Value="#33FFFFFF"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="10"/>
+    </Style>
+    <Style Selector="Border.PerformanceSummaryCard">
+        <Setter Property="Background" Value="#000000"/>
+        <Setter Property="BorderBrush" Value="#33FFFFFF"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="10"/>
+    </Style>
+    <Style Selector="Border.RecentInstancesPanel">
+        <Setter Property="BorderBrush" Value="#1AFFFFFF"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="10"/>
+    </Style>
+    <Style Selector="Border.RecentServersPanel">
+        <Setter Property="Background" Value="#000000"/>
+        <Setter Property="BorderBrush" Value="#1AFFFFFF"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="10"/>
+    </Style>
+    <Style Selector="Border.QuickActionsCard">
+        <Setter Property="Background" Value="#000000"/>
+        <Setter Property="BorderBrush" Value="#33FFFFFF"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="12"/>
+    </Style>
+    <Style Selector="Border.CurrentInstanceCard">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#061621" Offset="0"/>
+                <GradientStop Color="#071E2A" Offset="0.50"/>
+                <GradientStop Color="#082A34" Offset="0.78"/>
+                <GradientStop Color="#083E46" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="BorderBrush" Value="#244B5C"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Effect">
+            <DropShadowEffect Color="#2B176277" BlurRadius="14" Opacity="0.12" OffsetX="0" OffsetY="6"/>
+        </Setter>
+    </Style>
+    <Style Selector="Border.MetricCard">
+        <Setter Property="Background" Value="#0DFFFFFF"/>
+        <Setter Property="BorderBrush" Value="#0DFFFFFF"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+    </Style>
+    <Style Selector="Border.Tag">
+        <Setter Property="Background" Value="#1AFFFFFF"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="13"/>
+        <Setter Property="Height" Value="26"/>
+        <Setter Property="Padding" Value="10 0"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Border.Tag > StackPanel">
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Border.Tag > TextBlock">
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Button.InstanceEditButton">
+        <Setter Property="Background" Value="#1AFFFFFF"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="Button.InstanceEditButton:pointerover">
+        <Setter Property="Background" Value="#2600D9FF"/>
+        <Setter Property="BorderBrush" Value="#4D00D9FF"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+
+    <Style Selector="Button.DetailsButton">
+        <Setter Property="Background" Value="#1AFFFFFF"/>
+        <Setter Property="Foreground" Value="#14C0FF"/>
+        <Setter Property="BorderBrush" Value="#0DFFFFFF"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Button.DetailsButton:pointerover">
+        <Setter Property="Background" Value="#2600D9FF"/>
+        <Setter Property="Foreground" Value="#00D9FF"/>
+        <Setter Property="BorderBrush" Value="#4D00D9FF"/>
+    </Style>
+    <Style Selector="Button.QuickButton">
+        <Setter Property="Background" Value="#1AFFFFFF"/>
+        <Setter Property="Foreground" Value="#FFFFFF"/>
+        <Setter Property="BorderBrush" Value="#1AFFFFFF"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="CornerRadius" Value="8"/>
+    </Style>
+    <Style Selector="Button.QuickButton:pointerover">
+        <Setter Property="Background" Value="#1A00D9FF"/>
+        <Setter Property="Foreground" Value="#00D9FF"/>
+        <Setter Property="BorderBrush" Value="#6600D9FF"/>
+        <Setter Property="Effect">
+            <DropShadowEffect Color="#4000D9FF" BlurRadius="10" Opacity="0.3" OffsetX="0" OffsetY="2"/>
+        </Setter>
+    </Style>
+    <Style Selector="TextBlock.QuickActionsTitle">
+        <Setter Property="RenderTransform">
+            <TranslateTransform Y="-5"/>
+        </Setter>
+    </Style>
+    <Style Selector="Button.RecentInstanceCard">
+        <Setter Property="Background" Value="#000000"/>
+        <Setter Property="BorderBrush" Value="#33FFFFFF"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="5"/>
+    </Style>
+    <Style Selector="Button.RecentInstanceCard:pointerover">
+        <Setter Property="Background" Value="#1800D9FF"/>
+        <Setter Property="BorderBrush" Value="#6600D9FF"/>
+        <Setter Property="Effect">
+            <DropShadowEffect Color="#3300D9FF" BlurRadius="12" Opacity="0.4" OffsetX="0" OffsetY="3"/>
+        </Setter>
+    </Style>
+    <Style Selector="Button.ServerRow, Button.RecentServerRow">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="Button.ServerRow:pointerover, Button.RecentServerRow:pointerover">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="Button.ServerRow:pointerover /template/ ContentPresenter#PART_ContentPresenter, Button.RecentServerRow:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+    </Style>
+    <Style Selector="Button.ServerRow:pressed /template/ ContentPresenter#PART_ContentPresenter, Button.RecentServerRow:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+    </Style>
+    <Style Selector="Border.PartnerPlayIcon">
+        <Setter Property="Background" Value="#1AFFFFFF"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="Button.ServerRow:pointerover Border.PartnerPlayIcon, Button.RecentServerRow:pointerover Border.PartnerPlayIcon, Border.PartnerPlayIcon:pointerover">
+        <Setter Property="Background" Value="#26FFFFFF"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="Button.ServerRow:pointerover TextBlock.PartnerPlayIconText, Button.RecentServerRow:pointerover TextBlock.PartnerPlayIconText, Border.PartnerPlayIcon:pointerover TextBlock.PartnerPlayIconText">
+        <Setter Property="Foreground" Value="#3C91E6"/>
+    </Style>
+    <Style Selector="Border.DiscordCard">
+        <Setter Property="CornerRadius" Value="10"/>
+    </Style>
+
+    <!-- Final readability pass for compact interactive controls. -->
+    <Style Selector="Button.SidebarButton">
+        <Setter Property="FontSize" Value="14"/>
+    </Style>
+    <Style Selector="Button.SidebarButton TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+    </Style>
+    <Style Selector="Button.QuickButton">
+        <Setter Property="FontSize" Value="14"/>
+    </Style>
+    <Style Selector="Button.QuickButton TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+    </Style>
+    <Style Selector="Button.DetailsButton">
+        <Setter Property="FontSize" Value="12"/>
+    </Style>
+    <Style Selector="Button.DetailsButton TextBlock">
+        <Setter Property="FontSize" Value="12"/>
+    </Style>
+    <Style Selector="Button.WorkspaceInlineButton">
+        <Setter Property="FontSize" Value="12"/>
+    </Style>
+    <Style Selector="Button.AccountPrimaryButton, Button.AccountSecondaryButton">
+        <Setter Property="FontSize" Value="13"/>
+    </Style>
+
+    <!-- Plain Link Button (Zero hover box / zero borders) -->
+    <Style Selector="Button.PlainLinkButton">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+    </Style>
+    <Style Selector="Button.PlainLinkButton:pointerover">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="Button.PlainLinkButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+    </Style>
+    <Style Selector="Button.PlainLinkButton:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+    </Style>
+
+    <!-- Hide all scrollbars globally -->
+    <Style Selector="ScrollViewer">
+        <Setter Property="VerticalScrollBarVisibility" Value="Hidden"/>
+        <Setter Property="HorizontalScrollBarVisibility" Value="Hidden"/>
     </Style>
 </Styles>

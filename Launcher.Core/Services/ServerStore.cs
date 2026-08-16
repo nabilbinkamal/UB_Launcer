@@ -148,11 +148,7 @@ public static class ServerStore
         {
         }
 
-        return
-        [
-            CreateSampleServer("United Bangla SMP", "1.20.4", "Paper", 25565, 6, DateTimeOffset.UtcNow.AddDays(-1)),
-            CreateSampleServer("UB Practice", "1.8.9", "Purpur", 25566, 3, DateTimeOffset.UtcNow.AddDays(-2))
-        ];
+        return [];
     }
 
     private static LocalServerItem CreateSampleServer(

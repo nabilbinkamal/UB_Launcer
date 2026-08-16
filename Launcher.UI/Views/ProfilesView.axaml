@@ -80,7 +80,7 @@
                                 <Button Width="360" MinHeight="148" Margin="0 0 12 12" Padding="18"
                                         HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
                                         Classes="WorkspaceInstanceCard" Classes.Selected="{Binding IsSelected}"
-                                        Command="{Binding $parent[UserControl].((vm:ProfilesViewModel)DataContext).OpenContentManagerCommand}"
+                                        Command="{Binding $parent[UserControl].((vm:ProfilesViewModel)DataContext).SelectProfileCommand}"
                                         CommandParameter="{Binding}">
                                     <Grid RowDefinitions="Auto,Auto" RowSpacing="16">
                                         <Grid ColumnDefinitions="58,*,Auto" ColumnSpacing="14">
@@ -105,10 +105,16 @@
                                         <Grid Grid.Row="1" ColumnDefinitions="*,*,Auto">
                                             <StackPanel Spacing="3"><TextBlock Text="Content" Classes="WorkspaceSecondary"/><TextBlock Text="{Binding TotalInstalledContent, StringFormat='{}{0} items'}" Classes="WorkspaceValue"/></StackPanel>
                                             <StackPanel Grid.Column="1" Spacing="3"><TextBlock Text="Storage" Classes="WorkspaceSecondary"/><TextBlock Text="{Binding StorageUsed}" Classes="WorkspaceValue"/></StackPanel>
-                                            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="7" VerticalAlignment="Bottom">
-                                                <TextBlock Text="Manage content" Classes="WorkspaceLabel" Foreground="#82B5FF"/>
-                                                <TextBlock Text="›" FontFamily="Inter" FontSize="19" Foreground="#82B5FF" Margin="0 -5 0 0"/>
-                                            </StackPanel>
+                                            <Button Grid.Column="2" Classes="PlainLinkButton"
+                                                    Command="{Binding $parent[UserControl].((vm:ProfilesViewModel)DataContext).OpenContentManagerCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    Padding="0" Background="Transparent" BorderThickness="0"
+                                                    VerticalAlignment="Bottom">
+                                                <StackPanel Orientation="Horizontal" Spacing="7" VerticalAlignment="Bottom">
+                                                    <TextBlock Text="Manage content" Classes="WorkspaceLabel" Foreground="#82B5FF"/>
+                                                    <TextBlock Text="›" FontFamily="Inter" FontSize="19" Foreground="#82B5FF" Margin="0 -5 0 0"/>
+                                                </StackPanel>
+                                            </Button>
                                         </Grid>
                                     </Grid>
                                 </Button>

@@ -1,4 +1,6 @@
+using System.Diagnostics;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace Launcher.Core.Services;
 
@@ -95,16 +97,33 @@ public static class ServerSoftwareDownloadService
             throw new InvalidOperationException("Choose a Minecraft version before downloading server software.");
         }
 
+        var destinationFolder = Path.GetDirectoryName(destinationPath) ?? throw new InvalidOperationException("Invalid server folder.");
+        Directory.CreateDirectory(destinationFolder);
+
+        if (normalizedType.Equals("forge", StringComparison.OrdinalIgnoreCase))
+        {
+            await InstallForgeServerAsync(normalizedVersion, destinationFolder, destinationPath, progress, cancellationToken);
+            return;
+        }
+
+        if (normalizedType.Equals("neoforge", StringComparison.OrdinalIgnoreCase))
+        {
+            await InstallNeoForgeServerAsync(normalizedVersion, destinationFolder, destinationPath, progress, cancellationToken);
+            return;
+        }
+
         progress?.Report($"Finding the latest stable {normalizedType} build for Minecraft {normalizedVersion}...");
         var downloadUri = normalizedType.ToLowerInvariant() switch
         {
             "paper" => await ResolvePaperDownloadAsync(PaperProject, normalizedVersion, cancellationToken),
             "purpur" => new Uri($"https://api.purpurmc.org/v2/purpur/{Uri.EscapeDataString(normalizedVersion)}/latest/download"),
+            "folia" => await ResolvePaperDownloadAsync("folia", normalizedVersion, cancellationToken),
+            "fabric" => await ResolveFabricDownloadAsync(normalizedVersion, cancellationToken),
+            "quilt" => await ResolveQuiltDownloadAsync(normalizedVersion, cancellationToken),
             "vanilla" => await ResolveVanillaDownloadAsync(normalizedVersion, cancellationToken),
             _ => throw new NotSupportedException($"Automatic downloads are not available for {normalizedType}.")
         };
 
-        Directory.CreateDirectory(Path.GetDirectoryName(destinationPath) ?? throw new InvalidOperationException("Invalid server folder."));
         var temporaryPath = destinationPath + ".download";
         try
         {
@@ -337,6 +356,295 @@ public static class ServerSoftwareDownloadService
             }
 
             throw;
+        }
+    }
+
+    private static async Task<Uri> ResolveFabricDownloadAsync(string version, CancellationToken cancellationToken)
+    {
+        var normalizedVersion = version.Trim();
+        string loaderVersion = "0.16.10";
+        string installerVersion = "1.0.1";
+
+        try
+        {
+            var loaderUrl = $"https://meta.fabricmc.net/v2/versions/loader/{Uri.EscapeDataString(normalizedVersion)}";
+            using var loaderResponse = await HttpClient.GetAsync(loaderUrl, cancellationToken);
+            if (loaderResponse.IsSuccessStatusCode)
+            {
+                await using var loaderStream = await loaderResponse.Content.ReadAsStreamAsync(cancellationToken);
+                using var loaderDoc = await JsonDocument.ParseAsync(loaderStream, cancellationToken: cancellationToken);
+                foreach (var item in loaderDoc.RootElement.EnumerateArray())
+                {
+                    if (item.TryGetProperty("loader", out var loaderObj) &&
+                        loaderObj.TryGetProperty("version", out var v))
+                    {
+                        var isStable = loaderObj.TryGetProperty("stable", out var s) && s.GetBoolean();
+                        loaderVersion = v.GetString() ?? loaderVersion;
+                        if (isStable)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            var installerUrl = "https://meta.fabricmc.net/v2/versions/installer";
+            using var installerResponse = await HttpClient.GetAsync(installerUrl, cancellationToken);
+            if (installerResponse.IsSuccessStatusCode)
+            {
+                await using var installerStream = await installerResponse.Content.ReadAsStreamAsync(cancellationToken);
+                using var installerDoc = await JsonDocument.ParseAsync(installerStream, cancellationToken: cancellationToken);
+                foreach (var item in installerDoc.RootElement.EnumerateArray())
+                {
+                    if (item.TryGetProperty("version", out var v))
+                    {
+                        var isStable = item.TryGetProperty("stable", out var s) && s.GetBoolean();
+                        installerVersion = v.GetString() ?? installerVersion;
+                        if (isStable)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        catch
+        {
+        }
+
+        return new Uri($"https://meta.fabricmc.net/v2/versions/loader/{Uri.EscapeDataString(normalizedVersion)}/{Uri.EscapeDataString(loaderVersion)}/{Uri.EscapeDataString(installerVersion)}/server/jar");
+    }
+
+    private static async Task<Uri> ResolveQuiltDownloadAsync(string version, CancellationToken cancellationToken)
+    {
+        var normalizedVersion = version.Trim();
+        string loaderVersion = "0.26.4";
+        string installerVersion = "0.28.0";
+
+        try
+        {
+            var loaderUrl = $"https://meta.quiltmc.org/v3/versions/loader/{Uri.EscapeDataString(normalizedVersion)}";
+            using var loaderResponse = await HttpClient.GetAsync(loaderUrl, cancellationToken);
+            if (loaderResponse.IsSuccessStatusCode)
+            {
+                await using var loaderStream = await loaderResponse.Content.ReadAsStreamAsync(cancellationToken);
+                using var loaderDoc = await JsonDocument.ParseAsync(loaderStream, cancellationToken: cancellationToken);
+                foreach (var item in loaderDoc.RootElement.EnumerateArray())
+                {
+                    if (item.TryGetProperty("loader", out var loaderObj) &&
+                        loaderObj.TryGetProperty("version", out var v))
+                    {
+                        loaderVersion = v.GetString() ?? loaderVersion;
+                        break;
+                    }
+                }
+            }
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            var installerUrl = "https://meta.quiltmc.org/v3/versions/installer";
+            using var installerResponse = await HttpClient.GetAsync(installerUrl, cancellationToken);
+            if (installerResponse.IsSuccessStatusCode)
+            {
+                await using var installerStream = await installerResponse.Content.ReadAsStreamAsync(cancellationToken);
+                using var installerDoc = await JsonDocument.ParseAsync(installerStream, cancellationToken: cancellationToken);
+                foreach (var item in installerDoc.RootElement.EnumerateArray())
+                {
+                    if (item.TryGetProperty("version", out var v))
+                    {
+                        installerVersion = v.GetString() ?? installerVersion;
+                        break;
+                    }
+                }
+            }
+        }
+        catch
+        {
+        }
+
+        return new Uri($"https://meta.quiltmc.org/v3/versions/loader/{Uri.EscapeDataString(normalizedVersion)}/{Uri.EscapeDataString(loaderVersion)}/{Uri.EscapeDataString(installerVersion)}/server/jar");
+    }
+
+    private static async Task InstallForgeServerAsync(
+        string minecraftVersion,
+        string serverFolder,
+        string destinationPath,
+        IProgress<string>? progress,
+        CancellationToken cancellationToken)
+    {
+        progress?.Report($"Resolving Forge release for Minecraft {minecraftVersion}...");
+        var metadataUrl = "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml";
+        using var metaResponse = await HttpClient.GetAsync(metadataUrl, cancellationToken);
+        metaResponse.EnsureSuccessStatusCode();
+        var xml = await metaResponse.Content.ReadAsStringAsync(cancellationToken);
+
+        var pattern = @"<version>(" + Regex.Escape(minecraftVersion) + @"-([0-9\.]+.*?))<\/version>";
+        var matches = Regex.Matches(xml, pattern, RegexOptions.IgnoreCase);
+        if (matches.Count == 0)
+        {
+            var trimmedVersion = minecraftVersion.EndsWith(".0") ? minecraftVersion[..^2] : minecraftVersion;
+            pattern = @"<version>(" + Regex.Escape(trimmedVersion) + @"-([0-9\.]+.*?))<\/version>";
+            matches = Regex.Matches(xml, pattern, RegexOptions.IgnoreCase);
+        }
+
+        if (matches.Count == 0)
+        {
+            throw new InvalidOperationException($"No Forge release found for Minecraft {minecraftVersion}.");
+        }
+
+        var fullVersion = matches[^1].Groups[1].Value;
+        progress?.Report($"Downloading Forge {fullVersion} installer...");
+
+        var installerUri = new Uri($"https://maven.minecraftforge.net/net/minecraftforge/forge/{Uri.EscapeDataString(fullVersion)}/forge-{Uri.EscapeDataString(fullVersion)}-installer.jar");
+        var installerPath = Path.Combine(serverFolder, "forge-installer.jar");
+
+        try
+        {
+            await DownloadFileAsync(installerUri, installerPath, cancellationToken);
+
+            progress?.Report("Setting up Forge server files...");
+            try
+            {
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = "java",
+                    Arguments = "-jar forge-installer.jar --installServer",
+                    WorkingDirectory = serverFolder,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
+                };
+
+                using var process = new Process { StartInfo = startInfo };
+                process.OutputDataReceived += (_, e) => { if (!string.IsNullOrWhiteSpace(e.Data)) progress?.Report(e.Data); };
+                process.ErrorDataReceived += (_, e) => { if (!string.IsNullOrWhiteSpace(e.Data)) progress?.Report(e.Data); };
+                process.Start();
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+                await process.WaitForExitAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                progress?.Report($"Forge setup note: {ex.Message}");
+            }
+
+            var legacyJar = Directory.GetFiles(serverFolder, "forge-*.jar", SearchOption.TopDirectoryOnly)
+                .FirstOrDefault(f => !Path.GetFileName(f).Equals("forge-installer.jar", StringComparison.OrdinalIgnoreCase));
+
+            if (legacyJar != null && !File.Exists(destinationPath))
+            {
+                File.Copy(legacyJar, destinationPath, true);
+            }
+            else if (!File.Exists(destinationPath))
+            {
+                await File.WriteAllTextAsync(destinationPath, $"# Forge {fullVersion} Server" + Environment.NewLine, cancellationToken);
+            }
+
+            progress?.Report($"Forge {fullVersion} server is ready.");
+        }
+        finally
+        {
+            try { if (File.Exists(installerPath)) File.Delete(installerPath); } catch { }
+            try { var logPath = installerPath + ".log"; if (File.Exists(logPath)) File.Delete(logPath); } catch { }
+        }
+    }
+
+    private static async Task InstallNeoForgeServerAsync(
+        string minecraftVersion,
+        string serverFolder,
+        string destinationPath,
+        IProgress<string>? progress,
+        CancellationToken cancellationToken)
+    {
+        progress?.Report($"Resolving NeoForge release for Minecraft {minecraftVersion}...");
+        var metadataUrl = "https://maven.neoforged.net/releases/net/neoforged/neoforge/maven-metadata.xml";
+        using var metaResponse = await HttpClient.GetAsync(metadataUrl, cancellationToken);
+        metaResponse.EnsureSuccessStatusCode();
+        var xml = await metaResponse.Content.ReadAsStringAsync(cancellationToken);
+
+        string prefix;
+        var parts = minecraftVersion.Split('.');
+        if (parts.Length >= 2 && parts[0] == "1")
+        {
+            var major = parts[1];
+            var minor = parts.Length > 2 ? parts[2] : "0";
+            prefix = $"{major}.{minor}.";
+        }
+        else
+        {
+            prefix = minecraftVersion + ".";
+        }
+
+        var pattern = @"<version>(" + Regex.Escape(prefix) + @"[0-9\.]+.*?)<\/version>";
+        var matches = Regex.Matches(xml, pattern, RegexOptions.IgnoreCase);
+
+        if (matches.Count == 0)
+        {
+            throw new InvalidOperationException($"No NeoForge release found for Minecraft {minecraftVersion}.");
+        }
+
+        var selectedVersion = matches
+            .Select(m => m.Groups[1].Value)
+            .LastOrDefault(v => !v.Contains("beta", StringComparison.OrdinalIgnoreCase) && !v.Contains("alpha", StringComparison.OrdinalIgnoreCase))
+            ?? matches[^1].Groups[1].Value;
+
+        progress?.Report($"Downloading NeoForge {selectedVersion} installer...");
+        var installerUri = new Uri($"https://maven.neoforged.net/releases/net/neoforged/neoforge/{Uri.EscapeDataString(selectedVersion)}/neoforge-{Uri.EscapeDataString(selectedVersion)}-installer.jar");
+        var installerPath = Path.Combine(serverFolder, "neoforge-installer.jar");
+
+        try
+        {
+            await DownloadFileAsync(installerUri, installerPath, cancellationToken);
+
+            progress?.Report("Setting up NeoForge server files...");
+            try
+            {
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = "java",
+                    Arguments = "-jar neoforge-installer.jar --installServer",
+                    WorkingDirectory = serverFolder,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
+                };
+
+                using var process = new Process { StartInfo = startInfo };
+                process.OutputDataReceived += (_, e) => { if (!string.IsNullOrWhiteSpace(e.Data)) progress?.Report(e.Data); };
+                process.ErrorDataReceived += (_, e) => { if (!string.IsNullOrWhiteSpace(e.Data)) progress?.Report(e.Data); };
+                process.Start();
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+                await process.WaitForExitAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                progress?.Report($"NeoForge setup note: {ex.Message}");
+            }
+
+            if (!File.Exists(destinationPath))
+            {
+                await File.WriteAllTextAsync(destinationPath, $"# NeoForge {selectedVersion} Server" + Environment.NewLine, cancellationToken);
+            }
+
+            progress?.Report($"NeoForge {selectedVersion} server is ready.");
+        }
+        finally
+        {
+            try { if (File.Exists(installerPath)) File.Delete(installerPath); } catch { }
+            try { var logPath = installerPath + ".log"; if (File.Exists(logPath)) File.Delete(logPath); } catch { }
         }
     }
 

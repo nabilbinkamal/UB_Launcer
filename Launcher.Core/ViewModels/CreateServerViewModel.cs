@@ -164,9 +164,19 @@ public partial class CreateServerViewModel : ViewModelBase
     [ObservableProperty] private bool _isDeleteConfirmationVisible;
     [ObservableProperty] private string _pluginSearchQuery = string.Empty;
     [ObservableProperty] private bool _isPluginBusy;
-    [ObservableProperty] private string _pluginStatusText = "Search Modrinth for Paper plugins.";
+    [ObservableProperty] private string _pluginStatusText = "Search Modrinth for compatible server addons.";
 
-    public ObservableCollection<string> ServerTypes { get; } = ["Paper", "Purpur", "Vanilla"];
+    public ObservableCollection<string> ServerTypes { get; } =
+    [
+        "Paper",
+        "Purpur",
+        "Fabric",
+        "Forge",
+        "NeoForge",
+        "Quilt",
+        "Folia",
+        "Vanilla"
+    ];
     public ObservableCollection<LocalServerItem> Servers => ServerStore.Servers;
     public ObservableCollection<ServerPluginSearchItem> PluginResults { get; } = [];
     public ObservableCollection<InstalledServerPlugin> InstalledPlugins { get; } = [];
@@ -190,10 +200,26 @@ public partial class CreateServerViewModel : ViewModelBase
     public bool IsManagerVisible => !IsCreatePanelVisible && SelectedServer is not null;
     public bool IsPluginSupported => SelectedServer is not null &&
         (EditServerType.Equals("Paper", StringComparison.OrdinalIgnoreCase) ||
-         EditServerType.Equals("Purpur", StringComparison.OrdinalIgnoreCase));
-    public string PluginSupportText => IsPluginSupported
-        ? "Install compatible plugins with one click. Restart the server after changing plugins."
-        : "Vanilla cannot load plugins. Change server software to Paper, then press Start.";
+         EditServerType.Equals("Purpur", StringComparison.OrdinalIgnoreCase) ||
+         EditServerType.Equals("Folia", StringComparison.OrdinalIgnoreCase));
+    public bool IsModSupported => SelectedServer is not null &&
+        (EditServerType.Equals("Fabric", StringComparison.OrdinalIgnoreCase) ||
+         EditServerType.Equals("Forge", StringComparison.OrdinalIgnoreCase) ||
+         EditServerType.Equals("NeoForge", StringComparison.OrdinalIgnoreCase) ||
+         EditServerType.Equals("Quilt", StringComparison.OrdinalIgnoreCase));
+    public bool IsExtensionSupported => IsPluginSupported || IsModSupported;
+    public string ExtensionTypeTitle => IsModSupported ? "Mods" : "Plugins";
+    public string ExtensionHeaderTitle => IsModSupported ? "Mod manager" : "Plugin manager";
+    public string ExtensionSearchPlaceholder => IsModSupported
+        ? $"Search {EditServerType} mods, e.g. JEI, Waystones, Sodium..."
+        : "Search plugins, e.g. Essentials, WorldEdit...";
+    public string ExtensionFolderButtonText => IsModSupported ? "Open mods folder" : "Open plugins folder";
+    public string PluginSupportText => ExtensionSupportText;
+    public string ExtensionSupportText => IsModSupported
+        ? $"Install compatible {EditServerType} mods with one click. Restart the server after changing mods."
+        : IsPluginSupported
+            ? "Install compatible plugins with one click. Restart the server after changing plugins."
+            : "Vanilla cannot load mods or plugins. Choose Fabric/Forge/NeoForge for mods, or Paper/Purpur for plugins.";
     public string AccountModeText => EditOnlineMode
         ? "Premium accounts only"
         : "Offline / cracked accounts allowed";
@@ -224,7 +250,11 @@ public partial class CreateServerViewModel : ViewModelBase
             IsCreatePanelVisible = false;
             LoadEditor(value);
             PluginResults.Clear();
-            PluginStatusText = "Search Modrinth for compatible Paper plugins.";
+            PluginStatusText = IsModSupported
+                ? $"Search Modrinth for compatible {EditServerType} mods."
+                : IsPluginSupported
+                    ? "Search Modrinth for compatible plugins."
+                    : "Addons are not supported on Vanilla.";
             RefreshInstalledPlugins();
             StatusText = $"Managing {value.Name}.";
         }
@@ -234,6 +264,13 @@ public partial class CreateServerViewModel : ViewModelBase
         OnPropertyChanged(nameof(InternetJoinHint));
         OnPropertyChanged(nameof(IsManagerVisible));
         OnPropertyChanged(nameof(IsPluginSupported));
+        OnPropertyChanged(nameof(IsModSupported));
+        OnPropertyChanged(nameof(IsExtensionSupported));
+        OnPropertyChanged(nameof(ExtensionTypeTitle));
+        OnPropertyChanged(nameof(ExtensionHeaderTitle));
+        OnPropertyChanged(nameof(ExtensionSearchPlaceholder));
+        OnPropertyChanged(nameof(ExtensionFolderButtonText));
+        OnPropertyChanged(nameof(ExtensionSupportText));
         OnPropertyChanged(nameof(PluginSupportText));
     }
 
@@ -252,7 +289,20 @@ public partial class CreateServerViewModel : ViewModelBase
     partial void OnEditServerTypeChanged(string value)
     {
         PluginResults.Clear();
+        PluginStatusText = IsModSupported
+            ? $"Search Modrinth for compatible {EditServerType} mods."
+            : IsPluginSupported
+                ? "Search Modrinth for compatible plugins."
+                : "Addons are not supported on Vanilla.";
+        RefreshInstalledPlugins();
         OnPropertyChanged(nameof(IsPluginSupported));
+        OnPropertyChanged(nameof(IsModSupported));
+        OnPropertyChanged(nameof(IsExtensionSupported));
+        OnPropertyChanged(nameof(ExtensionTypeTitle));
+        OnPropertyChanged(nameof(ExtensionHeaderTitle));
+        OnPropertyChanged(nameof(ExtensionSearchPlaceholder));
+        OnPropertyChanged(nameof(ExtensionFolderButtonText));
+        OnPropertyChanged(nameof(ExtensionSupportText));
         OnPropertyChanged(nameof(PluginSupportText));
     }
 
@@ -419,17 +469,7 @@ public partial class CreateServerViewModel : ViewModelBase
         WriteConfigurationFiles(server);
         try
         {
-            var startInfo = new ProcessStartInfo
-            {
-                FileName = "java",
-                Arguments = $"-Xms1G -Xmx{server.MemoryGb}G -jar \"{server.LaunchJarName}\" nogui",
-                WorkingDirectory = server.FolderPath,
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                RedirectStandardInput = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true
-            };
+            var startInfo = BuildServerStartInfo(server);
             var process = new Process { StartInfo = startInfo, EnableRaisingEvents = true };
             process.OutputDataReceived += (_, eventArgs) => PostLog(server, eventArgs.Data);
             process.ErrorDataReceived += (_, eventArgs) => PostLog(server, eventArgs.Data);
@@ -460,6 +500,46 @@ public partial class CreateServerViewModel : ViewModelBase
             NotifyOverviewChanged();
             StatusText = $"Could not start the server: {exception.Message}";
         }
+    }
+
+    private static ProcessStartInfo BuildServerStartInfo(LocalServerItem server)
+    {
+        var serverFolder = server.FolderPath;
+        var userJvmArgs = Path.Combine(serverFolder, "user_jvm_args.txt");
+        string? argsFile = null;
+
+        var librariesDir = Path.Combine(serverFolder, "libraries");
+        if (Directory.Exists(librariesDir))
+        {
+            var winArgs = Directory.GetFiles(librariesDir, "win_args.txt", SearchOption.AllDirectories).FirstOrDefault();
+            var unixArgs = Directory.GetFiles(librariesDir, "unix_args.txt", SearchOption.AllDirectories).FirstOrDefault();
+            var generalArgs = Directory.GetFiles(librariesDir, "args.txt", SearchOption.AllDirectories).FirstOrDefault();
+            argsFile = winArgs ?? unixArgs ?? generalArgs;
+        }
+
+        string arguments;
+        if (argsFile != null && (server.ServerType.Equals("Forge", StringComparison.OrdinalIgnoreCase) || server.ServerType.Equals("NeoForge", StringComparison.OrdinalIgnoreCase)))
+        {
+            var relativeArgsPath = Path.GetRelativePath(serverFolder, argsFile);
+            var userArgsPrefix = File.Exists(userJvmArgs) ? "@user_jvm_args.txt " : string.Empty;
+            arguments = $"-Xms1G -Xmx{server.MemoryGb}G {userArgsPrefix}@{relativeArgsPath} nogui";
+        }
+        else
+        {
+            arguments = $"-Xms1G -Xmx{server.MemoryGb}G -jar \"{server.LaunchJarName}\" nogui";
+        }
+
+        return new ProcessStartInfo
+        {
+            FileName = "java",
+            Arguments = arguments,
+            WorkingDirectory = serverFolder,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            RedirectStandardInput = true,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true
+        };
     }
 
     [RelayCommand]
@@ -550,6 +630,9 @@ public partial class CreateServerViewModel : ViewModelBase
         NotifyOverviewChanged();
     }
 
+    private string GetActiveExtensionFolder(LocalServerItem server) =>
+        Path.Combine(server.FolderPath, IsModSupported ? "mods" : "plugins");
+
     [RelayCommand]
     private async Task SearchPluginsAsync()
     {
@@ -559,21 +642,24 @@ public partial class CreateServerViewModel : ViewModelBase
             return;
         }
 
-        if (!IsPluginSupported)
+        if (!IsExtensionSupported)
         {
-            PluginStatusText = "Plugins need Paper or Purpur. Select Paper above and press Start first.";
+            PluginStatusText = "Vanilla cannot load mods or plugins. Choose Fabric, Forge, NeoForge, Quilt, Paper, or Purpur.";
             return;
         }
 
         IsPluginBusy = true;
-        PluginStatusText = "Finding compatible Paper plugins...";
+        var addonType = IsModSupported ? "mods" : "plugins";
+        PluginStatusText = $"Finding compatible {EditServerType} {addonType}...";
         try
         {
+            var contentType = IsModSupported ? CatalogContentType.Mods : CatalogContentType.Plugins;
+            var loader = IsModSupported ? EditServerType : "Paper";
             var result = await pluginCatalogService.SearchAsync(new CatalogSearchRequest(
                 PluginSearchQuery.Trim(),
-                CatalogContentType.Plugins,
+                contentType,
                 EditMinecraftVersion.Trim(),
-                EditServerType,
+                loader,
                 12));
 
             PluginResults.Clear();
@@ -587,8 +673,8 @@ public partial class CreateServerViewModel : ViewModelBase
             }
 
             PluginStatusText = PluginResults.Count == 0
-                ? "No compatible plugins found. Try a different search."
-                : $"{PluginResults.Count} compatible plugins found on Modrinth.";
+                ? $"No compatible {addonType} found. Try a different search."
+                : $"{PluginResults.Count} compatible {addonType} found on Modrinth.";
             if (result.Notices.Count > 0)
             {
                 PluginStatusText += $" {string.Join(" ", result.Notices)}";
@@ -596,7 +682,7 @@ public partial class CreateServerViewModel : ViewModelBase
         }
         catch (Exception exception)
         {
-            PluginStatusText = $"Could not load plugins: {exception.Message}";
+            PluginStatusText = $"Could not load {addonType}: {exception.Message}";
         }
         finally
         {
@@ -615,13 +701,13 @@ public partial class CreateServerViewModel : ViewModelBase
 
         if (server.IsRunning)
         {
-            PluginStatusText = "Stop the server before installing plugins.";
+            PluginStatusText = $"Stop the server before installing {ExtensionTypeTitle.ToLowerInvariant()}.";
             return;
         }
 
-        if (!IsPluginSupported)
+        if (!IsExtensionSupported)
         {
-            PluginStatusText = "Plugins need Paper or Purpur.";
+            PluginStatusText = "Mods/plugins are not supported on Vanilla.";
             return;
         }
 
@@ -657,18 +743,18 @@ public partial class CreateServerViewModel : ViewModelBase
 
         if (server.IsRunning)
         {
-            PluginStatusText = "Stop the server before removing plugins.";
+            PluginStatusText = $"Stop the server before removing {ExtensionTypeTitle.ToLowerInvariant()}.";
             return;
         }
 
         try
         {
-            var pluginsRoot = Path.GetFullPath(Path.Combine(server.FolderPath, "plugins"))
-                .TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+            var extensionFolder = GetActiveExtensionFolder(server);
+            var extensionRoot = Path.GetFullPath(extensionFolder).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
             var pluginPath = Path.GetFullPath(plugin.FilePath);
-            if (!pluginPath.StartsWith(pluginsRoot, StringComparison.OrdinalIgnoreCase))
+            if (!pluginPath.StartsWith(extensionRoot, StringComparison.OrdinalIgnoreCase))
             {
-                throw new InvalidOperationException("The selected file is outside this server's plugins folder.");
+                throw new InvalidOperationException("The selected file is outside this server's addon folder.");
             }
 
             File.Delete(pluginPath);
@@ -692,13 +778,13 @@ public partial class CreateServerViewModel : ViewModelBase
 
         try
         {
-            var pluginsFolder = Path.Combine(server.FolderPath, "plugins");
-            Directory.CreateDirectory(pluginsFolder);
-            Process.Start(new ProcessStartInfo("explorer.exe", pluginsFolder) { UseShellExecute = true });
+            var folder = GetActiveExtensionFolder(server);
+            Directory.CreateDirectory(folder);
+            Process.Start(new ProcessStartInfo("explorer.exe", folder) { UseShellExecute = true });
         }
         catch (Exception exception)
         {
-            PluginStatusText = $"Could not open the plugins folder: {exception.Message}";
+            PluginStatusText = $"Could not open folder: {exception.Message}";
         }
     }
 
@@ -711,13 +797,13 @@ public partial class CreateServerViewModel : ViewModelBase
             return;
         }
 
-        var pluginsFolder = Path.Combine(server.FolderPath, "plugins");
-        if (!Directory.Exists(pluginsFolder))
+        var folder = GetActiveExtensionFolder(server);
+        if (!Directory.Exists(folder))
         {
             return;
         }
 
-        foreach (var file in Directory.EnumerateFiles(pluginsFolder, "*.jar", SearchOption.TopDirectoryOnly)
+        foreach (var file in Directory.EnumerateFiles(folder, "*.jar", SearchOption.TopDirectoryOnly)
                      .OrderBy(Path.GetFileName, StringComparer.OrdinalIgnoreCase))
         {
             var fileName = Path.GetFileName(file);

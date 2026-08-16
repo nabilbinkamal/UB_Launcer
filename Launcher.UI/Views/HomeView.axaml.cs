@@ -17,12 +17,17 @@ namespace Launcher.UI.Views;
 public partial class HomeView : UserControl, INavigationAwarePage
 {
     private const double CompactBreakpoint = 1180;
+    private const double HeroAspectRatio = 836d / 279d;
+    private const double RecentInstancesHorizontalPadding = 34d;
+    private const double RecentInstancesCardSpacing = 10d;
+    private const double RecentInstancesEdgeGuard = 3d;
     private bool? isCompact;
     private bool isAttached;
     private bool telemetryReadInProgress;
     private bool responsiveLayoutQueued;
     private bool isNavigationActive;
     private Size pendingResponsiveSize;
+    private WindowBase? observedWindow;
     private readonly DispatcherTimer telemetryTimer;
     private readonly WindowsTelemetryReader telemetryReader;
 
@@ -39,6 +44,7 @@ public partial class HomeView : UserControl, INavigationAwarePage
         telemetryTimer.Tick += OnTelemetryTick;
 
         SizeChanged += OnSizeChanged;
+        RecentInstancesPanel.SizeChanged += OnRecentInstancesPanelSizeChanged;
         AttachedToVisualTree += OnAttachedToVisualTree;
         DetachedFromVisualTree += OnDetachedFromVisualTree;
     }
@@ -47,12 +53,15 @@ public partial class HomeView : UserControl, INavigationAwarePage
     {
         isAttached = true;
         ApplyResponsiveLayout(Bounds.Width, Bounds.Height);
+        AttachToHostWindow();
+        UpdateDisplayResolution();
         UpdateTelemetryState();
     }
 
     private void OnDetachedFromVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
     {
         isAttached = false;
+        DetachFromHostWindow();
         telemetryTimer.Stop();
     }
 
@@ -116,7 +125,74 @@ public partial class HomeView : UserControl, INavigationAwarePage
         {
             responsiveLayoutQueued = false;
             ApplyResponsiveLayout(pendingResponsiveSize.Width, pendingResponsiveSize.Height);
+            UpdateDisplayResolution();
         }, DispatcherPriority.Render);
+    }
+
+    private void AttachToHostWindow()
+    {
+        var window = TopLevel.GetTopLevel(this) as WindowBase;
+        if (ReferenceEquals(observedWindow, window))
+        {
+            return;
+        }
+
+        DetachFromHostWindow();
+        observedWindow = window;
+        if (observedWindow is not null)
+        {
+            observedWindow.PositionChanged += OnHostWindowPositionChanged;
+        }
+    }
+
+    private void DetachFromHostWindow()
+    {
+        if (observedWindow is not null)
+        {
+            observedWindow.PositionChanged -= OnHostWindowPositionChanged;
+            observedWindow = null;
+        }
+    }
+
+    private void OnHostWindowPositionChanged(object? sender, PixelPointEventArgs eventArgs) =>
+        UpdateDisplayResolution();
+
+    private void UpdateDisplayResolution()
+    {
+        if (DataContext is not HomeViewModel viewModel || TopLevel.GetTopLevel(this) is not { } topLevel)
+        {
+            return;
+        }
+
+        if (topLevel.Screens is not { } screens)
+        {
+            return;
+        }
+
+        var screen = screens.ScreenFromVisual(this);
+        if (screen is not null)
+        {
+            viewModel.UpdateDisplayResolution(screen.Bounds.Width, screen.Bounds.Height);
+        }
+    }
+
+    private void OnRecentInstancesPanelSizeChanged(object? sender, SizeChangedEventArgs e)
+    {
+        UpdateRecentInstanceCardWidth(e.NewSize.Width);
+    }
+
+    private void UpdateRecentInstanceCardWidth(double panelWidth)
+    {
+        if (panelWidth <= 0)
+        {
+            return;
+        }
+
+        var cardsWidth = panelWidth
+                         - RecentInstancesHorizontalPadding
+                         - (RecentInstancesCardSpacing * 2d)
+                         - RecentInstancesEdgeGuard;
+        Resources["RecentInstanceCardWidth"] = Math.Max(140d, Math.Floor(cardsWidth / 3d));
     }
 
     private void OnRecentInstanceClick(object? sender, Avalonia.Interactivity.RoutedEventArgs eventArgs)
@@ -150,17 +226,64 @@ public partial class HomeView : UserControl, INavigationAwarePage
         }
     }
 
+    private async void OnPartnerServerClick(object? sender, Avalonia.Interactivity.RoutedEventArgs eventArgs)
+    {
+        if (sender is not Button { DataContext: PartnerServerItem server } ||
+            DataContext is not HomeViewModel viewModel)
+        {
+            return;
+        }
+
+        await viewModel.LaunchPartnerServerAsync(server);
+    }
+
     private void ApplyResponsiveLayout(double width, double height)
     {
         var shouldUseCompactLayout = width < CompactBreakpoint;
-        var scale = Math.Clamp(width / 1210d, 1d, 1.35d);
-        var rightRailWidth = 313 * scale;
+        var fullscreenProgress = shouldUseCompactLayout
+            ? 0d
+            : Math.Clamp((width - 1210d) / 440d, 0d, 1d);
+        var rightRailScale = 1d + (0.15d * fullscreenProgress);
+        var verticalRailScale = 1d + (0.18d * fullscreenProgress);
+        var rightRailWidth = 313d * rightRailScale;
+        var dashboardColumnSpacing = 9d + (3d * fullscreenProgress);
+        var dashboardWidth = Math.Max(0, width - 52);
+        var primaryWidth = shouldUseCompactLayout
+            ? dashboardWidth
+            : Math.Max(0, dashboardWidth - rightRailWidth - dashboardColumnSpacing);
+        if (primaryWidth > 0)
+        {
+            HeroCard.Height = primaryWidth / HeroAspectRatio;
+        }
         DashboardHeader.ColumnDefinitions = new ColumnDefinitions("*,Auto");
-        LaunchGraph.Width = 180 * scale;
-        CpuGraph.Width = 180 * scale;
-        GpuGraph.Width = 180 * scale;
-        DiscordCard.Height = 142 * scale;
-        RightRail.RowDefinitions[2].Height = new GridLength(142 * scale);
+        PrimaryColumn.RowSpacing = 12d + (2d * fullscreenProgress);
+        LaunchGraph.Width = 175d * rightRailScale;
+        CpuGraph.Width = 175d * rightRailScale;
+        GpuGraph.Width = 175d * rightRailScale;
+        LaunchGraph.Height = 44d * verticalRailScale;
+        CpuGraph.Height = 44d * verticalRailScale;
+        GpuGraph.Height = 44d * verticalRailScale;
+        MemoryRingContainer.Width = 50d * rightRailScale;
+        MemoryRingContainer.Height = 50d * rightRailScale;
+        QuickActionsStack.Spacing = 7d * verticalRailScale;
+        QuickActionsPanel.Padding = new Thickness(
+            18d * rightRailScale,
+            15d * verticalRailScale,
+            18d * rightRailScale,
+            19d * verticalRailScale);
+        foreach (var child in QuickActionsStack.Children)
+        {
+            if (child is Button button)
+            {
+                button.Height = 38d * verticalRailScale;
+            }
+        }
+
+        RightRail.RowSpacing = 12d * verticalRailScale;
+        RightRail.RowDefinitions[0].Height = new GridLength(398d * verticalRailScale);
+        RightRail.RowDefinitions[1].Height = new GridLength(239d * verticalRailScale);
+        RightRail.RowDefinitions[2].Height = new GridLength(142d * rightRailScale);
+        DiscordCard.Height = 142d * rightRailScale;
         DashboardGrid.ColumnDefinitions = shouldUseCompactLayout
             ? new ColumnDefinitions("*")
             : new ColumnDefinitions($"*,{rightRailWidth}");
@@ -189,7 +312,7 @@ public partial class HomeView : UserControl, INavigationAwarePage
         }
 
         DashboardGrid.RowDefinitions = new RowDefinitions("Auto");
-        DashboardGrid.ColumnSpacing = 9;
+        DashboardGrid.ColumnSpacing = dashboardColumnSpacing;
         Grid.SetColumn(RightRail, 1);
         Grid.SetRow(RightRail, 0);
         RightRail.Width = double.NaN;

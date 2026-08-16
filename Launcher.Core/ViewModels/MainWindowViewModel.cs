@@ -3,6 +3,7 @@ using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Launcher.Core.Services;
+using Launcher.Services;
 
 namespace Launcher.Core.ViewModels;
 
@@ -22,9 +23,11 @@ public partial class SavedAccountItem : ObservableObject
 
 public partial class MainWindowViewModel : ViewModelBase
 {
+    private const string DefaultDiscordApplicationId = "1538201318798397550";
     private readonly INavigationService _navigation;
     private string _activeBeforeSettings = nameof(IsHomeActive);
     private CancellationTokenSource? accountStatusCancellation;
+    private CancellationTokenSource? _microsoftSignInCts;
 
     [ObservableProperty]
     private string _username = string.IsNullOrWhiteSpace(OfflineAccountStore.Username) ? "Player" : OfflineAccountStore.Username;
@@ -60,6 +63,24 @@ public partial class MainWindowViewModel : ViewModelBase
     private string _accountDialogStatus = string.Empty;
 
     [ObservableProperty]
+    private bool _isMicrosoftSignInBusy;
+
+    [ObservableProperty]
+    private bool _isMicrosoftSignedIn = MicrosoftAccountStore.HasSession;
+
+    [ObservableProperty]
+    private bool _isMicrosoftSignInPanelVisible;
+
+    [ObservableProperty]
+    private string _deviceCode = string.Empty;
+
+    [ObservableProperty]
+    private string _verificationUri = string.Empty;
+
+    [ObservableProperty]
+    private string _deviceCodeStatus = string.Empty;
+
+    [ObservableProperty]
     private double _settingsBackdropBlurRadius;
 
     [ObservableProperty]
@@ -81,12 +102,17 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private string _updateTitle = string.Empty;
     [ObservableProperty] private string _updateMessage = string.Empty;
     [ObservableProperty] private string _updateUrl = string.Empty;
+    [ObservableProperty] private string _releaseNotesUrl = string.Empty;
     [ObservableProperty] private string _remoteLogoImageUrl = string.Empty;
 
     public bool IsAnyModalOpen => IsSettingsOpen || IsAccountDialogOpen || IsUpdatePopupVisible;
-    public bool IsAccountChoiceVisible => !IsOfflineAccountEntryVisible;
+    public bool IsAccountChoiceVisible => !IsOfflineAccountEntryVisible && !IsMicrosoftSignInPanelVisible;
     public bool HasUpdateUrl => !string.IsNullOrWhiteSpace(UpdateUrl);
     public bool HasRemoteLogoImage => !string.IsNullOrWhiteSpace(RemoteLogoImageUrl);
+    public string UpdatePopupHeading => IsMandatoryUpdate ? "Update Required" : UpdateTitle;
+    public bool HasReleaseNotesUrl => !string.IsNullOrWhiteSpace(ReleaseNotesUrl) || HasUpdateUrl;
+    public string InstalledVersionText => FormatLauncherVersion(LauncherRemoteConfiguration.InstalledVersion);
+    public string LatestVersionText => FormatLauncherVersion(LauncherRemoteConfiguration.Current.LatestVersion);
     public string HomeIconSource => GetRemoteAsset("homeIcon", "/Assets/home.svg");
     public string InstanceIconSource => GetRemoteAsset("instanceIcon", "/Assets/instance.svg");
     public string ModsIconSource => GetRemoteAsset("modsIcon", "/Assets/mods.svg");
@@ -102,8 +128,13 @@ public partial class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel(INavigationService navigation)
     {
         _navigation = navigation;
+        IsAccountMenuOpen = false;
+        AccountArrowAngle = 0;
+        ConfigureDiscordPresence();
+        DiscordPresenceService.SetEnabled(LauncherGameSettingsStore.Current.EnableDiscordRpc);
         OfflineAccountStore.AccountChanged += RefreshAccounts;
         RefreshAccounts();
+        DiscordPresenceService.ShowLauncher(Username);
         // Default to Home View
         _navigation.NavigateTo<HomeViewModel>();
     }
@@ -112,6 +143,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public void ApplyRemoteConfiguration()
     {
         var configuration = LauncherRemoteConfiguration.Current;
+        ConfigureDiscordPresence();
         RemoteLogoImageUrl = configuration.GetAsset("logo", string.Empty);
 
         foreach (var propertyName in new[]
@@ -125,13 +157,19 @@ public partial class MainWindowViewModel : ViewModelBase
             OnPropertyChanged(propertyName);
         }
 
-        if (LauncherRemoteConfiguration.IsNewerVersionAvailable() || LauncherRemoteConfiguration.IsUpdateRequired())
+        // Show every available update once per running session. Dismissing this
+        // only changes this view-model instance, so a fresh launcher process will
+        // show the prompt again while the newer version is still available.
+        if (ShouldShowUpdatePopup() && LauncherRemoteConfiguration.IsNewerVersionAvailable())
         {
             UpdateTitle = configuration.UpdateTitle;
             UpdateMessage = configuration.UpdateMessage;
             UpdateUrl = configuration.UpdateUrl;
-            IsMandatoryUpdate = LauncherRemoteConfiguration.IsUpdateRequired();
+            ReleaseNotesUrl = configuration.ReleaseNotesUrl;
+            IsMandatoryUpdate = false;
             IsUpdatePopupVisible = true;
+            OnPropertyChanged(nameof(InstalledVersionText));
+            OnPropertyChanged(nameof(LatestVersionText));
         }
 
         foreach (var home in _navigation.Views.OfType<HomeViewModel>())
@@ -160,15 +198,74 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
+    [RelayCommand]
+    private void OpenReleaseNotes()
+    {
+        var target = string.IsNullOrWhiteSpace(ReleaseNotesUrl) ? UpdateUrl : ReleaseNotesUrl;
+        if (!Uri.TryCreate(target, UriKind.Absolute, out var releaseNotesUri) ||
+            releaseNotesUri.Scheme != Uri.UriSchemeHttps)
+        {
+            return;
+        }
+
+        Process.Start(new ProcessStartInfo { FileName = releaseNotesUri.AbsoluteUri, UseShellExecute = true });
+    }
+
     private static string GetRemoteAsset(string name, string fallback) =>
         LauncherRemoteConfiguration.Current.GetAsset(name, fallback);
 
-    partial void OnUpdateUrlChanged(string value) => OnPropertyChanged(nameof(HasUpdateUrl));
+    private static bool ShouldShowUpdatePopup()
+    {
+#if DEBUG
+        return string.Equals(
+            Environment.GetEnvironmentVariable("UB_SHOW_DEV_UPDATES"),
+            "1",
+            StringComparison.Ordinal);
+#else
+        return true;
+#endif
+    }
+
+    private static void ConfigureDiscordPresence()
+    {
+        var configuration = LauncherRemoteConfiguration.Current;
+        var applicationId = string.IsNullOrWhiteSpace(configuration.DiscordApplicationId)
+            ? Environment.GetEnvironmentVariable("UB_DISCORD_APPLICATION_ID") ?? DefaultDiscordApplicationId
+            : configuration.DiscordApplicationId;
+        var largeImage = string.IsNullOrWhiteSpace(configuration.DiscordLargeImage)
+            ? Environment.GetEnvironmentVariable("UB_DISCORD_LARGE_IMAGE") ?? string.Empty
+            : configuration.DiscordLargeImage;
+        var communityUrl = string.IsNullOrWhiteSpace(configuration.DiscordCommunityUrl)
+            ? Environment.GetEnvironmentVariable("UB_DISCORD_COMMUNITY_URL") ?? string.Empty
+            : configuration.DiscordCommunityUrl;
+
+        DiscordPresenceService.Configure(new DiscordPresenceOptions(
+            applicationId,
+            largeImage,
+            communityUrl));
+    }
+
+    private static string FormatLauncherVersion(string? version)
+    {
+        var normalized = version?.Trim().TrimStart('v', 'V') ?? string.Empty;
+        return string.IsNullOrWhiteSpace(normalized) ? "Unknown" : $"v{normalized}";
+    }
+
+    partial void OnUpdateUrlChanged(string value)
+    {
+        OnPropertyChanged(nameof(HasUpdateUrl));
+        OnPropertyChanged(nameof(HasReleaseNotesUrl));
+    }
+    partial void OnReleaseNotesUrlChanged(string value) => OnPropertyChanged(nameof(HasReleaseNotesUrl));
+    partial void OnUpdateTitleChanged(string value) => OnPropertyChanged(nameof(UpdatePopupHeading));
+    partial void OnIsMandatoryUpdateChanged(bool value) => OnPropertyChanged(nameof(UpdatePopupHeading));
+    partial void OnIsUpdatePopupVisibleChanged(bool value) => UpdateModalBackdrop();
     partial void OnRemoteLogoImageUrlChanged(string value) => OnPropertyChanged(nameof(HasRemoteLogoImage));
 
     private void RefreshAccounts()
     {
         Username = string.IsNullOrWhiteSpace(OfflineAccountStore.Username) ? "Player" : OfflineAccountStore.Username;
+        DiscordPresenceService.UpdateUsername(Username);
         UserRank = "Offline";
 
         SavedAccounts.Clear();
@@ -224,6 +321,11 @@ public partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(IsAccountChoiceVisible));
     }
 
+    partial void OnIsMicrosoftSignInPanelVisibleChanged(bool value)
+    {
+        OnPropertyChanged(nameof(IsAccountChoiceVisible));
+    }
+
     private void UpdateModalBackdrop()
     {
         OnPropertyChanged(nameof(IsAnyModalOpen));
@@ -259,7 +361,9 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         IsAccountDialogOpen = false;
         IsOfflineAccountEntryVisible = false;
-        IsAccountDialogBusy = false;
+        IsMicrosoftSignInPanelVisible = false;
+        IsMicrosoftSignInBusy = false;
+        _microsoftSignInCts?.Cancel();
         NewOfflineUsername = string.Empty;
         AccountDialogStatus = string.Empty;
     }
@@ -299,21 +403,93 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void SignInWithMicrosoft()
+    private async Task SignInWithMicrosoft()
     {
+        // Cancel any previous in-progress sign-in.
+        _microsoftSignInCts?.Cancel();
+        _microsoftSignInCts?.Dispose();
+        _microsoftSignInCts = new CancellationTokenSource();
+        var ct = _microsoftSignInCts.Token;
+
+        IsMicrosoftSignInBusy = true;
+        IsMicrosoftSignInPanelVisible = true;
+        DeviceCode = string.Empty;
+        VerificationUri = string.Empty;
+        DeviceCodeStatus = "Connecting to Microsoft…";
+
         try
         {
-            Process.Start(new ProcessStartInfo
+            // Step 1: Request a device code.
+            var challenge = await MicrosoftAuthService.RequestDeviceCodeAsync(ct);
+
+            DeviceCode = challenge.UserCode;
+            VerificationUri = challenge.VerificationUri;
+            DeviceCodeStatus = "Waiting for you to sign in…";
+
+            // Open the browser automatically.
+            try
             {
-                FileName = "https://www.minecraft.net/login",
-                UseShellExecute = true
-            });
-            AccountDialogStatus = "Microsoft sign-in opened in your browser.";
+                Process.Start(new ProcessStartInfo { FileName = challenge.VerificationUri, UseShellExecute = true });
+            }
+            catch { /* user can navigate manually */ }
+
+            // Step 2: Poll until approved.
+            var progress = new Progress<string>(msg => DeviceCodeStatus = msg);
+            var session = await MicrosoftAuthService.PollForSessionAsync(challenge, progress, ct);
+
+            // Step 3: Persist + update local username.
+            MicrosoftAccountStore.Save(session);
+            OfflineAccountStore.SetUsername(session.MinecraftUsername);
+
+            IsMicrosoftSignedIn = true;
+            DeviceCodeStatus = $"Signed in as {session.MinecraftUsername} ✓";
+            await Task.Delay(1200, ct);
+            IsMicrosoftSignInPanelVisible = false;
+            CloseAccountDialog();
         }
-        catch
+        catch (OperationCanceledException)
         {
-            AccountDialogStatus = "Could not open Microsoft sign-in. Please try again.";
+            DeviceCodeStatus = "Sign-in cancelled.";
+            await Task.Delay(900, CancellationToken.None);
+            IsMicrosoftSignInPanelVisible = false;
         }
+        catch (InvalidOperationException ex)
+        {
+            DeviceCodeStatus = ex.Message;
+        }
+        catch (Exception)
+        {
+            DeviceCodeStatus = "Sign-in failed. Check your connection and try again.";
+        }
+        finally
+        {
+            IsMicrosoftSignInBusy = false;
+        }
+    }
+
+    [RelayCommand]
+    private void CancelMicrosoftSignIn()
+    {
+        _microsoftSignInCts?.Cancel();
+    }
+
+    [RelayCommand]
+    private void CopyDeviceCode()
+    {
+        if (string.IsNullOrWhiteSpace(DeviceCode)) return;
+        CopyToClipboardRequested?.Invoke(DeviceCode);
+    }
+
+    /// <summary>Raised when the ViewModel wants text copied to the clipboard. The View subscribes to handle it.</summary>
+    public event Action<string>? CopyToClipboardRequested;
+
+    [RelayCommand]
+    private void SignOutMicrosoft()
+    {
+        MicrosoftAccountStore.Clear();
+        IsMicrosoftSignedIn = false;
+        DeviceCodeStatus = string.Empty;
+        IsAccountMenuOpen = false;
     }
 
     [RelayCommand]

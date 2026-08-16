@@ -1,0 +1,6 @@
+@echo off
+echo Stopping old launcher...
+taskkill /F /IM "Launcher.UI.exe" 2>nul
+timeout /t 2 /nobreak >nul
+echo Starting UB Launcher...
+dotnet run

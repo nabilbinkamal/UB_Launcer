@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
@@ -27,4 +27,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Launcher.Core\Launcher.Core.csproj" />
   </ItemGroup>
+
+  <Target Name="KillRunningProcessBeforeBuild" BeforeTargets="BeforeBuild">
+    <Exec Command="taskkill /F /IM Launcher.UI.exe 2&gt;nul || exit 0" ContinueOnError="true" IgnoreExitCode="true" />
+  </Target>
 </Project>

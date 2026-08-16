@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Launcher.Core.Services;
+using Launcher.Services;
 using Minecraft.ModManager;
 using Minecraft.Runtime;
 
@@ -508,11 +509,12 @@ public partial class ProfilesViewModel : ViewModelBase
     private void SelectProfile(GameProfile profile)
     {
         SelectedProfile = profile;
+        InstanceStore.SelectedProfile = profile;
         IsCreatePanelVisible = false;
         IsContentManagerVisible = false;
         StatusText = profile.IsDefault
             ? $"{profile.Name} is the default launch instance"
-            : $"Reviewing {profile.Name}";
+            : $"Selected {profile.Name}";
     }
 
     [RelayCommand]
@@ -853,7 +855,18 @@ public partial class ProfilesViewModel : ViewModelBase
                 LaunchProgress = Math.Min(LaunchProgress + 14, 88);
                 StatusText = message;
             });
-            await launchService.LaunchOfflineAsync(username, profile.Version, 8192, progress);
+            var gameProcess = await launchService.LaunchOfflineAsync(
+                username,
+                profile.Version,
+                LauncherGameSettingsStore.CreateLaunchConfiguration(),
+                progress);
+            PlaytimeStore.TrackSession(username, gameProcess);
+            DiscordPresenceService.TrackGame(
+                gameProcess,
+                profile.Name,
+                profile.Version,
+                profile.LoaderType,
+                username);
             LaunchProgress = 100;
             profile.LastPlayed = "Today";
             profile.LastPlayedAtUtc = DateTimeOffset.UtcNow;

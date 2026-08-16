@@ -33,72 +33,76 @@
                 </Setter>
             </Style>
         </Grid.Styles>
-        <Border x:Name="Sidebar" Classes="SidebarGlass" Grid.Column="0">
-            <Grid RowDefinitions="Auto,*,Auto">
-                <StackPanel x:Name="LogoStack" Grid.Row="0" Margin="28 34 22 1" Spacing="10">
-                    <StackPanel Orientation="Horizontal" Spacing="4">
-                        <Image Source="/Assets/UB.png" Width="43" Height="38" Stretch="Uniform" Margin="0 -2 0 0"
+        <Border x:Name="Sidebar" Classes="SidebarGlass" Grid.Column="0" Background="#000000">
+            <Grid RowDefinitions="98,*,Auto">
+                <StackPanel x:Name="LogoStack" Grid.Row="0" Margin="33 11 20 0">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <Image Source="/Assets/UB.png" Width="56" Height="56" Stretch="Uniform"
                                IsVisible="{Binding !HasRemoteLogoImage}"/>
-                        <controls:RemoteImage SourceUrl="{Binding RemoteLogoImageUrl}" Width="43" Height="38" Stretch="Uniform"
-                                              DecodePixelWidth="512" Margin="0 -2 0 0" IsVisible="{Binding HasRemoteLogoImage}"/>
-                        <TextBlock Text="LAUNCHER" FontFamily="Minecraft Ten" FontSize="22" FontWeight="Medium" Foreground="#87E3F2" VerticalAlignment="Center" Margin="0 5 0 0"/>
+                        <controls:RemoteImage SourceUrl="{Binding RemoteLogoImageUrl}" Width="56" Height="56" Stretch="Uniform"
+                                              DecodePixelWidth="512" IsVisible="{Binding HasRemoteLogoImage}"/>
+                        <TextBlock Text="LAUNCHER" FontFamily="Minecraft Ten" FontSize="22" FontWeight="Medium" Foreground="#87E3F2" VerticalAlignment="Center" Margin="0 12 0 0"/>
                     </StackPanel>
-                    <Border Height="1" Background="Transparent" Margin="0 14 0 0"/>
                 </StackPanel>
 
-                <StackPanel x:Name="SidebarNavigation" Grid.Row="1" Margin="30 0 21 0" Spacing="12">
+                <StackPanel x:Name="SidebarNavigation" Grid.Row="1" Margin="30 0 1 0" Spacing="12">
                     <Button Classes="SidebarButton" Classes.Active="{Binding IsHomeActive}" Command="{Binding NavigateHomeCommand}">
-                        <StackPanel Orientation="Horizontal" Spacing="14">
+                        <StackPanel Orientation="Horizontal" Spacing="9">
                             <controls:SvgPathIcon Source="{Binding HomeIconSource}"/>
                             <TextBlock Text="Home" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                     <Button Classes="SidebarButton" Classes.Active="{Binding IsInstanceActive}" Command="{Binding NavigateProfilesCommand}">
-                        <StackPanel Orientation="Horizontal" Spacing="14">
+                        <StackPanel Orientation="Horizontal" Spacing="9">
                             <controls:SvgPathIcon Source="{Binding InstanceIconSource}"/>
                             <TextBlock Text="Instance" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                     <Button Classes="SidebarButton" Classes.Active="{Binding IsModsActive}" Command="{Binding NavigateModsCommand}">
-                        <StackPanel Orientation="Horizontal" Spacing="14">
+                        <StackPanel Orientation="Horizontal" Spacing="9">
                             <controls:SvgPathIcon Source="{Binding ModsIconSource}"/>
                             <TextBlock Text="Content" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                     <Button Classes="SidebarButton" Classes.Active="{Binding IsCustomizeActive}" Command="{Binding NavigateCustomizeCommand}">
-                        <StackPanel Orientation="Horizontal" Spacing="14">
+                        <StackPanel Orientation="Horizontal" Spacing="9">
                             <controls:SvgPathIcon Source="{Binding CustomizeIconSource}"/>
                             <TextBlock Text="Customize" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                     <Button Classes="SidebarButton" Classes.Active="{Binding IsPerformanceActive}" Command="{Binding NavigatePerformanceCommand}">
-                        <StackPanel Orientation="Horizontal" Spacing="14">
+                        <StackPanel Orientation="Horizontal" Spacing="9">
                             <controls:SvgPathIcon Source="{Binding PerformanceIconSource}"/>
                             <TextBlock Text="Performance" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                     <Button Classes="SidebarButton" Classes.Active="{Binding IsCreateServerActive}" Command="{Binding NavigateCreateServerCommand}">
-                        <StackPanel Orientation="Horizontal" Spacing="14">
+                        <StackPanel Orientation="Horizontal" Spacing="9">
                             <controls:SvgPathIcon Source="{Binding ServerIconSource}"/>
                             <TextBlock Text="Create server" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                     <Button Classes="SidebarButton" Classes.Active="{Binding IsSettingsActive}" Command="{Binding NavigateSettingsCommand}">
-                        <StackPanel Orientation="Horizontal" Spacing="14">
+                        <StackPanel Orientation="Horizontal" Spacing="9">
                             <controls:SvgPathIcon Source="{Binding SettingsIconSource}"/>
                             <TextBlock Text="Settings" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                 </StackPanel>
 
-                <Border x:Name="ProfilePanel" Classes="ProfileCard" Grid.Row="2" Width="179" HorizontalAlignment="Left" Margin="30 18 0 18" Padding="0">
+                <Border x:Name="ProfilePanel" Classes="ProfileCard" Grid.Row="2" Width="199" MinHeight="109" HorizontalAlignment="Left" Margin="30 18 0 18" Padding="0">
                     <Grid RowDefinitions="Auto,Auto,Auto">
                         <Border IsVisible="{Binding IsAccountMenuOpen}" Padding="8 10 8 8">
                             <StackPanel Spacing="7">
                                 <Grid ColumnDefinitions="*,Auto" Margin="4 0 3 1">
                                     <TextBlock Text="SAVED ACCOUNTS" Classes="AccountMenuTitle"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding SavedAccounts.Count}" FontFamily="Poppins" FontSize="9" Foreground="#777D83"
-                                               VerticalAlignment="Center"/>
+                                    <Border Grid.Column="1" MinWidth="22" Height="18" Padding="6 0"
+                                            Background="#122B3B" BorderBrush="#31566E" BorderThickness="1" CornerRadius="9"
+                                            VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding SavedAccounts.Count}" FontFamily="Poppins" FontSize="10.5"
+                                                   FontWeight="SemiBold" Foreground="#87E3F2"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
                                 </Grid>
 
                                 <ScrollViewer MaxHeight="150" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -114,7 +118,7 @@
                                                             <Border Width="5" Height="5" CornerRadius="3" Background="#00D9FF" IsVisible="{Binding IsActive}"/>
                                                         </Border>
                                                         <Border Grid.Column="1" Width="26" Height="26" CornerRadius="5" Background="#E3E5E6"/>
-                                                        <TextBlock Grid.Column="2" Text="{Binding Username}" Classes="PlayerNameLabel" FontSize="10.5"
+                                                        <TextBlock Grid.Column="2" Text="{Binding Username}" Classes="PlayerNameLabel"
                                                                    TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
                                                     </Grid>
                                                 </Button>
@@ -131,7 +135,7 @@
                                 <Button Classes="AddAccountButton" Command="{Binding AddAccountCommand}">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <TextBlock Text="+" FontFamily="Poppins" FontSize="14" Foreground="#E8EAEC" VerticalAlignment="Center" Margin="0 -2 0 0"/>
-                                        <TextBlock Text="Add account" FontFamily="Poppins" FontSize="9.5" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Add account" FontFamily="Poppins" FontSize="11.5" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
                             </StackPanel>
@@ -139,16 +143,16 @@
 
                         <Border Grid.Row="1" Height="1" Background="#273945" IsVisible="{Binding IsAccountMenuOpen}" Margin="9 0"/>
 
-                        <Grid Grid.Row="2" RowDefinitions="Auto,Auto" Margin="10 10 10 11">
-                            <Button Classes="ProfileToggleButton" Command="{Binding ToggleAccountMenuCommand}"
+                        <Grid Grid.Row="2" Height="109" RowDefinitions="15,41,*,23,7">
+                            <Button Grid.Row="1" Classes="ProfileToggleButton" Command="{Binding ToggleAccountMenuCommand}" Margin="11 0 10 0"
                                     AutomationProperties.Name="Account menu">
-                                <Grid ColumnDefinitions="40,*,20" ColumnSpacing="9">
-                                    <Border Width="40" Height="40" CornerRadius="6" Background="#E3E5E6"/>
+                                <Grid ColumnDefinitions="40,*,24" ColumnSpacing="3">
+                                    <Border Width="40" Height="41" CornerRadius="5" Background="#E3E5E6"/>
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="1">
-                                        <TextBlock Text="{Binding Username}" Classes="PlayerNameLabel" FontSize="11" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding Username}" Classes="PlayerNameLabel" TextTrimming="CharacterEllipsis"/>
                                         <TextBlock Text="{Binding UserRank}" Classes="PremiumLabel"/>
                                     </StackPanel>
-                                    <controls:SvgPathIcon Grid.Column="2" Source="/Assets/arrow-outlined.svg" Width="16" Height="8"
+                                    <controls:SvgPathIcon Grid.Column="2" Source="/Assets/arrow-outlined.svg" Width="24" Height="12"
                                                           HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="50%,50%">
                                         <controls:SvgPathIcon.RenderTransform>
                                             <RotateTransform Angle="{Binding AccountArrowAngle}"/>
@@ -157,20 +161,20 @@
                                 </Grid>
                             </Button>
 
-                            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15" Margin="0 14 0 0">
-                                <Border Classes="SocialIconHover" ToolTip.Tip="Discord">
+                            <Grid Grid.Row="3" ColumnDefinitions="23,*,23,*,23,*,23" Margin="11 0 12 0">
+                                <Border Grid.Column="0" Classes="SocialIconHover" ToolTip.Tip="Discord">
                                     <controls:SvgPathIcon Source="{Binding DiscordIconSource}" Width="23" Height="23"/>
                                 </Border>
-                                <Border Classes="SocialIconHover" ToolTip.Tip="TikTok">
+                                <Border Grid.Column="2" Classes="SocialIconHover" ToolTip.Tip="TikTok">
                                     <controls:SvgPathIcon Source="{Binding TiktokIconSource}" Width="23" Height="23"/>
                                 </Border>
-                                <Border Classes="SocialIconHover" ToolTip.Tip="YouTube">
+                                <Border Grid.Column="4" Classes="SocialIconHover" ToolTip.Tip="YouTube">
                                     <controls:SvgPathIcon Source="{Binding YoutubeIconSource}" Width="23" Height="23"/>
                                 </Border>
-                                <Border Classes="SocialIconHover" ToolTip.Tip="Website">
+                                <Border Grid.Column="6" Classes="SocialIconHover" ToolTip.Tip="Website">
                                     <controls:SvgPathIcon Source="{Binding WebIconSource}" Width="23" Height="23"/>
                                 </Border>
-                            </StackPanel>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Border>
@@ -203,22 +207,119 @@
             <views:SettingsView DataContext="{Binding Settings}"/>
         </Border>
 
-        <Grid IsVisible="{Binding IsUpdatePopupVisible}" Background="#B8000000">
-            <Border Width="520" Padding="30" CornerRadius="14" Background="#0C1925" BorderBrush="#2877B5" BorderThickness="1"
-                    HorizontalAlignment="Center" VerticalAlignment="Center" BoxShadow="0 14 42 0 #90000000">
-                <StackPanel Spacing="14">
-                    <TextBlock Text="UB LAUNCHER UPDATE" FontSize="12" FontWeight="Bold" Foreground="#56C7FF"/>
-                    <TextBlock Text="{Binding UpdateTitle}" FontSize="23" FontWeight="SemiBold" Foreground="White" TextWrapping="Wrap"/>
-                    <TextBlock Text="{Binding UpdateMessage}" FontSize="14" Foreground="#C5D4E1" TextWrapping="Wrap"/>
-                    <TextBlock Text="This update is required before you can continue." FontSize="12" Foreground="#FFB0A0"
-                               IsVisible="{Binding IsMandatoryUpdate}"/>
-                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10" Margin="0 8 0 0">
-                        <Button Content="Later" Command="{Binding DismissUpdateCommand}" IsVisible="{Binding !IsMandatoryUpdate}"
-                                Background="Transparent" BorderBrush="#38536A" BorderThickness="1" Foreground="#D7E4ED" Padding="20 11"/>
-                        <Button Grid.Column="1" Content="Update now" Command="{Binding OpenUpdateCommand}" IsEnabled="{Binding HasUpdateUrl}"
-                                Background="#167AC0" BorderBrush="#56BEF4" BorderThickness="1" Foreground="White" FontWeight="SemiBold" Padding="22 11"/>
+        <Grid IsVisible="{Binding IsUpdatePopupVisible}" Background="#D205090D">
+            <Border Background="#320B2030"/>
+
+            <Border Width="630" MaxHeight="730" CornerRadius="26"
+                    Background="#F60A1018" BorderBrush="#7894A9BC" BorderThickness="1.2"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    BoxShadow="0 28 80 4 #E0000000, 0 0 42 0 #402269FF">
+                <Grid RowDefinitions="72,*">
+                    <!-- Branded top rail -->
+                    <Grid Margin="28 0" ColumnDefinitions="*,220,*">
+                        <Border Height="1" Background="#294D6580" VerticalAlignment="Center"/>
+                        <Border Grid.Column="1" Height="47" VerticalAlignment="Top"
+                                Background="#0D151F" BorderBrush="#334E6375" BorderThickness="0 0 1 1"
+                                CornerRadius="0 0 16 16">
+                            <TextBlock Text="UB Launcher" FontFamily="Inter" FontSize="17" FontWeight="Bold"
+                                       Foreground="#53A8FF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Border Grid.Column="2" Height="1" Background="#294D6580" VerticalAlignment="Center"/>
                     </Grid>
-                </StackPanel>
+
+                    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="48 4 48 38" Spacing="0">
+                            <!-- Neon download emblem -->
+                            <Grid Width="154" Height="154" HorizontalAlignment="Center">
+                                <Border Width="154" Height="154" CornerRadius="77" BorderBrush="#123D67A8" BorderThickness="1"
+                                        BoxShadow="0 0 34 0 #43226FFF"/>
+                                <Border Width="136" Height="136" CornerRadius="68" BorderBrush="#2A54A9FF" BorderThickness="2"/>
+                                <Border Width="116" Height="116" CornerRadius="58" BorderBrush="#72A8F1FF" BorderThickness="5"
+                                        Background="#18104176" BoxShadow="0 0 25 1 #804A9FFF"/>
+                                <Grid Width="72" Height="82" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Border Width="18" Height="44" CornerRadius="2" Background="#8FC9FF"
+                                            HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0 6 0 0"/>
+                                    <Path Width="54" Height="28" HorizontalAlignment="Center" VerticalAlignment="Top"
+                                          Margin="0 44 0 0" Fill="#8FC9FF" Stretch="Fill"
+                                          Data="M 0,0 L 54,0 L 27,28 Z"/>
+                                    <Border Height="5" Width="58" CornerRadius="3" Background="#75B9FF"
+                                            HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0 72 0 0"
+                                            BoxShadow="0 0 12 0 #704DA8FF"/>
+                                </Grid>
+                                <Border Width="34" Height="34" CornerRadius="17" Background="#281014" BorderBrush="#FF4F5D" BorderThickness="2"
+                                        HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0 16 2 0"
+                                        BoxShadow="0 0 15 0 #72FF3548">
+                                    <TextBlock Text="!" FontFamily="Inter" FontSize="21" FontWeight="Bold" Foreground="#FF5A67"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 -2 0 0"/>
+                                </Border>
+                            </Grid>
+
+                            <TextBlock Text="{Binding UpdatePopupHeading}" FontFamily="Inter" FontSize="35" FontWeight="Bold"
+                                       Foreground="#F6FAFF" HorizontalAlignment="Center" TextAlignment="Center"
+                                       TextWrapping="Wrap" Margin="0 15 0 0"/>
+                            <TextBlock Text="{Binding UpdateMessage}" FontFamily="Inter" FontSize="15" LineHeight="23"
+                                       Foreground="#B8C5D0" HorizontalAlignment="Center" TextAlignment="Center"
+                                       TextWrapping="Wrap" MaxWidth="480" Margin="0 11 0 0"/>
+
+                            <Border Background="#97101722" BorderBrush="#403A7CC6" BorderThickness="1" CornerRadius="10"
+                                    Padding="20 15" Margin="0 25 0 0">
+                                <Grid RowDefinitions="Auto,1,Auto" ColumnDefinitions="*,Auto">
+                                    <TextBlock Text="Current Version" FontFamily="Inter" FontSize="14" Foreground="#B7C4CF"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding InstalledVersionText}" FontFamily="Inter" FontSize="15"
+                                               FontWeight="Bold" Foreground="#D8E1E8"/>
+                                    <Border Grid.Row="1" Grid.ColumnSpan="2" Height="1" Background="#26394857" Margin="0 13"/>
+                                    <TextBlock Grid.Row="2" Text="Latest Version" FontFamily="Inter" FontSize="14" Foreground="#B7C4CF"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding LatestVersionText}" FontFamily="Inter" FontSize="15"
+                                               FontWeight="Bold" Foreground="#73C1FF"/>
+                                </Grid>
+                            </Border>
+
+                            <Button Command="{Binding OpenReleaseNotesCommand}"
+                                    IsVisible="{Binding !IsMandatoryUpdate}"
+                                    IsEnabled="{Binding HasReleaseNotesUrl}"
+                                    HorizontalAlignment="Center" Margin="0 12 0 -8" Padding="12 7"
+                                    Background="Transparent" BorderThickness="0" Foreground="#4CA5FF">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock Text="What's New" FontFamily="Inter" FontSize="14" FontWeight="Bold"/>
+                                    <TextBlock Text=">" FontFamily="Inter" FontSize="17" FontWeight="Bold" Margin="0 -2 0 0"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Border CornerRadius="12" Margin="0 24 0 0" Padding="2"
+                                    Background="#694ED7FF" BoxShadow="0 0 28 2 #804C8FFF">
+                                <Button Command="{Binding OpenUpdateCommand}" IsEnabled="{Binding HasUpdateUrl}"
+                                        Height="70" Padding="22 0" BorderBrush="#67DEFF" BorderThickness="1.5" CornerRadius="10"
+                                        Foreground="White" FontFamily="Inter" FontSize="24" FontWeight="Bold">
+                                    <Button.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="#125BE8" Offset="0"/>
+                                            <GradientStop Color="#087EFF" Offset="0.48"/>
+                                            <GradientStop Color="#164DD4" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Button.Background>
+                                    <Grid ColumnDefinitions="Auto,*,Auto" Width="500">
+                                        <TextBlock Text=">" FontSize="24" Foreground="#80E4FF" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Text="UPDATE NOW" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="2" Text="&lt;" FontSize="24" Foreground="#80E4FF" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Button>
+                            </Border>
+
+                            <Button Classes="UpdateExitButton" Width="196" Height="50" Margin="0 18 0 0"
+                                    HorizontalAlignment="Center" Click="OnUpdateExitClick"
+                                    IsVisible="{Binding IsMandatoryUpdate}" Content="EXIT LAUNCHER"
+                                    />
+                            <Button Classes="UpdateExitButton" Width="196" Height="50" Margin="0 18 0 0"
+                                    HorizontalAlignment="Center" Command="{Binding DismissUpdateCommand}"
+                                    IsVisible="{Binding !IsMandatoryUpdate}" Content="LATER"
+                                    />
+
+                            <TextBlock Text="This update is required to continue using UB Launcher."
+                                       IsVisible="{Binding IsMandatoryUpdate}" FontFamily="Inter" FontSize="10.5"
+                                       Foreground="#7791A4" HorizontalAlignment="Center" Margin="0 14 0 0"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
             </Border>
         </Grid>
 
@@ -318,6 +419,126 @@
                         <TextBlock Text="{Binding AccountDialogStatus}" Classes="AccountStatusText"
                                    IsVisible="{Binding IsAccountChoiceVisible}" HorizontalAlignment="Center"
                                    Margin="0 226 0 0" TextWrapping="Wrap"/>
+
+                        <!-- Microsoft device-code sign-in panel -->
+                        <StackPanel IsVisible="{Binding IsMicrosoftSignInPanelVisible}" Spacing="20">
+
+                            <!-- Header row: M icon + title + back button -->
+                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                <Border Classes="AccountChoiceIcon Microsoft" Width="40" Height="40">
+                                    <TextBlock Text="M" FontFamily="Poppins" FontSize="18" FontWeight="SemiBold" Foreground="White"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="12 0 0 0" Spacing="1">
+                                    <TextBlock Text="Microsoft sign-in" Classes="AccountChoiceTitle"/>
+                                    <TextBlock Text="Sign in with your Microsoft account" Classes="AccountChoiceDescription"/>
+                                </StackPanel>
+                                <Button Grid.Column="2" Classes="AccountBackButton" Command="{Binding CancelMicrosoftSignInCommand}"
+                                        VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <TextBlock Text="✕" FontFamily="Poppins" FontSize="13" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Cancel" FontFamily="Poppins" FontSize="12" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+
+                            <!-- Step 1: open browser instruction -->
+                            <Border Background="#0D1620" BorderBrush="#1E3348" BorderThickness="1" CornerRadius="10" Padding="18 14">
+                                <StackPanel Spacing="10">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <Border Width="20" Height="20" CornerRadius="10"
+                                                Background="#1A3A5C" VerticalAlignment="Center">
+                                            <TextBlock Text="1" FontFamily="Poppins" FontSize="11" FontWeight="Bold"
+                                                       Foreground="#77CEFF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock Text="Open your browser and go to:" FontFamily="Poppins" FontSize="12"
+                                                   Foreground="#A0B4C4" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                    <Border Background="#111E2B" BorderBrush="#1E3A50" BorderThickness="1"
+                                            CornerRadius="7" Padding="12 8">
+                                        <TextBlock Text="{Binding VerificationUri}" FontFamily="Poppins" FontSize="13"
+                                                   FontWeight="SemiBold" Foreground="#4FC3F7" TextWrapping="Wrap"/>
+                                    </Border>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Step 2: enter device code -->
+                            <Border Background="#0D1620" BorderBrush="#1E3348" BorderThickness="1" CornerRadius="10" Padding="18 14">
+                                <StackPanel Spacing="12">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <Border Width="20" Height="20" CornerRadius="10"
+                                                Background="#1A3A5C" VerticalAlignment="Center">
+                                            <TextBlock Text="2" FontFamily="Poppins" FontSize="11" FontWeight="Bold"
+                                                       Foreground="#77CEFF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock Text="Enter this code on the page:" FontFamily="Poppins" FontSize="12"
+                                                   Foreground="#A0B4C4" VerticalAlignment="Center"/>
+                                    </StackPanel>
+
+                                    <!-- Code pill + Copy button -->
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                        <Border Background="#071525"
+                                                BorderBrush="#2A6AA8"
+                                                BorderThickness="2"
+                                                CornerRadius="10"
+                                                Padding="0 14">
+                                            <TextBlock Text="{Binding DeviceCode}"
+                                                       FontFamily="Minecraft"
+                                                       FontSize="30"
+                                                       FontWeight="Bold"
+                                                       Foreground="#00D9FF"
+                                                       HorizontalAlignment="Center"
+                                                       LetterSpacing="6"/>
+                                        </Border>
+                                        <Button Grid.Column="1"
+                                                Classes="AccountPrimaryButton"
+                                                Command="{Binding CopyDeviceCodeCommand}"
+                                                x:Name="CopyCodeButton"
+                                                Width="90"
+                                                ToolTip.Tip="Copy code to clipboard">
+                                            <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
+                                                <TextBlock Text="⎘" FontFamily="Poppins" FontSize="14" VerticalAlignment="Center"/>
+                                                <TextBlock Text="Copy" FontFamily="Poppins" FontSize="12" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Status / spinner row -->
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10" HorizontalAlignment="Center">
+                                <!-- Animated spinner — visible only while busy -->
+                                <Border Width="16" Height="16" VerticalAlignment="Center"
+                                        IsVisible="{Binding IsMicrosoftSignInBusy}"
+                                        CornerRadius="8" BorderBrush="#00D9FF" BorderThickness="2">
+                                    <Border.RenderTransform>
+                                        <RotateTransform/>
+                                    </Border.RenderTransform>
+                                    <Border.Styles>
+                                        <Style Selector="Border">
+                                            <Style.Animations>
+                                                <Animation Duration="0:0:1" IterationCount="Infinite">
+                                                    <KeyFrame Cue="0%">
+                                                        <Setter Property="RenderTransform" Value="rotate(0deg)"/>
+                                                    </KeyFrame>
+                                                    <KeyFrame Cue="100%">
+                                                        <Setter Property="RenderTransform" Value="rotate(360deg)"/>
+                                                    </KeyFrame>
+                                                </Animation>
+                                            </Style.Animations>
+                                        </Style>
+                                    </Border.Styles>
+                                </Border>
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding DeviceCodeStatus}"
+                                           FontFamily="Poppins" FontSize="12"
+                                           Foreground="#8CA8BE"
+                                           VerticalAlignment="Center"
+                                           TextWrapping="Wrap"
+                                           IsVisible="{Binding !!DeviceCodeStatus}"/>
+                            </Grid>
+
+                        </StackPanel>
                     </Grid>
                 </Grid>
             </Border>

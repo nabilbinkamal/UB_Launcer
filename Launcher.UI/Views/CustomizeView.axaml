@@ -30,7 +30,7 @@
 
         <Grid Grid.Row="1" ColumnDefinitions="Auto,*" ColumnSpacing="24">
             <Border x:Name="PreviewPanel" Width="285" Classes="SkinPreviewPanel" Padding="16 14">
-                <Grid RowDefinitions="Auto,*,Auto,Auto,Auto" RowSpacing="12">
+                <Grid RowDefinitions="Auto,*,Auto,Auto" RowSpacing="12">
                     <Border Classes="SkinUsernamePill" HorizontalAlignment="Center" Padding="13 6">
                         <TextBlock Text="{Binding Username}" FontFamily="Minecraft" FontSize="16" Foreground="#C9D1D9"/>
                     </Border>
@@ -94,12 +94,7 @@
                                FontSize="12"
                                Foreground="#A5AFB8"
                                HorizontalAlignment="Center"/>
-                    <Button Grid.Row="3"
-                            Content="✎  Edit skin"
-                            Classes="SkinEditButton"
-                            HorizontalAlignment="Center"
-                            Click="OnBrowseSkinClick"/>
-                    <Border Grid.Row="4" Padding="12 10">
+                    <Border Grid.Row="3" Padding="12 10">
                         <StackPanel Spacing="10">
                         <CheckBox Content="Slim Alex model"
                                   IsChecked="{Binding UseSlimModel}"
@@ -144,7 +139,6 @@
                                                     Classes.Selected="{Binding IsSelected}"
                                                     Width="190"
                                                     Height="245"
-                                                    ToolTip.Tip="{Binding Name}"
                                                     Command="{Binding $parent[UserControl].((vm:CustomizeViewModel)DataContext).SelectSavedSkinCommand}"
                                                     CommandParameter="{Binding}">
                                                 <Grid>
@@ -153,27 +147,19 @@
                                                                                  Zoom="1.30"
                                                                                  VerticalOffset="38"
                                                                                  Margin="0"/>
-                                                    <Border Classes="SkinCardEdit"
-                                                            HorizontalAlignment="Left"
-                                                            VerticalAlignment="Bottom"
-                                                            Margin="12">
-                                                        <TextBlock Text="✎  Edit"
-                                                                   FontFamily="Poppins"
-                                                                   FontSize="13"
-                                                                   FontWeight="SemiBold"
-                                                                   Foreground="White"/>
-                                                    </Border>
                                                     <Button Classes="SkinCardDeleteButton"
-                                                            HorizontalAlignment="Left"
+                                                            HorizontalAlignment="Right"
                                                             VerticalAlignment="Bottom"
-                                                            Margin="84 0 0 12"
+                                                            Margin="12"
                                                             Command="{Binding $parent[UserControl].((vm:CustomizeViewModel)DataContext).DeleteSavedSkinCommand}"
                                                             CommandParameter="{Binding}">
-                                                        <TextBlock Text="X"
+                                                        <TextBlock Text="✕"
                                                                    FontFamily="Poppins"
                                                                    FontSize="13"
                                                                    FontWeight="Bold"
-                                                                   Foreground="White"/>
+                                                                   Foreground="White"
+                                                                   HorizontalAlignment="Center"
+                                                                   VerticalAlignment="Center"/>
                                                     </Button>
                                                     <Border Classes="SkinSelectedStroke"
                                                             IsVisible="{Binding IsSelected}"
@@ -202,7 +188,6 @@
                                             Width="190"
                                             Height="245"
                                             Margin="0 0 12 12"
-                                            ToolTip.Tip="{Binding Name}"
                                             Command="{Binding $parent[UserControl].((vm:CustomizeViewModel)DataContext).SelectDefaultSkinCommand}"
                                             CommandParameter="{Binding}">
                                         <Grid>
@@ -211,16 +196,6 @@
                                                                          Zoom="1.30"
                                                                          VerticalOffset="38"
                                                                          Margin="0"/>
-                                            <Border Classes="SkinCardEdit"
-                                                    HorizontalAlignment="Left"
-                                                    VerticalAlignment="Bottom"
-                                                    Margin="12">
-                                                <TextBlock Text="✎  Edit"
-                                                           FontFamily="Poppins"
-                                                           FontSize="13"
-                                                           FontWeight="SemiBold"
-                                                           Foreground="White"/>
-                                            </Border>
                                             <Border Classes="SkinSelectedStroke"
                                                     IsVisible="{Binding IsSelected}"
                                                     IsHitTestVisible="False"/>
@@ -229,6 +204,85 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
+                    </StackPanel>
+
+                    <!-- Owned capes (Microsoft account) — only shown when at least one cape is available -->
+                    <StackPanel Spacing="11"
+                                IsVisible="{Binding HasMicrosoftOwnedCapes}">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="⌃  Owned capes" Classes="SkinSectionTitle" Foreground="#B7BEC6"/>
+                            <Border Background="#1A2A1A"
+                                    BorderBrush="#2D5A2D"
+                                    BorderThickness="1"
+                                    CornerRadius="8"
+                                    Padding="7 2"
+                                    VerticalAlignment="Center">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <TextBlock Text="♛"
+                                               FontFamily="Poppins"
+                                               FontSize="10"
+                                               Foreground="#5EC95E"
+                                               VerticalAlignment="Center"/>
+                                    <TextBlock Text="Microsoft"
+                                               FontFamily="Poppins"
+                                               FontSize="10"
+                                               FontWeight="SemiBold"
+                                               Foreground="#5EC95E"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                            <ItemsControl ItemsSource="{Binding MicrosoftOwnedCapes}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="12"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:CapeLibraryItem">
+                                        <Button Classes="CapeLibraryButton"
+                                                Classes.Selected="{Binding IsSelected}"
+                                                Width="190"
+                                                Height="245"
+                                                ToolTip.Tip="{Binding Name}"
+                                                Command="{Binding $parent[UserControl].((vm:CustomizeViewModel)DataContext).SelectOwnedCapeCommand}"
+                                                CommandParameter="{Binding}">
+                                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                <Image Source="{Binding ImagePath, Converter={StaticResource OpaqueBitmapConverter}}"
+                                                       Stretch="Uniform"
+                                                       Width="122"
+                                                       Height="176"
+                                                       Margin="0"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"
+                                                       RenderOptions.BitmapInterpolationMode="None"/>
+                                                <!-- Crown badge — bottom-right corner -->
+                                                <Border HorizontalAlignment="Right"
+                                                        VerticalAlignment="Bottom"
+                                                        Margin="0 0 10 10"
+                                                        Background="#CC1A2A1A"
+                                                        BorderBrush="#2D5A2D"
+                                                        BorderThickness="1"
+                                                        CornerRadius="6"
+                                                        Padding="5 3"
+                                                        IsHitTestVisible="False">
+                                                    <TextBlock Text="♛"
+                                                               FontFamily="Poppins"
+                                                               FontSize="11"
+                                                               Foreground="#5EC95E"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center"/>
+                                                </Border>
+                                                <Border Classes="SkinSelectedStroke"
+                                                        IsVisible="{Binding IsSelected}"
+                                                        IsHitTestVisible="False"/>
+                                            </Grid>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
                     </StackPanel>
 
                     <StackPanel Spacing="11">

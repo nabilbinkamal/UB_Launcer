@@ -10,20 +10,42 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Launcher.Core.Services;
 using Minecraft.Runtime;
+using Launcher.Services;
 using Serilog;
 
 namespace Launcher.Core.ViewModels;
+
+public sealed class PartnerServerItem
+{
+    public required string Name { get; init; }
+    public required string Address { get; init; }
+    public required string Description { get; init; }
+    public required string Version { get; init; }
+    public required string Badge { get; init; }
+    public string IconUrl { get; init; } = string.Empty;
+    public string WebsiteUrl { get; init; } = string.Empty;
+    public bool HasIcon => !string.IsNullOrWhiteSpace(IconUrl);
+}
 
 public partial class HomeViewModel : ViewModelBase
 {
     private GameProfile? observedProfile;
     private readonly HashSet<LocalServerItem> observedServers = [];
+    private int javaRuntimeRefreshVersion;
+    private string resolvedJavaMinecraftVersion = string.Empty;
+    private int resolvedJavaMajorVersion;
+    private int displayWidth;
+    private int displayHeight;
+    private int? activeGameProcessId;
 
     [ObservableProperty]
     private string _statusText = "Ready to Play";
 
     [ObservableProperty]
     private bool _isLaunching;
+
+    [ObservableProperty]
+    private bool _isGameRunning;
 
     [ObservableProperty]
     private double _launchProgress;
@@ -59,6 +81,15 @@ public partial class HomeViewModel : ViewModelBase
     private string _totalModsText = "0";
 
     [ObservableProperty]
+    private string _allocatedMemoryText = "4 GB RAM";
+
+    [ObservableProperty]
+    private string _javaRuntimeText = "Java 21";
+
+    [ObservableProperty]
+    private string _screenResolutionText = "854x480";
+
+    [ObservableProperty]
     private double _memoryUsagePercent;
 
     [ObservableProperty]
@@ -73,7 +104,11 @@ public partial class HomeViewModel : ViewModelBase
     [ObservableProperty]
     private string _remoteBannerImageUrl = string.Empty;
 
+    [ObservableProperty]
+    private string _remoteDiscordBannerImageUrl = string.Empty;
+
     public bool HasRemoteBannerImage => !string.IsNullOrWhiteSpace(RemoteBannerImageUrl);
+    public bool HasRemoteDiscordBannerImage => !string.IsNullOrWhiteSpace(RemoteDiscordBannerImageUrl);
 
     [ObservableProperty]
     private string _username = string.IsNullOrWhiteSpace(OfflineAccountStore.Username) ? "Player" : OfflineAccountStore.Username;
@@ -85,14 +120,17 @@ public partial class HomeViewModel : ViewModelBase
     public ObservableCollection<GameProfile> Instances => InstanceStore.Profiles;
     public ObservableCollection<GameProfile> RecentInstances { get; } = [];
     public ObservableCollection<LocalServerItem> RecentServers { get; } = [];
-    public bool CanLaunchGame => !IsLaunching;
+    public ObservableCollection<PartnerServerItem> PartnerServers { get; } = [];
+    public bool CanLaunchGame => !IsLaunching && !IsGameRunning;
     public bool IsFabricSelected => SelectedInstance?.LoaderType.Equals("Fabric", StringComparison.OrdinalIgnoreCase) == true;
     public bool HasRecentInstances => RecentInstances.Count > 0;
     public bool HasRecentServers => RecentServers.Count > 0;
+    public bool HasPartnerServers => PartnerServers.Count > 0;
 
     public HomeViewModel()
     {
         OfflineAccountStore.AccountChanged += RefreshUsername;
+        LauncherGameSettingsStore.Changed += RefreshLaunchConfiguration;
         MinecraftVersions = new ObservableCollection<string>
         {
             "Fabric 1.20.4 (UB Performance Pack)",
@@ -110,6 +148,7 @@ public partial class HomeViewModel : ViewModelBase
         RefreshRecentInstances();
         RefreshRecentServers();
         RefreshTotalPlaytime();
+        RefreshLaunchConfiguration();
         RefreshRemoteBranding();
     }
 
@@ -131,7 +170,21 @@ public partial class HomeViewModel : ViewModelBase
         GpuHistory = AppendSample(GpuHistory, clampedGpu / 100);
     }
 
+    public void UpdateDisplayResolution(int width, int height)
+    {
+        if (width <= 0 || height <= 0 || (displayWidth == width && displayHeight == height))
+        {
+            return;
+        }
+
+        displayWidth = width;
+        displayHeight = height;
+        ScreenResolutionText = $"{displayWidth}x{displayHeight}";
+    }
+
     partial void OnIsLaunchingChanged(bool value) => OnPropertyChanged(nameof(CanLaunchGame));
+
+    partial void OnIsGameRunningChanged(bool value) => OnPropertyChanged(nameof(CanLaunchGame));
 
     partial void OnSelectedInstanceChanged(GameProfile? value)
     {
@@ -173,10 +226,29 @@ public partial class HomeViewModel : ViewModelBase
     public void RefreshRemoteBranding()
     {
         RemoteBannerImageUrl = LauncherRemoteConfiguration.Current.GetAsset("heroBanner", string.Empty);
+        RemoteDiscordBannerImageUrl = LauncherRemoteConfiguration.Current.GetAsset("discordBanner", string.Empty);
+        PartnerServers.Clear();
+        foreach (var server in LauncherRemoteConfiguration.Current.PartnerServers.Where(server => server.Enabled))
+        {
+            PartnerServers.Add(new PartnerServerItem
+            {
+                Name = server.Name,
+                Address = server.Address,
+                Description = server.Description,
+                Version = server.Version,
+                Badge = server.Badge,
+                IconUrl = server.IconUrl,
+                WebsiteUrl = server.WebsiteUrl
+            });
+        }
+        OnPropertyChanged(nameof(HasPartnerServers));
     }
 
     partial void OnRemoteBannerImageUrlChanged(string value) =>
         OnPropertyChanged(nameof(HasRemoteBannerImage));
+
+    partial void OnRemoteDiscordBannerImageUrlChanged(string value) =>
+        OnPropertyChanged(nameof(HasRemoteDiscordBannerImage));
 
     private void RefreshUsername()
     {
@@ -214,6 +286,7 @@ public partial class HomeViewModel : ViewModelBase
         }
 
         OnPropertyChanged(nameof(IsFabricSelected));
+        RefreshLaunchConfiguration();
         RefreshRecentInstances();
     }
 
@@ -233,59 +306,195 @@ public partial class HomeViewModel : ViewModelBase
         {
             SelectedVersion = $"{profile.LoaderType} {profile.Version}";
             OnPropertyChanged(nameof(IsFabricSelected));
+            RefreshLaunchConfiguration();
         }
     }
 
     [RelayCommand]
-    private async Task LaunchGameAsync()
+    private Task LaunchGameAsync() => LaunchSelectedInstanceAsync();
+
+    public Task LaunchPartnerServerAsync(PartnerServerItem server) =>
+        LaunchSelectedInstanceAsync(server);
+
+    private async Task LaunchSelectedInstanceAsync(PartnerServerItem? partnerServer = null)
     {
-        if (IsLaunching) return;
+        if (IsLaunching)
+        {
+            ActionStatusText = "Minecraft is already being prepared.";
+            return;
+        }
+
+        if (HasActiveGameProcess())
+        {
+            StatusText = "Minecraft is already running";
+            ActionStatusText = "Close the running game before starting another one.";
+            return;
+        }
+
+        var selectedInstance = InstanceStore.SelectedProfile;
+        if (partnerServer is not null && selectedInstance is null)
+        {
+            StatusText = "Select an instance first";
+            ActionStatusText = $"Select or create an instance before joining {partnerServer.Name}.";
+            return;
+        }
 
         IsLaunching = true;
         var launchStopwatch = Stopwatch.StartNew();
-        StatusText = "Checking file integrity...";
+        StatusText = partnerServer is null
+            ? "Checking file integrity..."
+            : $"Preparing to join {partnerServer.Name}...";
+        ActionStatusText = partnerServer is null
+            ? "Preparing the selected instance."
+            : $"Launching {selectedInstance!.Name} for {partnerServer.Name}.";
         LaunchProgress = 10;
-        Log.Information("Starting launch process for version: {Version}", SelectedVersion);
+        Log.Information(
+            "Starting launch process for version {Version}{PartnerServer}",
+            SelectedVersion,
+            partnerServer is null ? string.Empty : $" and partner server {partnerServer.Address}");
 
         try
         {
-            var selectedInstance = InstanceStore.SelectedProfile;
             var launchService = new MinecraftLaunchService(selectedInstance?.InstancePath);
             var versionMatch = Regex.Match(SelectedVersion, @"\d+\.\d+(?:\.\d+)?");
             var version = selectedInstance?.Version ??
                           (versionMatch.Success ? versionMatch.Value : SelectedVersion.Trim());
-            var gameProcess = await launchService.LaunchOfflineAsync(Username, version, 8192, new Progress<string>(message => StatusText = message));
+            var gameProcess = await launchService.LaunchOfflineAsync(
+                Username,
+                version,
+                LauncherGameSettingsStore.CreateLaunchConfiguration(),
+                new Progress<string>(message => StatusText = message),
+                partnerServer?.Address);
+            activeGameProcessId = gameProcess.Id;
+            IsGameRunning = true;
+            _ = MonitorActiveGameProcessAsync(gameProcess.Id);
             PlaytimeStore.TrackSession(Username, gameProcess);
+            DiscordPresenceService.TrackGame(
+                gameProcess,
+                selectedInstance?.Name ?? "Minecraft",
+                version,
+                selectedInstance?.LoaderType ?? "Minecraft",
+                Username);
             if (selectedInstance is not null)
             {
                 selectedInstance.LastPlayed = "Today";
                 selectedInstance.LastPlayedAtUtc = DateTimeOffset.UtcNow;
             }
             RefreshTotalPlaytime();
-            launchStopwatch.Stop();
-            LaunchTimeText = $"{launchStopwatch.Elapsed.TotalSeconds:0.00}s";
-            LaunchHistory = AppendSample(LaunchHistory, Math.Clamp(launchStopwatch.Elapsed.TotalSeconds / 30, 0, 1));
             LaunchProgress = 35;
             StatusText = "Minecraft is starting...";
             LaunchProgress = 65;
-            await Task.Delay(500);
+
+            var windowTimeout = TimeSpan.FromSeconds(15);
+            var windowStart = DateTime.UtcNow;
+            while (!gameProcess.HasExited && (DateTime.UtcNow - windowStart) < windowTimeout)
+            {
+                try
+                {
+                    gameProcess.Refresh();
+                    if (gameProcess.MainWindowHandle != IntPtr.Zero)
+                    {
+                        break;
+                    }
+                }
+                catch
+                {
+                    break;
+                }
+
+                await Task.Delay(200);
+            }
+
+            if (!HasActiveGameProcess())
+            {
+                throw new InvalidOperationException(
+                    "Minecraft closed before startup finished. Check the selected instance and Java runtime.");
+            }
+
+            launchStopwatch.Stop();
+            LaunchTimeText = $"{launchStopwatch.Elapsed.TotalSeconds:0.00}s";
+            LaunchHistory = AppendSample(LaunchHistory, Math.Clamp(launchStopwatch.Elapsed.TotalSeconds / 30, 0, 1));
+
             LaunchProgress = 90;
             LaunchProgress = 100;
-            StatusText = "Game launched! Enjoy UB Launcher.";
-            Log.Information("Minecraft successfully initialized.");
+            StatusText = partnerServer is null
+                ? "Game launched! Enjoy UB Launcher."
+                : $"Minecraft is joining {partnerServer.Name}...";
+            ActionStatusText = partnerServer is null
+                ? $"{selectedInstance?.Name ?? "Minecraft"} is running."
+                : $"Joining {partnerServer.Name} at {partnerServer.Address}.";
+            Log.Information(
+                "Minecraft successfully initialized{PartnerServer}.",
+                partnerServer is null ? string.Empty : $" for {partnerServer.Name}");
+            _ = LauncherAnalyticsService.SendGameLaunchAsync();
 
-            // Wait a moment and then reset launcher UI state (game runs in background)
             await Task.Delay(2000);
-            StatusText = "Ready to Play";
-            IsLaunching = false;
-            LaunchProgress = 0;
+            if (IsGameRunning)
+            {
+                StatusText = partnerServer is null
+                    ? "Minecraft is running"
+                    : $"Playing on {partnerServer.Name}";
+            }
         }
         catch (Exception ex)
         {
             Log.Error(ex, "Failed to launch game.");
             StatusText = $"Launch failed: {ex.Message}";
+            ActionStatusText = partnerServer is null
+                ? "Minecraft could not be launched."
+                : $"Could not join {partnerServer.Name}.";
+        }
+        finally
+        {
             IsLaunching = false;
             LaunchProgress = 0;
+        }
+    }
+
+    private bool HasActiveGameProcess()
+    {
+        if (!IsGameRunning || activeGameProcessId is not { } processId)
+        {
+            return false;
+        }
+
+        try
+        {
+            using var process = Process.GetProcessById(processId);
+            if (!process.HasExited)
+            {
+                return true;
+            }
+        }
+        catch
+        {
+        }
+
+        activeGameProcessId = null;
+        IsGameRunning = false;
+        return false;
+    }
+
+    private async Task MonitorActiveGameProcessAsync(int processId)
+    {
+        try
+        {
+            using var process = Process.GetProcessById(processId);
+            await process.WaitForExitAsync();
+        }
+        catch
+        {
+        }
+        finally
+        {
+            if (activeGameProcessId == processId)
+            {
+                activeGameProcessId = null;
+                IsGameRunning = false;
+                StatusText = "Ready to Play";
+                ActionStatusText = "Minecraft closed. Ready for another launch.";
+                RefreshTotalPlaytime();
+            }
         }
     }
 
@@ -300,6 +509,45 @@ public partial class HomeViewModel : ViewModelBase
 
     [RelayCommand]
     private void LaunchOption() => ActionStatusText = "Launch options selected.";
+
+    private void RefreshLaunchConfiguration()
+    {
+        var settings = LauncherGameSettingsStore.Current;
+        var memoryGb = settings.MaximumMemoryMb / 1024d;
+        AllocatedMemoryText = Math.Abs(memoryGb - Math.Round(memoryGb)) < 0.01
+            ? $"{Math.Round(memoryGb):0} GB RAM"
+            : $"{memoryGb:0.#} GB RAM";
+        ScreenResolutionText = displayWidth > 0 && displayHeight > 0
+            ? $"{displayWidth}x{displayHeight}"
+            : settings.FullScreen
+                ? "Fullscreen"
+                : $"{settings.ScreenWidth}x{settings.ScreenHeight}";
+
+        var version = SelectedInstance?.Version;
+        var estimatedMajor = MinecraftLaunchService.EstimateJavaMajorVersion(version ?? string.Empty);
+        var hasResolvedVersion = string.Equals(resolvedJavaMinecraftVersion, version, StringComparison.OrdinalIgnoreCase) &&
+                                 resolvedJavaMajorVersion > 0;
+        JavaRuntimeText = $"Java {(hasResolvedVersion ? resolvedJavaMajorVersion : estimatedMajor)}";
+
+        if (!string.IsNullOrWhiteSpace(version) && !hasResolvedVersion)
+        {
+            var refreshVersion = ++javaRuntimeRefreshVersion;
+            _ = RefreshJavaRuntimeAsync(version, SelectedInstance?.InstancePath, refreshVersion);
+        }
+    }
+
+    private async Task RefreshJavaRuntimeAsync(string version, string? instancePath, int refreshVersion)
+    {
+        var launchService = new MinecraftLaunchService(instancePath);
+        var majorVersion = await launchService.GetRequiredJavaMajorVersionAsync(version);
+        if (refreshVersion == javaRuntimeRefreshVersion &&
+            string.Equals(SelectedInstance?.Version, version, StringComparison.OrdinalIgnoreCase))
+        {
+            resolvedJavaMinecraftVersion = version;
+            resolvedJavaMajorVersion = majorVersion;
+            JavaRuntimeText = $"Java {majorVersion}";
+        }
+    }
 
     private static IReadOnlyList<double> AppendSample(IReadOnlyList<double> history, double sample)
     {

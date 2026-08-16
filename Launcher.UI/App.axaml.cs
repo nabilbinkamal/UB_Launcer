@@ -7,6 +7,7 @@ using Avalonia.Threading;
 using Launcher.Core.Services;
 using Launcher.Core.ViewModels;
 using Launcher.UI.Views;
+using Launcher.Services;
 
 namespace Launcher.UI;
 
@@ -40,8 +41,10 @@ public partial class App : Application
             {
                 DataContext = mainViewModel,
             };
+            desktop.Exit += (_, _) => DiscordPresenceService.Shutdown();
 
             _ = RefreshPublicConfigurationAsync(mainViewModel);
+            LauncherAnalyticsService.StartHeartbeatLoop();
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -49,11 +52,11 @@ public partial class App : Application
 
     private static async Task RefreshPublicConfigurationAsync(MainWindowViewModel mainViewModel)
     {
-        if (!await LauncherRemoteConfiguration.RefreshAsync())
+        if (await LauncherRemoteConfiguration.RefreshAsync())
         {
-            return;
+            await Dispatcher.UIThread.InvokeAsync(mainViewModel.ApplyRemoteConfiguration);
         }
 
-        await Dispatcher.UIThread.InvokeAsync(mainViewModel.ApplyRemoteConfiguration);
+        await LauncherAnalyticsService.SendLauncherOpenAsync();
     }
 }

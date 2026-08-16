@@ -1,12 +1,15 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Launcher.Core.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Launcher.UI.Views;
 
@@ -33,8 +36,40 @@ public partial class MainWindow : Window
         {
             ApplyResponsiveScale(Bounds.Width);
             BeginPagePreload();
+
+            if (DataContext is MainWindowViewModel vm)
+                vm.CopyToClipboardRequested += OnCopyToClipboardRequested;
         };
-        DetachedFromVisualTree += (_, _) => pagePreloadTimer.Stop();
+        DetachedFromVisualTree += (_, _) =>
+        {
+            pagePreloadTimer.Stop();
+            if (DataContext is MainWindowViewModel vm)
+                vm.CopyToClipboardRequested -= OnCopyToClipboardRequested;
+        };
+    }
+
+    private async void OnCopyToClipboardRequested(string text)
+    {
+        try
+        {
+            var clipboard = TopLevel.GetTopLevel(this)?.Clipboard;
+            if (clipboard is not null)
+                await clipboard.SetTextAsync(text);
+
+            // Brief visual feedback on the copy button
+            if (CopyCodeButton.Content is StackPanel sp)
+            {
+                var label = sp.Children.OfType<TextBlock>().LastOrDefault();
+                if (label is not null)
+                {
+                    var original = label.Text;
+                    label.Text = "Copied!";
+                    await Task.Delay(1200);
+                    label.Text = original;
+                }
+            }
+        }
+        catch { /* clipboard unavailable */ }
     }
 
     private void BeginPagePreload()
@@ -86,22 +121,23 @@ public partial class MainWindow : Window
             return;
         }
 
-        var scale = Math.Clamp(width / 1440d, 1d, 1.35d);
-        if (Math.Abs(scale - appliedScale) < 0.005d)
+        var fullscreenProgress = Math.Clamp((width - 1440d) / 480d, 0d, 1d);
+        var sidebarScale = 1d + (0.14d * fullscreenProgress);
+        if (Math.Abs(sidebarScale - appliedScale) < 0.005d)
             return;
 
-        appliedScale = scale;
-        MainLayout.ColumnDefinitions[0].Width = new GridLength(230 * scale);
-        LogoStack.Margin = new Thickness(28 * scale, 34 * scale, 22 * scale, 1);
-        SidebarNavigation.Margin = new Thickness(30 * scale, 0, 21 * scale, 0);
-        ProfilePanel.Width = 179 * scale;
-        ProfilePanel.Margin = new Thickness(30 * scale, 18, 0, 18);
+        appliedScale = sidebarScale;
+        MainLayout.ColumnDefinitions[0].Width = new GridLength(230 * sidebarScale);
+        LogoStack.Margin = new Thickness(33 * sidebarScale, 11, 20 * sidebarScale, 0);
+        SidebarNavigation.Margin = new Thickness(30 * sidebarScale, 0, 1 * sidebarScale, 0);
+        ProfilePanel.Width = 199 * sidebarScale;
+        ProfilePanel.Margin = new Thickness(30 * sidebarScale, 18, 0, 18);
 
         foreach (var child in SidebarNavigation.Children)
         {
             if (child is Button button)
             {
-                button.Width = 179 * scale;
+                button.Width = 199 * sidebarScale;
             }
         }
     }
@@ -121,6 +157,11 @@ public partial class MainWindow : Window
     }
 
     private void OnCloseClick(object? sender, RoutedEventArgs e)
+    {
+        Close();
+    }
+
+    private void OnUpdateExitClick(object? sender, RoutedEventArgs e)
     {
         Close();
     }

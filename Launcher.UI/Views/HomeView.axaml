@@ -9,31 +9,36 @@
              d:DesignWidth="1220"
              d:DesignHeight="850"
              x:Class="Launcher.UI.Views.HomeView"
-             x:DataType="vm:HomeViewModel">
+             x:DataType="vm:HomeViewModel"
+             Background="#000000">
+
+    <UserControl.Resources>
+        <x:Double x:Key="RecentInstanceCardWidth">140</x:Double>
+    </UserControl.Resources>
 
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
         <Grid x:Name="DashboardGrid"
               ColumnDefinitions="*,313"
               RowDefinitions="Auto"
               ColumnSpacing="9"
-              RowSpacing="10"
-              Margin="30 54 22 18">
-            <Grid x:Name="PrimaryColumn" Grid.Column="0" RowSpacing="10">
+              RowSpacing="12"
+              Margin="30 65 22 18">
+            <Grid x:Name="PrimaryColumn" Grid.Column="0" RowSpacing="12">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*" MinHeight="279"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="239"/>
-                    <RowDefinition Height="187"/>
+                    <RowDefinition Height="191"/>
                 </Grid.RowDefinitions>
-                <Grid x:Name="DashboardHeader" Grid.Row="0" ColumnDefinitions="*,Auto" ColumnSpacing="8" Margin="4 0 0 13">
-                    <StackPanel Spacing="1" Margin="0 7 0 -7">
+                <Grid x:Name="DashboardHeader" Grid.Row="0" ColumnDefinitions="*,Auto" ColumnSpacing="8" Margin="4 0 0 9">
+                    <StackPanel Spacing="1" Margin="0 -1 0 1">
                         <TextBlock Text="Welcome back," Classes="WelcomeTitle" Foreground="#00D9FF"/>
                         <TextBlock Text="{Binding Username}" Classes="UserNameTitle" Foreground="White"/>
                     </StackPanel>
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Top">
                         <Border Classes="StatPill">
-                            <Grid ColumnDefinitions="24,*" ColumnSpacing="8" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                                <controls:SvgPathIcon Source="/Assets/playtime.svg" Width="24" Height="24" VerticalAlignment="Center"/>
+                            <Grid ColumnDefinitions="27,*" ColumnSpacing="8" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                <controls:SvgPathIcon Source="/Assets/playtime.svg" Width="27" Height="27" VerticalAlignment="Center"/>
                                 <Grid Grid.Column="1" RowDefinitions="13,15" VerticalAlignment="Center">
                                     <TextBlock Text="Total Playtime" Classes="StatLabel" Foreground="#DCEAF4" HorizontalAlignment="Left"/>
                                     <TextBlock Grid.Row="1" Text="{Binding TotalPlaytimeText}" Classes="StatValue" Foreground="White" HorizontalAlignment="Left"/>
@@ -41,8 +46,8 @@
                             </Grid>
                         </Border>
                         <Border Classes="StatPill">
-                            <Grid ColumnDefinitions="24,*" ColumnSpacing="8" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                                <controls:SvgPathIcon Source="/Assets/mods.svg" Width="24" Height="24" VerticalAlignment="Center"/>
+                            <Grid ColumnDefinitions="27,*" ColumnSpacing="6" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                <controls:SvgPathIcon Source="/Assets/mods.svg" Width="27" Height="27" VerticalAlignment="Center"/>
                                 <Grid Grid.Column="1" RowDefinitions="13,15" VerticalAlignment="Center">
                                     <TextBlock Text="Total Mods" Classes="StatLabel" Foreground="#DCEAF4" HorizontalAlignment="Left"/>
                                     <TextBlock Grid.Row="1" Text="{Binding TotalModsText}" Classes="StatValue" Foreground="White" HorizontalAlignment="Left"/>
@@ -52,41 +57,26 @@
                     </StackPanel>
                 </Grid>
 
-                <Border Grid.Row="1" Classes="HeroCard" MinHeight="279" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ClipToBounds="True">
+                <Border x:Name="HeroCard" Grid.Row="1" Classes="HeroCard" HorizontalAlignment="Stretch" VerticalAlignment="Top" ClipToBounds="True">
                     <Grid>
-                        <Border Background="#111B2A" CornerRadius="8" BorderBrush="#213A55" BorderThickness="1" ClipToBounds="True">
-                            <Grid>
-                                <Image Name="HeroImage"
-                                       Source="/Assets/hero-banner.png"
-                                       Stretch="UniformToFill"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"/>
-                                <controls:RemoteImage SourceUrl="{Binding RemoteBannerImageUrl}"
-                                                      IsVisible="{Binding HasRemoteBannerImage}"
-                                                      DecodePixelWidth="1800"
-                                                      Stretch="UniformToFill"
-                                                      HorizontalAlignment="Stretch"
-                                                      VerticalAlignment="Stretch"/>
-                                
-                                <Rectangle IsVisible="{Binding #HeroImage.Source, Converter={x:Static ObjectConverters.IsNotNull}}">
-                                    <Rectangle.Fill>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                            <GradientStop Color="#12020508" Offset="0"/>
-                                            <GradientStop Color="#3203080C" Offset="0.55"/>
-                                            <GradientStop Color="#76020508" Offset="1"/>
-                                        </LinearGradientBrush>
-                                    </Rectangle.Fill>
-                                </Rectangle>
-
-                            </Grid>
-                        </Border>
+                        <Image Name="HeroImage"
+                               Source="/Assets/hero-banner.png"
+                               Stretch="UniformToFill"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                        <controls:RemoteImage SourceUrl="{Binding RemoteBannerImageUrl}"
+                                              IsVisible="{Binding HasRemoteBannerImage}"
+                                              DecodePixelWidth="1800"
+                                              Stretch="UniformToFill"
+                                              HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Stretch"/>
                     </Grid>
                 </Border>
 
                 <Grid Grid.Row="2" ColumnDefinitions="476*,348*" ColumnSpacing="12">
-                    <Border Grid.Column="0" Classes="CurrentInstanceCard" Padding="20 17">
-                        <Grid ColumnDefinitions="125,*" RowDefinitions="Auto,Auto,Auto,*,Auto">
-                            <Border Grid.RowSpan="4" Width="104" Height="104" Background="#6C4533" CornerRadius="8" ClipToBounds="True" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0 6 16 0">
+                    <Border Grid.Column="0" Classes="CurrentInstanceCard" Padding="15 17 15 22">
+                        <Grid ColumnDefinitions="137,*" RowDefinitions="Auto,Auto,Auto,*,Auto">
+                            <Border Grid.RowSpan="4" Width="122" Height="122" Background="#6C4533" CornerRadius="8" ClipToBounds="True" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0 4 15 0">
                                 <Grid>
                                     <Grid IsVisible="{Binding !SelectedInstance.HasIcon}">
                                         <Border Background="#72D65D" Height="42" VerticalAlignment="Top" CornerRadius="7 7 0 0"/>
@@ -101,9 +91,12 @@
                                 </Grid>
                             </Border>
                             <TextBlock Grid.Column="1" Text="Current instance" Classes="CurrentInstanceLabel" Foreground="#D2D2D2"/>
-                            <Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="*,Auto" ColumnSpacing="10" Margin="0 6 0 0">
+                            <Grid Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" ColumnDefinitions="Auto,Auto,*" ColumnSpacing="8" Margin="0 6 0 0">
                                 <ComboBox ItemsSource="{Binding Instances}"
                                           SelectedItem="{Binding SelectedInstance, Mode=TwoWay}"
+                                          MinWidth="225"
+                                          MaxWidth="380"
+                                          HorizontalAlignment="Left"
                                           Classes="HomeInstancePicker">
                                     <ComboBox.SelectionBoxItemTemplate>
                                         <DataTemplate x:DataType="vm:GameProfile">
@@ -174,86 +167,112 @@
                                 <Border Classes="Tag"><TextBlock Text="☕ Java 21" Classes="TagLabel" Foreground="#E5E5E5"/></Border>
                                 <Border Classes="Tag"><TextBlock Text="▣ 1920x1080" Classes="TagLabel" Foreground="#E5E5E5"/></Border>
                             </StackPanel>
-                            <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="14" Margin="0 10 0 0">
+                            <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="14" Margin="4 10 0 0">
                                 <TextBlock Text="{Binding SelectedInstance.Version, StringFormat='Minecraft {0}'}" Classes="VersionLabel" Foreground="White"/>
                                 <StackPanel Orientation="Horizontal" Spacing="5">
                                     <controls:SvgPathIcon Source="/Assets/fabric.svg" Width="15" Height="16" IsVisible="{Binding IsFabricSelected}"/>
                                     <TextBlock Text="{Binding SelectedInstance.LoaderType}" Classes="VersionLabel" Foreground="White"/>
                                 </StackPanel>
                             </StackPanel>
-                            <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Top" Margin="0 10 0 0">
-                                <Border Classes="Tag">
+                            <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Top" Margin="4 10 0 0">
+                                <Border Classes="Tag" MinWidth="88">
                                     <StackPanel Orientation="Horizontal" Spacing="5">
-                                        <controls:SvgPathIcon Source="/Assets/Ellipse Ram.svg" Width="10" Height="10"/>
-                                        <TextBlock Text="8 GB RAM" Classes="TagLabel" Foreground="#E5E5E5"/>
+                                        <controls:SvgPathIcon Source="/Assets/Ellipse Ram.svg" Width="10" Height="10" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding AllocatedMemoryText}" Classes="TagLabel" Foreground="#E5E5E5"/>
                                     </StackPanel>
                                 </Border>
-                                <Border Classes="Tag">
+                                <Border Classes="Tag" MinWidth="78">
                                     <StackPanel Orientation="Horizontal" Spacing="5">
-                                        <controls:SvgPathIcon Source="/Assets/java.svg" Width="13" Height="13"/>
-                                        <TextBlock Text="Java 21" Classes="TagLabel" Foreground="#E5E5E5"/>
+                                        <controls:SvgPathIcon Source="/Assets/java.svg" Width="13" Height="13" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding JavaRuntimeText}" Classes="TagLabel" Foreground="#E5E5E5"/>
                                     </StackPanel>
                                 </Border>
-                                <Border Classes="Tag">
+                                <Border Classes="Tag" MinWidth="110">
                                     <StackPanel Orientation="Horizontal" Spacing="5">
-                                        <controls:SvgPathIcon Source="/Assets/screen resulation.svg" Width="14" Height="14"/>
-                                        <TextBlock Text="1920x1080" Classes="TagLabel" Foreground="#E5E5E5"/>
+                                        <controls:SvgPathIcon Source="/Assets/screen resulation.svg" Width="14" Height="14" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding ScreenResolutionText}" Classes="TagLabel" Foreground="#E5E5E5"/>
                                     </StackPanel>
                                 </Border>
                             </StackPanel>
-                            <Button Grid.Row="4" Grid.ColumnSpan="2" Classes="PlayButton" Command="{Binding LaunchGameCommand}" IsEnabled="{Binding CanLaunchGame}" Margin="0 12 0 0">
+                            <Button Grid.Row="4" Grid.ColumnSpan="2" Classes="PlayButton" Command="{Binding LaunchGameCommand}" IsEnabled="{Binding CanLaunchGame}" Focusable="False" Margin="6 12 6 0">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="14"><TextBlock Text="▶" FontSize="23"/><TextBlock Text="PLAY" Classes="PlayLabel"/></StackPanel>
                             </Button>
                         </Grid>
                     </Border>
-
-                    <Border Grid.Column="1" Classes="PanelCard" Padding="18 10">
-                        <Grid RowDefinitions="Auto,*">
-                            <TextBlock Text="♛ PARTNER'S" FontFamily="Consolas" FontSize="18" FontWeight="Black" Foreground="#00D9FF" HorizontalAlignment="Center"/>
-                            <TextBlock Grid.Row="0" Text="SERVERS" FontFamily="Consolas" FontSize="18" FontWeight="Black" Foreground="#00D9FF" HorizontalAlignment="Center" Margin="0 22 0 0"/>
-                            <StackPanel Grid.Row="1" Margin="0 13 0 0" Spacing="5">
-                                <Button Classes="ServerRow"><Grid ColumnDefinitions="Auto,*,Auto"><Border Width="28" Height="28" Background="#0D8FB5" CornerRadius="5"><TextBlock Text="UB" FontSize="9" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Grid.Column="1" Text="United Bangla" FontSize="12" Foreground="White" VerticalAlignment="Center" Margin="8 0"/><TextBlock Grid.Column="2" Text="▶" Foreground="#3C91E6" FontSize="15" VerticalAlignment="Center"/></Grid></Button>
-                                <Button Classes="ServerRow"><Grid ColumnDefinitions="Auto,*,Auto"><Border Width="28" Height="28" Background="#0D8FB5" CornerRadius="5"><TextBlock Text="UB" FontSize="9" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Grid.Column="1" Text="United Bangla" FontSize="12" Foreground="White" VerticalAlignment="Center" Margin="8 0"/><TextBlock Grid.Column="2" Text="▶" Foreground="#3C91E6" FontSize="15" VerticalAlignment="Center"/></Grid></Button>
-                                <Button Classes="ServerRow"><Grid ColumnDefinitions="Auto,*,Auto"><Border Width="28" Height="28" Background="#0D8FB5" CornerRadius="5"><TextBlock Text="UB" FontSize="9" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Grid.Column="1" Text="United Bangla" FontSize="12" Foreground="White" VerticalAlignment="Center" Margin="8 0"/><TextBlock Grid.Column="2" Text="▶" Foreground="#3C91E6" FontSize="15" VerticalAlignment="Center"/></Grid></Button>
-                                <Button Classes="ServerRow"><Grid ColumnDefinitions="Auto,*,Auto"><Border Width="28" Height="28" Background="#0D8FB5" CornerRadius="5"><TextBlock Text="UB" FontSize="9" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Grid.Column="1" Text="United Bangla" FontSize="12" Foreground="White" VerticalAlignment="Center" Margin="8 0"/><TextBlock Grid.Column="2" Text="▶" Foreground="#3C91E6" FontSize="15" VerticalAlignment="Center"/></Grid></Button>
+                    <Border Grid.Column="1" Classes="PanelCard HomePanel PartnerPanel" Padding="0">
+                        <Grid RowDefinitions="70,*">
+                            <controls:SvgPathIcon Source="/Assets/Patner'sServer.svg"
+                                                  Width="147"
+                                                  Height="60"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Top"/>
+                            <Border Height="1"
+                                    Margin="69 0"
+                                    MaxWidth="420"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Bottom">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0%,50%" EndPoint="100%,50%">
+                                        <GradientStop Color="#00FFFFFF" Offset="0"/>
+                                        <GradientStop Color="#0CB6FF" Offset="0.5"/>
+                                        <GradientStop Color="#00FFFFFF" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                            </Border>
+                            <ScrollViewer Grid.Row="1" Margin="18 12 18 0" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
+                                <ItemsControl ItemsSource="{Binding PartnerServers}" IsVisible="{Binding HasPartnerServers}">
+                                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="7"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:PartnerServerItem">
+                                            <Button Classes="ServerRow" Click="OnPartnerServerClick">
+                                                <Grid ColumnDefinitions="Auto,*,Auto">
+                                                    <Border Width="28" Height="28" Background="#0D8FB5" CornerRadius="5" ClipToBounds="True">
+                                                        <Grid>
+                                                            <TextBlock Text="UB" FontSize="9" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !HasIcon}"/>
+                                                            <controls:RemoteImage SourceUrl="{Binding IconUrl}" IsVisible="{Binding HasIcon}" DecodePixelWidth="96" Stretch="UniformToFill"/>
+                                                        </Grid>
+                                                    </Border>
+                                                    <TextBlock Grid.Column="1" Text="{Binding Name}" FontFamily="Minecraft" FontSize="15" Foreground="White" TextTrimming="CharacterEllipsis" Margin="8 2 0 0" VerticalAlignment="Center"/>
+                                                    <Border Grid.Column="2" Classes="PartnerPlayIcon" Width="28" Height="27" Background="#1AFFFFFF" CornerRadius="5">
+                                                        <TextBlock Text="▶" Classes="PartnerPlayIconText" Foreground="#3C91E6" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </Grid>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                            <StackPanel Grid.Row="1" IsVisible="{Binding !HasPartnerServers}" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="3">
+                                <TextBlock Text="No partner servers published" FontFamily="Inter" FontSize="10.5" Foreground="#B7C9D4"/>
+                                <TextBlock Text="Add servers from UB Admin" FontFamily="Inter" FontSize="9.5" Foreground="#728FA1"/>
                             </StackPanel>
                         </Grid>
                     </Border>
                 </Grid>
 
-                <Grid Grid.Row="3" ColumnDefinitions="476*,348*" ColumnSpacing="12">
-                    <Border Grid.Column="0" Classes="PanelCard" Padding="17 13">
+                <Grid Grid.Row="3" ColumnDefinitions="476*,348*" ColumnSpacing="12" Margin="0 4 0 0">
+                    <Border x:Name="RecentInstancesPanel" Grid.Column="0" Classes="PanelCard HomePanel RecentInstancesPanel" Padding="17 8 17 13">
                         <Grid RowDefinitions="Auto,*">
-                            <Grid ColumnDefinitions="*,Auto">
-                                <TextBlock Text="Recent Instances" Classes="PanelTitle" Foreground="White"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding RecentInstances.Count, StringFormat='{}{0} shown'}" FontFamily="Inter" FontSize="10" Foreground="#91AEC2" VerticalAlignment="Center"/>
-                            </Grid>
-                            <ItemsControl Grid.Row="1" ItemsSource="{Binding RecentInstances}" Margin="0 10 0 0">
+                            <TextBlock Text="Recent Instances" Classes="PanelTitle" Foreground="White"/>
+                            <ItemsControl Grid.Row="1" ItemsSource="{Binding RecentInstances}" Margin="0 12 0 0">
                                 <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate><UniformGrid Columns="3"/></ItemsPanelTemplate>
+                                    <ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="10"/></ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="vm:GameProfile">
-                                        <Button Classes="RecentInstanceCard" Margin="0 0 8 0" Click="OnRecentInstanceClick">
-                                            <Grid RowDefinitions="Auto,Auto,Auto,*" RowSpacing="5">
-                                                <Grid ColumnDefinitions="42,*" ColumnSpacing="9">
-                                                    <Border Width="42" Height="42" CornerRadius="8" Background="{Binding Accent}" ClipToBounds="True">
+                                        <Button Classes="RecentInstanceCard" Width="{DynamicResource RecentInstanceCardWidth}" Height="112" Click="OnRecentInstanceClick">
+                                            <Grid ColumnDefinitions="43,*" RowDefinitions="*,Auto" ColumnSpacing="9" Margin="10 12 10 10">
+                                                <Border Width="43" Height="43" CornerRadius="5" Background="{Binding Accent}" ClipToBounds="True" HorizontalAlignment="Left" VerticalAlignment="Top">
                                                         <Grid>
                                                             <TextBlock Text="{Binding Initials}" IsVisible="{Binding !HasIcon}" FontFamily="Inter" FontSize="10" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                             <controls:RemoteImage SourceUrl="{Binding IconUrl}" IsVisible="{Binding HasIcon}" Stretch="UniformToFill"/>
                                                         </Grid>
-                                                    </Border>
-                                                    <StackPanel Grid.Column="1" Spacing="3" VerticalAlignment="Center">
-                                                        <TextBlock Text="{Binding Name}" FontFamily="Inter" FontSize="11" FontWeight="SemiBold" Foreground="#F4F8FB" TextTrimming="CharacterEllipsis" MaxLines="1"/>
-                                                        <TextBlock Text="{Binding RuntimeLabel}" FontFamily="Inter" FontSize="10.5" Foreground="#8FC8ED" TextTrimming="CharacterEllipsis"/>
-                                                    </StackPanel>
-                                                </Grid>
-                                                <Border Grid.Row="1" Height="1" Background="#20323F" Margin="0 3"/>
-                                                <Grid Grid.Row="2" ColumnDefinitions="*,Auto">
-                                                    <TextBlock Text="{Binding ModCount, StringFormat='{}{0} mods'}" FontFamily="Inter" FontSize="10" Foreground="#C5D4DD"/>
-                                                    <TextBlock Grid.Column="1" Text="{Binding RecentActivityLabel}" FontFamily="Inter" FontSize="10" Foreground="#95AFC0"/>
-                                                </Grid>
-                                                <TextBlock Grid.Row="3" Text="Open instance  ›" FontFamily="Inter" FontSize="10.5" FontWeight="SemiBold" Foreground="#83CCFF" VerticalAlignment="Bottom"/>
+                                                </Border>
+                                                <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Top" Margin="0 3 0 0">
+                                                    <TextBlock Text="{Binding Name}" FontFamily="Poppins" FontSize="12.25" FontWeight="Medium" Foreground="White" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" MaxLines="2"/>
+                                                    <TextBlock Text="{Binding ModCount, StringFormat='{}{0} Mods'}" FontFamily="Poppins" FontSize="10.5" FontWeight="Medium" Foreground="#99FFFFFF"/>
+                                                </StackPanel>
+                                                <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding RecentActivityLabel, StringFormat='Last played: {0}'}" FontFamily="Poppins" FontSize="10.5" FontWeight="Medium" Foreground="#99FFFFFF" TextTrimming="CharacterEllipsis"/>
                                             </Grid>
                                         </Button>
                                     </DataTemplate>
@@ -261,92 +280,86 @@
                             </ItemsControl>
                             <StackPanel Grid.Row="1" IsVisible="{Binding !HasRecentInstances}" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="4">
                                 <TextBlock Text="No instances yet" FontFamily="Inter" FontSize="11" FontWeight="SemiBold" Foreground="#D8E3EA" HorizontalAlignment="Center"/>
-                                        <TextBlock Text="Create or import one from Instances" FontFamily="Inter" FontSize="10.5" Foreground="#9BB2C1"/>
+                                <TextBlock Text="Create or import one from Instances" FontFamily="Inter" FontSize="10.5" Foreground="#9BB2C1"/>
                             </StackPanel>
                         </Grid>
                     </Border>
                     <!--
                     <Border Grid.Column="1" Classes="PanelCard" Padding="18 13"><Grid RowDefinitions="Auto,*"><TextBlock Text="Recents Server" Classes="PanelTitle" Foreground="White"/><StackPanel Grid.Row="1" Margin="0 9 0 0" Spacing="3"><Button Classes="ServerRow"><Grid ColumnDefinitions="Auto,*,Auto"><Border Width="27" Height="27" Background="#0D8FB5" CornerRadius="5"><TextBlock Text="UB" FontSize="9" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Grid.Column="1" Text="United Bangla" FontSize="12" Foreground="White" VerticalAlignment="Center" Margin="8 0"/><TextBlock Grid.Column="2" Text="▶" Foreground="#3C91E6" FontSize="15"/></Grid></Button><Button Classes="ServerRow"><Grid ColumnDefinitions="Auto,*,Auto"><Border Width="27" Height="27" Background="#0D8FB5" CornerRadius="5"><TextBlock Text="UB" FontSize="9" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Grid.Column="1" Text="United Bangla" FontSize="12" Foreground="White" VerticalAlignment="Center" Margin="8 0"/><TextBlock Grid.Column="2" Text="▶" Foreground="#3C91E6" FontSize="15"/></Grid></Button><Button Classes="ServerRow"><Grid ColumnDefinitions="Auto,*,Auto"><Border Width="27" Height="27" Background="#0D8FB5" CornerRadius="5"><TextBlock Text="UB" FontSize="9" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Grid.Column="1" Text="United Bangla" FontSize="12" Foreground="White" VerticalAlignment="Center" Margin="8 0"/><TextBlock Grid.Column="2" Text="▶" Foreground="#3C91E6" FontSize="15"/></Grid></Button><Button Classes="ServerRow"><Grid ColumnDefinitions="Auto,*,Auto"><Border Width="27" Height="27" Background="#0D8FB5" CornerRadius="5"><TextBlock Text="UB" FontSize="9" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Grid.Column="1" Text="United Bangla" FontSize="12" Foreground="White" VerticalAlignment="Center" Margin="8 0"/><TextBlock Grid.Column="2" Text="▶" Foreground="#3C91E6" FontSize="15"/></Grid></Button></StackPanel></Grid></Border>
                     -->
-                    <Border Grid.Column="1" Classes="PanelCard" Padding="18 13">
+                    <Border Grid.Column="1" Classes="PanelCard HomePanel RecentServersPanel" Padding="18 8 18 13">
                         <Grid RowDefinitions="Auto,*">
-                            <Grid ColumnDefinitions="*,Auto">
-                                <TextBlock Text="Recent Servers" Classes="PanelTitle" Foreground="White"/>
-                                <Border Grid.Column="1" Background="#0C202D" CornerRadius="7" Padding="7 3">
-                                    <TextBlock Text="{Binding RecentServers.Count, StringFormat='{}{0} saved'}" FontFamily="Inter" FontSize="10" Foreground="#9AD5F8"/>
-                                </Border>
-                            </Grid>
+                            <TextBlock Text="Your Servers" Classes="PanelTitle" Foreground="White"/>
                             <ItemsControl Grid.Row="1" ItemsSource="{Binding RecentServers}" Margin="0 8 0 0">
                                 <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Spacing="3"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="vm:LocalServerItem">
                                         <Button Classes="RecentServerRow" Click="OnRecentServerClick">
-                                            <Grid ColumnDefinitions="28,*,Auto" ColumnSpacing="9">
-                                                <Border Width="28" Height="28" Background="#0B83AD" CornerRadius="7">
-                                                        <TextBlock Text="{Binding Initials}" FontFamily="Inter" FontSize="9.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <Grid ColumnDefinitions="27,*,28" ColumnSpacing="8">
+                                                <Border Width="27" Height="27" Background="#0D8FB5" CornerRadius="5">
+                                                    <TextBlock Text="{Binding Initials}" FontFamily="Minecraft" FontSize="9" FontWeight="Medium" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                 </Border>
-                                                <StackPanel Grid.Column="1" Spacing="1" VerticalAlignment="Center">
-                                                        <TextBlock Text="{Binding Name}" FontFamily="Inter" FontSize="11" FontWeight="SemiBold" Foreground="#F2F7FA" TextTrimming="CharacterEllipsis"/>
-                                                        <TextBlock Text="{Binding ServerType, StringFormat='{}{0} server'}" FontFamily="Inter" FontSize="9.5" Foreground="#99B2C2"/>
-                                                </StackPanel>
-                                                <StackPanel Grid.Column="2" Spacing="2" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                                    <StackPanel Orientation="Horizontal" Spacing="5" HorizontalAlignment="Right">
-                                                        <Border Width="6" Height="6" CornerRadius="3" Background="#56D99A" IsVisible="{Binding IsRunning}" VerticalAlignment="Center"/>
-                                                    <TextBlock Text="{Binding Status}" FontFamily="Inter" FontSize="9.5" Foreground="#AAC9DC"/>
-                                                    </StackPanel>
-                                                    <TextBlock Text="{Binding RecentActivityLabel}" FontFamily="Inter" FontSize="9.5" Foreground="#829FB1" HorizontalAlignment="Right"/>
-                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" Text="{Binding Name}" FontFamily="Minecraft" FontSize="15" FontWeight="Medium" Foreground="White" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                                                <Border Grid.Column="2" Classes="PartnerPlayIcon" Width="28" Height="27" Background="#1AFFFFFF" CornerRadius="5">
+                                                    <TextBlock Text="▶" Classes="PartnerPlayIconText" Foreground="#3C91E6" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
                                             </Grid>
                                         </Button>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                             <StackPanel Grid.Row="1" IsVisible="{Binding !HasRecentServers}" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="4">
-                                <TextBlock Text="No saved servers" FontFamily="Inter" FontSize="11" FontWeight="SemiBold" Foreground="#D8E3EA"/>
-                                        <TextBlock Text="Create one from Create Server" FontFamily="Inter" FontSize="10.5" Foreground="#9BB2C1"/>
+                                <TextBlock Text="No local servers yet" FontFamily="Inter" FontSize="11" FontWeight="SemiBold" Foreground="#D8E3EA"/>
+                                <TextBlock Text="Create one from Create Server" FontFamily="Inter" FontSize="10.5" Foreground="#9BB2C1"/>
                             </StackPanel>
                         </Grid>
                     </Border>
                 </Grid>
             </Grid>
 
-            <Grid x:Name="RightRail" Grid.Column="1" RowSpacing="10">
+            <Grid x:Name="RightRail" Grid.Column="1" RowSpacing="12">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*" MinHeight="398"/>
+                    <RowDefinition Height="398"/>
                     <RowDefinition Height="239"/>
                     <RowDefinition Height="142"/>
                 </Grid.RowDefinitions>
-                <Border Classes="PanelCard" Padding="18 15">
-                    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="7">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <TextBlock Text="Performance Summary" Classes="PanelTitle" Foreground="White"/>
-                            <Button Grid.Column="1" Classes="DetailsButton" Content="View Details"/>
+                <Border Grid.Row="0" Classes="PanelCard HomePanel PerformanceSummaryCard" Padding="18 15">
+                    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="6">
+                        <Grid ColumnDefinitions="*,Auto" Margin="0 0 0 9">
+                            <TextBlock Text="Performance Summary" Classes="PanelTitle" Foreground="White">
+                                <TextBlock.RenderTransform>
+                                    <TranslateTransform Y="3"/>
+                                </TextBlock.RenderTransform>
+                            </TextBlock>
+                            <Button Grid.Column="1" Classes="DetailsButton">
+                                <TextBlock Text="View Details" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"/>
+                            </Button>
                         </Grid>
                         <Border Grid.Row="1" Classes="MetricCard">
-                            <Grid ColumnDefinitions="*,180" ColumnSpacing="8">
+                            <Grid ColumnDefinitions="*,175" ColumnSpacing="8">
                                 <StackPanel Spacing="16" VerticalAlignment="Center">
                                     <TextBlock Text="Launch Time" Classes="MetricLabel"/>
                                     <TextBlock Text="{Binding LaunchTimeText}" FontSize="22" Foreground="White"/>
                                 </StackPanel>
-                                <controls:SparklineControl x:Name="LaunchGraph" Grid.Column="1" Width="180" Height="44" Values="{Binding LaunchHistory}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                <controls:SparklineControl x:Name="LaunchGraph" Grid.Column="1" Width="175" Height="44" Values="{Binding LaunchHistory}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                             </Grid>
                         </Border>
                         <Border Grid.Row="2" Classes="MetricCard">
-                            <Grid ColumnDefinitions="*,180" ColumnSpacing="8">
+                            <Grid ColumnDefinitions="*,175" ColumnSpacing="8">
                                 <StackPanel Spacing="16" VerticalAlignment="Center">
                                     <TextBlock Text="CPU Usage" Classes="MetricLabel"/>
                                     <TextBlock Text="{Binding CpuUsageText}" FontSize="22" Foreground="White"/>
                                 </StackPanel>
-                                <controls:SparklineControl x:Name="CpuGraph" Grid.Column="1" Width="180" Height="44" Values="{Binding CpuHistory}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                <controls:SparklineControl x:Name="CpuGraph" Grid.Column="1" Width="175" Height="44" Values="{Binding CpuHistory}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                             </Grid>
                         </Border>
                         <Border Grid.Row="3" Classes="MetricCard">
-                            <Grid ColumnDefinitions="*,180" ColumnSpacing="8">
+                            <Grid ColumnDefinitions="*,175" ColumnSpacing="8">
                                 <StackPanel Spacing="16" VerticalAlignment="Center">
                                     <TextBlock Text="GPU Usage" Classes="MetricLabel"/>
                                     <TextBlock Text="{Binding GpuUsageText}" FontSize="22" Foreground="White"/>
                                 </StackPanel>
-                                <controls:SparklineControl x:Name="GpuGraph" Grid.Column="1" Width="180" Height="44" Values="{Binding GpuHistory}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                <controls:SparklineControl x:Name="GpuGraph" Grid.Column="1" Width="175" Height="44" Values="{Binding GpuHistory}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                             </Grid>
                         </Border>
                         <Border Grid.Row="4" Classes="MetricCard">
@@ -358,7 +371,7 @@
                                             <TextBlock Text="{Binding MemoryCapacityText}" FontFamily="Poppins" FontSize="10.5" FontWeight="Medium" Foreground="#A6FFFFFF" VerticalAlignment="Bottom" Margin="3 0 0 4"/>
                                     </StackPanel>
                                 </StackPanel>
-                                <Grid Grid.Column="1" Width="50" Height="50">
+                                <Grid x:Name="MemoryRingContainer" Grid.Column="1" Width="50" Height="50">
                                     <controls:MemoryUsageRing Value="{Binding MemoryUsagePercent}"/>
                                     <TextBlock Text="{Binding MemoryUsagePercentText}" FontSize="11" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Grid>
@@ -366,24 +379,29 @@
                         </Border>
                     </Grid>
                 </Border>
-                <Border Classes="PanelCard" Height="239" Padding="18 15 18 19">
-                    <StackPanel Spacing="7" VerticalAlignment="Bottom">
+                <Border x:Name="QuickActionsPanel" Grid.Row="1" Classes="PanelCard HomePanel QuickActionsCard" Padding="18 15 18 19">
+                    <StackPanel x:Name="QuickActionsStack" Spacing="7" VerticalAlignment="Bottom">
                         <TextBlock Text="Quick Actions" Classes="QuickActionsTitle" Foreground="White"/>
-                        <Button Classes="QuickButton" Command="{Binding AddInstanceCommand}"><StackPanel Orientation="Horizontal" Spacing="12"><controls:SvgPathIcon Source="/Assets/plus.svg" Width="14" Height="14"/><TextBlock Text="Add instance" VerticalAlignment="Center"/></StackPanel></Button>
-                        <Button Classes="QuickButton" Command="{Binding InstallModsCommand}"><StackPanel Orientation="Horizontal" Spacing="12"><controls:SvgPathIcon Source="/Assets/mods.svg" Width="18" Height="18"/><TextBlock Text="Install Mods" VerticalAlignment="Center"/></StackPanel></Button>
-                        <Button Classes="QuickButton" Command="{Binding EditProfileCommand}"><StackPanel Orientation="Horizontal" Spacing="12"><controls:SvgPathIcon Source="/Assets/edit profile.svg" Width="14" Height="14"/><TextBlock Text="Edit Profile" VerticalAlignment="Center"/></StackPanel></Button>
+                        <Button Classes="QuickButton" Command="{Binding AddInstanceCommand}"><StackPanel Orientation="Horizontal" Spacing="15"><controls:SvgPathIcon Source="/Assets/plus.svg" Width="20" Height="20"/><TextBlock Text="Add instance" VerticalAlignment="Center"/></StackPanel></Button>
+                        <Button Classes="QuickButton" Command="{Binding InstallModsCommand}"><StackPanel Orientation="Horizontal" Spacing="13"><controls:SvgPathIcon Source="/Assets/mods.svg" Width="22" Height="22"/><TextBlock Text="Install Mods" VerticalAlignment="Center"/></StackPanel></Button>
+                        <Button Classes="QuickButton" Command="{Binding EditProfileCommand}"><StackPanel Orientation="Horizontal" Spacing="15"><controls:SvgPathIcon Source="/Assets/edit profile.svg" Width="20" Height="20"/><TextBlock Text="Edit Profile" VerticalAlignment="Center"/></StackPanel></Button>
                         <Button Classes="QuickButton" Command="{Binding LaunchOptionCommand}">
-                            <StackPanel Orientation="Horizontal" Spacing="12">
-                                <controls:SvgPathIcon Source="/Assets/settings.svg" Width="14" Height="14"/>
+                            <StackPanel Orientation="Horizontal" Spacing="15">
+                                <controls:SvgPathIcon Source="/Assets/settings.svg" Width="20" Height="20"/>
                                 <TextBlock Text="Launch Option" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
                     </StackPanel>
                 </Border>
-                <Border x:Name="DiscordCard" Classes="DiscordCard" Height="142" Padding="0" ClipToBounds="True">
+                <Border x:Name="DiscordCard" Grid.Row="2" Classes="DiscordCard" Height="142" Padding="0" ClipToBounds="True">
                     <Grid>
-                        <Image Source="/Assets/JoinDiscord.png" Stretch="UniformToFill"/>
-                        <Button Classes="JoinButton" Content="Join Now" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="18 0 0 16"/>
+                        <Image Source="/Assets/JoinDiscord.png" Stretch="UniformToFill"
+                               IsVisible="{Binding !HasRemoteDiscordBannerImage}"/>
+                        <controls:RemoteImage SourceUrl="{Binding RemoteDiscordBannerImageUrl}"
+                                              IsVisible="{Binding HasRemoteDiscordBannerImage}"
+                                              DecodePixelWidth="1000" Stretch="UniformToFill"/>
+                        <Button Classes="JoinButton" Content="Join Now"
+                                HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="18 0 0 16"/>
                     </Grid>
                 </Border>
             </Grid>

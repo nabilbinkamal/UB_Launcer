@@ -3,11 +3,15 @@ using CommunityToolkit.Mvvm.Input;
 using Serilog;
 using System;
 using System.IO;
+using Launcher.Core.Services;
+using Launcher.Services;
 
 namespace Launcher.Core.ViewModels;
 
 public partial class SettingsViewModel : ViewModelBase
 {
+    private bool isApplyingGameSettings;
+
     [ObservableProperty]
     private string _selectedSection = "Appearance";
 
@@ -24,7 +28,7 @@ public partial class SettingsViewModel : ViewModelBase
     private bool _showNotifications = true;
 
     [ObservableProperty]
-    private bool _enableAnonymousTelemetry;
+    private bool _enableAnonymousTelemetry = LauncherAnalyticsConsentStore.IsEnabled;
 
     [ObservableProperty]
     private bool _shareCrashReports = true;
@@ -112,6 +116,23 @@ public partial class SettingsViewModel : ViewModelBase
     public bool IsJavaSelected => SelectedSection == "Java";
     public bool IsResourcesSelected => SelectedSection == "Resources";
 
+    public SettingsViewModel()
+    {
+        var settings = LauncherGameSettingsStore.Current;
+        isApplyingGameSettings = true;
+        _maximumMemoryMb = settings.MaximumMemoryMb;
+        _allocatedRamGb = Math.Max(1, (int)Math.Round(settings.MaximumMemoryMb / 1024d));
+        _forceFullscreen = settings.FullScreen;
+        _gameWindowWidth = settings.ScreenWidth.ToString();
+        _gameWindowHeight = settings.ScreenHeight.ToString();
+        _java25Path = settings.Java25Path;
+        _java21Path = settings.Java21Path;
+        _java17Path = settings.Java17Path;
+        _java8Path = settings.Java8Path;
+        _enableDiscordRpc = settings.EnableDiscordRpc;
+        isApplyingGameSettings = false;
+    }
+
     partial void OnSelectedSectionChanged(string value)
     {
         OnPropertyChanged(nameof(IsAppearanceSelected));
@@ -120,6 +141,34 @@ public partial class SettingsViewModel : ViewModelBase
         OnPropertyChanged(nameof(IsGameOptionsSelected));
         OnPropertyChanged(nameof(IsJavaSelected));
         OnPropertyChanged(nameof(IsResourcesSelected));
+    }
+
+    partial void OnEnableAnonymousTelemetryChanged(bool value)
+    {
+        LauncherAnalyticsConsentStore.SetEnabled(value);
+        if (value)
+        {
+            _ = LauncherAnalyticsService.SendLauncherOpenAsync();
+        }
+    }
+
+    partial void OnMaximumMemoryMbChanged(double value)
+    {
+        AllocatedRamGb = Math.Max(1, (int)Math.Round(value / 1024d));
+        PublishGameSettings();
+    }
+
+    partial void OnForceFullscreenChanged(bool value) => PublishGameSettings();
+    partial void OnGameWindowWidthChanged(string value) => PublishGameSettings();
+    partial void OnGameWindowHeightChanged(string value) => PublishGameSettings();
+    partial void OnJava25PathChanged(string value) => PublishGameSettings();
+    partial void OnJava21PathChanged(string value) => PublishGameSettings();
+    partial void OnJava17PathChanged(string value) => PublishGameSettings();
+    partial void OnJava8PathChanged(string value) => PublishGameSettings();
+    partial void OnEnableDiscordRpcChanged(bool value)
+    {
+        DiscordPresenceService.SetEnabled(value);
+        PublishGameSettings();
     }
 
     [RelayCommand]
@@ -172,6 +221,7 @@ public partial class SettingsViewModel : ViewModelBase
     [RelayCommand]
     private void ResetToDefault()
     {
+        isApplyingGameSettings = true;
         AllocatedRamGb = 4;
         ForceFullscreen = false;
         GameWindowWidth = "854";
@@ -200,14 +250,41 @@ public partial class SettingsViewModel : ViewModelBase
         ShowNotifications = true;
         EnableAnonymousTelemetry = false;
         ShareCrashReports = true;
+        isApplyingGameSettings = false;
+        PublishGameSettings();
         Log.Information("Launcher settings reverted to default values.");
     }
 
     [RelayCommand]
     private void SaveSettings()
     {
-        // Persistent save will be wired to SQLite/LiteDB in subsequent phases
+        PublishGameSettings();
         Log.Information("Launcher settings successfully saved: RAM={Ram}GB, DiscordRPC={Rpc}, Overlay={Overlay}", 
             AllocatedRamGb, EnableDiscordRpc, EnableOverlay);
+    }
+
+    private void PublishGameSettings()
+    {
+        if (isApplyingGameSettings)
+        {
+            return;
+        }
+
+        var current = LauncherGameSettingsStore.Current;
+        var width = int.TryParse(GameWindowWidth, out var parsedWidth) ? parsedWidth : current.ScreenWidth;
+        var height = int.TryParse(GameWindowHeight, out var parsedHeight) ? parsedHeight : current.ScreenHeight;
+
+        LauncherGameSettingsStore.Update(new LauncherGameSettings
+        {
+            MaximumMemoryMb = Math.Max(512, (int)Math.Round(MaximumMemoryMb)),
+            FullScreen = ForceFullscreen,
+            ScreenWidth = width,
+            ScreenHeight = height,
+            Java25Path = Java25Path,
+            Java21Path = Java21Path,
+            Java17Path = Java17Path,
+            Java8Path = Java8Path,
+            EnableDiscordRpc = EnableDiscordRpc
+        });
     }
 }

@@ -96,7 +96,7 @@
                                     <StackPanel Spacing="3">
                                         <TextBlock Text="{Binding AccountModeText}" Classes="WorkspaceLabel" Foreground="#68DDA8"/>
                                         <TextBlock Text="Offline mode is easier for friends, but usernames are not verified on public servers." Classes="WorkspaceSecondary" FontSize="10.5" TextWrapping="Wrap"/>
-                                        <TextBlock Text="Paper/Purpur automatically gets ViaVersion, ViaBackwards and ViaRewind." Classes="WorkspaceSecondary" FontSize="11" TextWrapping="Wrap"/>
+                                        <TextBlock Text="Paper/Purpur gets ViaVersion compatibility. Fabric, Forge, NeoForge &amp; Quilt support mods." Classes="WorkspaceSecondary" FontSize="11" TextWrapping="Wrap"/>
                                     </StackPanel>
                                     <TextBlock Grid.Column="1" Text="Software downloads automatically on Start" Classes="WorkspaceSecondary" Foreground="#82B5FF" VerticalAlignment="Center"/>
                                 </Grid>
@@ -152,18 +152,18 @@
                             </Border>
                         </Expander>
 
-                        <Expander Header="Plugin manager" IsExpanded="True" HorizontalAlignment="Stretch">
+                        <Expander Header="{Binding ExtensionHeaderTitle}" IsExpanded="True" HorizontalAlignment="Stretch">
                             <Border Classes="ServerNetworkCard" Margin="0 10 0 0">
                                 <StackPanel Spacing="12">
                                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                                         <StackPanel Spacing="3">
-                                            <TextBlock Text="Plugins" Classes="WorkspaceSectionTitle" FontSize="15"/>
-                                            <TextBlock Text="{Binding PluginSupportText}" Classes="WorkspaceSecondary" FontSize="11.5" TextWrapping="Wrap"/>
+                                            <TextBlock Text="{Binding ExtensionTypeTitle}" Classes="WorkspaceSectionTitle" FontSize="15"/>
+                                            <TextBlock Text="{Binding ExtensionSupportText}" Classes="WorkspaceSecondary" FontSize="11.5" TextWrapping="Wrap"/>
                                         </StackPanel>
-                                        <Button Grid.Column="1" Content="Open plugins folder" Classes="WorkspaceSecondary" Command="{Binding OpenPluginsFolderCommand}" IsVisible="{Binding IsPluginSupported}"/>
+                                        <Button Grid.Column="1" Content="{Binding ExtensionFolderButtonText}" Classes="WorkspaceSecondary" Command="{Binding OpenPluginsFolderCommand}" IsVisible="{Binding IsExtensionSupported}"/>
                                     </Grid>
 
-                                    <StackPanel Spacing="7" IsVisible="{Binding IsPluginSupported}">
+                                    <StackPanel Spacing="7" IsVisible="{Binding IsExtensionSupported}">
                                         <TextBlock Text="{Binding InstalledPlugins.Count, StringFormat='{}Installed ({0})'}" Classes="WorkspaceLabel"/>
                                         <ItemsControl ItemsSource="{Binding InstalledPlugins}">
                                             <ItemsControl.ItemTemplate>
@@ -185,13 +185,13 @@
                                         </ItemsControl>
                                     </StackPanel>
 
-                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" IsVisible="{Binding IsPluginSupported}">
-                                        <TextBox Text="{Binding PluginSearchQuery}" PlaceholderText="Search plugins, e.g. Essentials, WorldEdit..." Classes="WorkspaceField"/>
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" IsVisible="{Binding IsExtensionSupported}">
+                                        <TextBox Text="{Binding PluginSearchQuery}" PlaceholderText="{Binding ExtensionSearchPlaceholder}" Classes="WorkspaceField"/>
                                         <Button Grid.Column="1" Content="Search" Classes="WorkspacePrimary" Command="{Binding SearchPluginsCommand}" IsEnabled="{Binding !IsPluginBusy}"/>
                                     </Grid>
                                     <TextBlock Text="{Binding PluginStatusText}" Classes="WorkspaceSecondary" FontSize="11" TextWrapping="Wrap"/>
 
-                                    <ItemsControl ItemsSource="{Binding PluginResults}" IsVisible="{Binding IsPluginSupported}">
+                                    <ItemsControl ItemsSource="{Binding PluginResults}" IsVisible="{Binding IsExtensionSupported}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate x:DataType="vm:ServerPluginSearchItem">
                                                 <Border Background="#0F171D" BorderBrush="#293844" BorderThickness="1" CornerRadius="7" Padding="11" Margin="0 0 0 7">
@@ -267,14 +267,15 @@
                         <StackPanel Spacing="7"><TextBlock Text="RAM (GB)" Classes="WorkspaceLabel"/><NumericUpDown Minimum="1" Maximum="32" Value="{Binding AllocatedRamGb}" Classes="WorkspaceField"/></StackPanel>
                         <Border Classes="ServerHintCard">
                             <StackPanel Spacing="6">
-                                <TextBlock Text="Paper is recommended" Classes="WorkspaceLabel" Foreground="#68DDA8"/>
-                                <TextBlock Text="It supports plugins and automatically includes ViaVersion, ViaBackwards and ViaRewind. Offline/cracked accounts are allowed by default." Classes="WorkspaceSecondary" FontSize="12" TextWrapping="Wrap"/>
-                                <TextBlock Text="Vanilla is the official server, but it cannot use plugins." Classes="WorkspaceSecondary" FontSize="11" TextWrapping="Wrap"/>
+                                <TextBlock Text="Software options" Classes="WorkspaceLabel" Foreground="#68DDA8"/>
+                                <TextBlock Text="• Paper / Purpur / Folia: Plugin servers with ViaVersion cross-version compatibility." Classes="WorkspaceSecondary" FontSize="11.5" TextWrapping="Wrap"/>
+                                <TextBlock Text="• Fabric / Forge / NeoForge / Quilt: Modded servers for mods and modpacks." Classes="WorkspaceSecondary" FontSize="11.5" TextWrapping="Wrap"/>
+                                <TextBlock Text="• Vanilla: Official Mojang server." Classes="WorkspaceSecondary" FontSize="11" TextWrapping="Wrap"/>
                             </StackPanel>
                         </Border>
                         <CheckBox Content="I accept the Minecraft server EULA" IsChecked="{Binding NewServerEulaAccepted}" FontFamily="Inter" FontSize="14" Foreground="#D3D8DC"/>
                         <Button Content="Create &amp; start server" Classes="WorkspacePrimary" HorizontalAlignment="Stretch" Command="{Binding CreateServerCommand}"/>
-                        <TextBlock Text="On first start the server software and default compatibility plugins download automatically." Classes="WorkspaceSecondary" FontSize="11" TextAlignment="Center" TextWrapping="Wrap"/>
+                        <TextBlock Text="On first start the server software downloads and initializes automatically." Classes="WorkspaceSecondary" FontSize="11" TextAlignment="Center" TextWrapping="Wrap"/>
                     </StackPanel>
                 </Border>
             </Grid>
