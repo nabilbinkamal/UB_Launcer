@@ -259,7 +259,20 @@ public class SvgPathIcon : Control
             return null;
         }
 
-        var brush = Brush.Parse(value);
+        if (value.Equals("currentColor", StringComparison.OrdinalIgnoreCase))
+        {
+            value = "#E2E8ED";
+        }
+
+        IBrush brush;
+        try
+        {
+            brush = Brush.Parse(value);
+        }
+        catch
+        {
+            brush = new SolidColorBrush(Colors.White);
+        }
 
         if (brush is ISolidColorBrush solidColorBrush &&
             ParseDouble(opacityValue) is { } opacity)

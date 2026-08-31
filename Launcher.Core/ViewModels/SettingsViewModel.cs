@@ -58,7 +58,10 @@ public partial class SettingsViewModel : ViewModelBase
     private int _maxRamGb = 16;
 
     [ObservableProperty]
-    private string _customJvmArguments = "-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+AlwaysPreTouch";
+    private string _customJvmArguments = "-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=120 -XX:+UseStringDeduplication -XX:+DisableExplicitGC";
+
+    [ObservableProperty]
+    private bool _maxPerformanceMode = true;
 
     [ObservableProperty]
     private string _environmentVariables = string.Empty;
@@ -109,6 +112,9 @@ public partial class SettingsViewModel : ViewModelBase
     [ObservableProperty]
     private bool _enableOverlay = true;
 
+    [ObservableProperty]
+    private bool _enableUbClient;
+
     public bool IsAppearanceSelected => SelectedSection == "Appearance";
     public bool IsBehaviorSelected => SelectedSection == "Behavior";
     public bool IsPrivacySelected => SelectedSection == "Privacy";
@@ -129,7 +135,10 @@ public partial class SettingsViewModel : ViewModelBase
         _java21Path = settings.Java21Path;
         _java17Path = settings.Java17Path;
         _java8Path = settings.Java8Path;
+        _customJvmArguments = settings.CustomJvmArguments;
+        _maxPerformanceMode = settings.MaxPerformanceMode;
         _enableDiscordRpc = settings.EnableDiscordRpc;
+        _enableUbClient = settings.EnableUbClient;
         isApplyingGameSettings = false;
     }
 
@@ -161,6 +170,7 @@ public partial class SettingsViewModel : ViewModelBase
     partial void OnForceFullscreenChanged(bool value) => PublishGameSettings();
     partial void OnGameWindowWidthChanged(string value) => PublishGameSettings();
     partial void OnGameWindowHeightChanged(string value) => PublishGameSettings();
+    partial void OnMaxPerformanceModeChanged(bool value) => PublishGameSettings();
     partial void OnJava25PathChanged(string value) => PublishGameSettings();
     partial void OnJava21PathChanged(string value) => PublishGameSettings();
     partial void OnJava17PathChanged(string value) => PublishGameSettings();
@@ -170,6 +180,8 @@ public partial class SettingsViewModel : ViewModelBase
         DiscordPresenceService.SetEnabled(value);
         PublishGameSettings();
     }
+
+    partial void OnEnableUbClientChanged(bool value) => PublishGameSettings();
 
     [RelayCommand]
     private void SelectSection(string? section)
@@ -227,7 +239,8 @@ public partial class SettingsViewModel : ViewModelBase
         GameWindowWidth = "854";
         GameWindowHeight = "480";
         MaximumMemoryMb = 4096;
-        CustomJvmArguments = "-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+AlwaysPreTouch";
+        CustomJvmArguments = "-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=120 -XX:+UseStringDeduplication -XX:+DisableExplicitGC";
+        MaxPerformanceMode = true;
         EnvironmentVariables = string.Empty;
         PreLaunchHook = string.Empty;
         WrapperHook = string.Empty;
@@ -244,6 +257,7 @@ public partial class SettingsViewModel : ViewModelBase
         ResourceStatusText = string.Empty;
         EnableDiscordRpc = true;
         EnableOverlay = true;
+        EnableUbClient = false;
         EnableAdvancedRendering = true;
         UseSystemWindowFrame = false;
         KeepLauncherOpen = true;
@@ -284,7 +298,10 @@ public partial class SettingsViewModel : ViewModelBase
             Java21Path = Java21Path,
             Java17Path = Java17Path,
             Java8Path = Java8Path,
-            EnableDiscordRpc = EnableDiscordRpc
+            CustomJvmArguments = CustomJvmArguments,
+            MaxPerformanceMode = MaxPerformanceMode,
+            EnableDiscordRpc = EnableDiscordRpc,
+            EnableUbClient = EnableUbClient
         });
     }
 }

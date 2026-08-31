@@ -37,6 +37,7 @@ public partial class HomeViewModel : ViewModelBase
     private int displayWidth;
     private int displayHeight;
     private int? activeGameProcessId;
+    private string activeGameDirectory = string.Empty;
 
     [ObservableProperty]
     private string _statusText = "Ready to Play";
@@ -313,6 +314,35 @@ public partial class HomeViewModel : ViewModelBase
     [RelayCommand]
     private Task LaunchGameAsync() => LaunchSelectedInstanceAsync();
 
+    [RelayCommand]
+    private async Task StopGameAsync()
+    {
+        if (activeGameProcessId is not { } processId)
+        {
+            StatusText = "No Minecraft process is running.";
+            return;
+        }
+
+        StatusText = "Stopping Minecraft...";
+        try
+        {
+            using var process = Process.GetProcessById(processId);
+            if (!process.HasExited) process.Kill(entireProcessTree: true);
+            await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));
+            StatusText = "Minecraft stopped.";
+        }
+        catch (Exception exception)
+        {
+            StatusText = $"Could not stop Minecraft: {exception.Message}";
+        }
+        finally
+        {
+            activeGameProcessId = null;
+            IsGameRunning = false;
+            OnPropertyChanged(nameof(CanLaunchGame));
+        }
+    }
+
     public Task LaunchPartnerServerAsync(PartnerServerItem server) =>
         LaunchSelectedInstanceAsync(server);
 
@@ -341,6 +371,23 @@ public partial class HomeViewModel : ViewModelBase
 
         IsLaunching = true;
         var launchStopwatch = Stopwatch.StartNew();
+        var syncContext = SynchronizationContext.Current;
+
+        _ = Task.Run(async () =>
+        {
+            while (IsLaunching)
+            {
+                if (syncContext != null)
+                {
+                    syncContext.Post(_ => LaunchTimeText = $"{launchStopwatch.Elapsed.TotalSeconds:0.0}s", null);
+                }
+                else
+                {
+                    LaunchTimeText = $"{launchStopwatch.Elapsed.TotalSeconds:0.0}s";
+                }
+                await Task.Delay(100);
+            }
+        });
         StatusText = partnerServer is null
             ? "Checking file integrity..."
             : $"Preparing to join {partnerServer.Name}...";
@@ -356,6 +403,7 @@ public partial class HomeViewModel : ViewModelBase
         try
         {
             var launchService = new MinecraftLaunchService(selectedInstance?.InstancePath);
+            activeGameDirectory = selectedInstance?.InstancePath ?? string.Empty;
             var versionMatch = Regex.Match(SelectedVersion, @"\d+\.\d+(?:\.\d+)?");
             var version = selectedInstance?.Version ??
                           (versionMatch.Success ? versionMatch.Value : SelectedVersion.Trim());
@@ -364,7 +412,8 @@ public partial class HomeViewModel : ViewModelBase
                 version,
                 LauncherGameSettingsStore.CreateLaunchConfiguration(),
                 new Progress<string>(message => StatusText = message),
-                partnerServer?.Address);
+                partnerServer?.Address,
+                selectedInstance?.LoaderType);
             activeGameProcessId = gameProcess.Id;
             IsGameRunning = true;
             _ = MonitorActiveGameProcessAsync(gameProcess.Id);
@@ -412,7 +461,6 @@ public partial class HomeViewModel : ViewModelBase
             }
 
             launchStopwatch.Stop();
-            LaunchTimeText = $"{launchStopwatch.Elapsed.TotalSeconds:0.00}s";
             LaunchHistory = AppendSample(LaunchHistory, Math.Clamp(launchStopwatch.Elapsed.TotalSeconds / 30, 0, 1));
 
             LaunchProgress = 90;
@@ -489,10 +537,30 @@ public partial class HomeViewModel : ViewModelBase
         {
             if (activeGameProcessId == processId)
             {
+                var exitCode = 0;
+                try
+                {
+                    using var exitedProcess = Process.GetProcessById(processId);
+                    exitCode = exitedProcess.ExitCode;
+                }
+                catch
+                {
+                }
                 activeGameProcessId = null;
                 IsGameRunning = false;
-                StatusText = "Ready to Play";
-                ActionStatusText = "Minecraft closed. Ready for another launch.";
+                if (exitCode != 0)
+                {
+                    var diagnostic = MinecraftLaunchDiagnostics.Analyze(activeGameDirectory);
+                    StatusText = $"Crash detected: {diagnostic.Summary}";
+                    ActionStatusText = diagnostic.ReportPath is null
+                        ? "No crash report was found."
+                        : $"Crash log: {diagnostic.ReportPath}";
+                }
+                else
+                {
+                    StatusText = "Ready to Play";
+                    ActionStatusText = "Minecraft closed. Ready for another launch.";
+                }
                 RefreshTotalPlaytime();
             }
         }

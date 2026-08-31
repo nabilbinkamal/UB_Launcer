@@ -55,19 +55,6 @@ public partial class MainWindow : Window
             var clipboard = TopLevel.GetTopLevel(this)?.Clipboard;
             if (clipboard is not null)
                 await clipboard.SetTextAsync(text);
-
-            // Brief visual feedback on the copy button
-            if (CopyCodeButton.Content is StackPanel sp)
-            {
-                var label = sp.Children.OfType<TextBlock>().LastOrDefault();
-                if (label is not null)
-                {
-                    var original = label.Text;
-                    label.Text = "Copied!";
-                    await Task.Delay(1200);
-                    label.Text = original;
-                }
-            }
         }
         catch { /* clipboard unavailable */ }
     }

@@ -133,7 +133,13 @@
                                         <TextBlock Text="{Binding Tags}" Classes="WorkspaceTagText" TextTrimming="CharacterEllipsis" MaxWidth="640"/>
                                     </Border>
                                     <StackPanel Grid.Row="4" IsVisible="{Binding IsInstalling}" Spacing="5" Margin="0 3 18 0">
-                                        <ProgressBar Minimum="0" Maximum="100" Value="{Binding InstallProgress}" Height="5" Foreground="#3B82F6"/>
+                                        <ProgressBar Minimum="0" Maximum="100" Value="{Binding InstallProgress}" Height="5" Foreground="#3B82F6">
+                                            <ProgressBar.Transitions>
+                                                <Transitions>
+                                                    <DoubleTransition Property="Value" Duration="0:0:0.18"/>
+                                                </Transitions>
+                                            </ProgressBar.Transitions>
+                                        </ProgressBar>
                                         <TextBlock Text="{Binding InstallStatus}" Classes="WorkspaceSecondary" Foreground="#8DBAFF" TextTrimming="CharacterEllipsis"/>
                                     </StackPanel>
                                 </Grid>
@@ -163,5 +169,23 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+            <Border Grid.Row="5" IsVisible="{Binding IsVersionPickerOpen}"
+                    Background="#F20A1118" BorderBrush="#387DBA" BorderThickness="1"
+                    CornerRadius="12" Padding="28" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Width="430" MaxHeight="310">
+                <StackPanel Spacing="14">
+                    <TextBlock Text="Choose Minecraft version" Classes="WorkspaceSectionTitle" FontSize="19"/>
+                    <TextBlock Text="Select the version you want to install this modpack for."
+                               Classes="WorkspaceSecondary" TextWrapping="Wrap"/>
+                    <TextBlock Text="{Binding VersionPickerItem.Name}" Classes="WorkspaceLabel" Foreground="#8DBAFF"/>
+                    <ComboBox ItemsSource="{Binding InstallVersions}" SelectedItem="{Binding SelectedInstallVersion}"
+                              Classes="WorkspaceField" HorizontalAlignment="Stretch"/>
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button Content="Cancel" Classes="WorkspaceSecondary" Command="{Binding CancelVersionPickerCommand}"/>
+                        <Button Grid.Column="1" Content="Install selected version" Classes="WorkspaceInstallButton"
+                                Command="{Binding ConfirmVersionInstallCommand}" IsEnabled="{Binding CanConfirmVersionInstall}"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
     </Grid>
 </UserControl>

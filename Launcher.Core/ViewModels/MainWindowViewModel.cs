@@ -9,13 +9,16 @@ namespace Launcher.Core.ViewModels;
 
 public partial class SavedAccountItem : ObservableObject
 {
-    public SavedAccountItem(string username, bool isActive)
+    public SavedAccountItem(string username, bool isActive, bool isMicrosoftAccount)
     {
         Username = username;
         IsActive = isActive;
+        IsMicrosoftAccount = isMicrosoftAccount;
     }
 
     public string Username { get; }
+    public bool IsMicrosoftAccount { get; }
+    public string AccountTypeLabel => IsMicrosoftAccount ? "Microsoft" : "Offline";
 
     [ObservableProperty]
     private bool _isActive;
@@ -70,12 +73,6 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool _isMicrosoftSignInPanelVisible;
-
-    [ObservableProperty]
-    private string _deviceCode = string.Empty;
-
-    [ObservableProperty]
-    private string _verificationUri = string.Empty;
 
     [ObservableProperty]
     private string _deviceCodeStatus = string.Empty;
@@ -266,14 +263,15 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         Username = string.IsNullOrWhiteSpace(OfflineAccountStore.Username) ? "Player" : OfflineAccountStore.Username;
         DiscordPresenceService.UpdateUsername(Username);
-        UserRank = "Offline";
+        UserRank = IsMicrosoftAccountUsername(Username) ? "Microsoft" : "Offline";
 
         SavedAccounts.Clear();
         foreach (var account in OfflineAccountStore.Accounts)
         {
             SavedAccounts.Add(new SavedAccountItem(
                 account,
-                string.Equals(account, OfflineAccountStore.Username, StringComparison.OrdinalIgnoreCase)));
+                string.Equals(account, OfflineAccountStore.Username, StringComparison.OrdinalIgnoreCase),
+                IsMicrosoftAccountUsername(account)));
         }
 
         HasSavedAccounts = SavedAccounts.Count > 0;
@@ -286,6 +284,12 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private async Task RefreshUserRankAsync(string username, CancellationToken cancellationToken)
     {
+        if (IsMicrosoftAccountUsername(username))
+        {
+            UserRank = "Microsoft";
+            return;
+        }
+
         try
         {
             var isPremium = await MinecraftAccountStatusService.IsPremiumUsernameAsync(username, cancellationToken);
@@ -293,7 +297,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 isPremium.HasValue &&
                 string.Equals(Username, username, StringComparison.OrdinalIgnoreCase))
             {
-                UserRank = isPremium.Value ? "Premium" : "Offline";
+                UserRank = isPremium.Value ? "Premium name" : "Offline";
             }
         }
         catch (OperationCanceledException)
@@ -347,6 +351,13 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void DeleteSavedAccount(SavedAccountItem? account)
+    {
+        if (account is null) return;
+        OfflineAccountStore.Remove(account.Username);
+    }
+
+    [RelayCommand]
     private void AddAccount()
     {
         IsAccountMenuOpen = false;
@@ -385,7 +396,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void SaveOfflineAccount()
     {
-        var username = NewOfflineUsername.Trim();
+        var username = NewOfflineUsername?.Trim() ?? string.Empty;
         if (username.Length is < 3 or > 16)
         {
             AccountDialogStatus = "Username must contain 3 to 16 characters.";
@@ -413,31 +424,14 @@ public partial class MainWindowViewModel : ViewModelBase
 
         IsMicrosoftSignInBusy = true;
         IsMicrosoftSignInPanelVisible = true;
-        DeviceCode = string.Empty;
-        VerificationUri = string.Empty;
         DeviceCodeStatus = "Connecting to Microsoft…";
 
         try
         {
-            // Step 1: Request a device code.
-            var challenge = await MicrosoftAuthService.RequestDeviceCodeAsync(ct);
-
-            DeviceCode = challenge.UserCode;
-            VerificationUri = challenge.VerificationUri;
-            DeviceCodeStatus = "Waiting for you to sign in…";
-
-            // Open the browser automatically.
-            try
-            {
-                Process.Start(new ProcessStartInfo { FileName = challenge.VerificationUri, UseShellExecute = true });
-            }
-            catch { /* user can navigate manually */ }
-
-            // Step 2: Poll until approved.
             var progress = new Progress<string>(msg => DeviceCodeStatus = msg);
-            var session = await MicrosoftAuthService.PollForSessionAsync(challenge, progress, ct);
+            var session = await MicrosoftAuthService.AuthenticateInteractiveAsync(progress, ct);
 
-            // Step 3: Persist + update local username.
+            // Persist + update local username.
             MicrosoftAccountStore.Save(session);
             OfflineAccountStore.SetUsername(session.MinecraftUsername);
 
@@ -473,13 +467,6 @@ public partial class MainWindowViewModel : ViewModelBase
         _microsoftSignInCts?.Cancel();
     }
 
-    [RelayCommand]
-    private void CopyDeviceCode()
-    {
-        if (string.IsNullOrWhiteSpace(DeviceCode)) return;
-        CopyToClipboardRequested?.Invoke(DeviceCode);
-    }
-
     /// <summary>Raised when the ViewModel wants text copied to the clipboard. The View subscribes to handle it.</summary>
     public event Action<string>? CopyToClipboardRequested;
 
@@ -488,9 +475,13 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         MicrosoftAccountStore.Clear();
         IsMicrosoftSignedIn = false;
-        DeviceCodeStatus = string.Empty;
         IsAccountMenuOpen = false;
+        RefreshAccounts();
     }
+
+    private static bool IsMicrosoftAccountUsername(string username) =>
+        MicrosoftAccountStore.HasSession &&
+        string.Equals(MicrosoftAccountStore.MinecraftUsername, username, StringComparison.OrdinalIgnoreCase);
 
     [RelayCommand]
     private void NavigateHome()

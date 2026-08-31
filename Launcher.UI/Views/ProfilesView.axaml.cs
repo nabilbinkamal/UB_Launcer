@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Platform.Storage;
 using Launcher.Core.ViewModels;
 
@@ -13,6 +14,37 @@ public partial class ProfilesView : UserControl
     public ProfilesView()
     {
         InitializeComponent();
+        SizeChanged += OnSizeChanged;
+        ApplyResponsiveLayout(Bounds.Width);
+    }
+
+    private void OnSizeChanged(object? sender, SizeChangedEventArgs eventArgs)
+    {
+        ApplyResponsiveLayout(eventArgs.NewSize.Width);
+    }
+
+    private void ApplyResponsiveLayout(double width)
+    {
+        if (width <= 0)
+        {
+            return;
+        }
+
+        // A 360px instance card plus the details panel cannot fit safely in the
+        // narrow content area. Stack the panels before Avalonia has to clip them.
+        var useStackedLayout = width < 1040;
+        ProfilesWorkspaceGrid.ColumnDefinitions = useStackedLayout
+            ? new ColumnDefinitions("*")
+            : new ColumnDefinitions("*,340");
+        ProfilesWorkspaceGrid.RowDefinitions = useStackedLayout
+            ? new RowDefinitions("Auto,Auto")
+            : new RowDefinitions("Auto");
+        ProfilesWorkspaceGrid.ColumnSpacing = useStackedLayout ? 0 : 18;
+        Grid.SetColumn(DetailsPanel, useStackedLayout ? 0 : 1);
+        Grid.SetRow(DetailsPanel, useStackedLayout ? 1 : 0);
+        DetailsPanel.Margin = useStackedLayout
+            ? new Avalonia.Thickness(0, 18, 0, 0)
+            : new Avalonia.Thickness(0);
     }
 
     private async void OnImportInstanceClick(object? sender, RoutedEventArgs eventArgs)

@@ -5,6 +5,7 @@ namespace Launcher.Core.Services;
 
 public sealed record LauncherGameSettings
 {
+    public bool EnableUbClient { get; init; }
     public int MaximumMemoryMb { get; init; } = 4096;
     public bool FullScreen { get; init; }
     public int ScreenWidth { get; init; } = 854;
@@ -13,6 +14,8 @@ public sealed record LauncherGameSettings
     public string Java21Path { get; init; } = string.Empty;
     public string Java17Path { get; init; } = string.Empty;
     public string Java8Path { get; init; } = string.Empty;
+    public string CustomJvmArguments { get; init; } = string.Empty;
+    public bool MaxPerformanceMode { get; init; } = true;
     public bool EnableDiscordRpc { get; init; } = true;
 }
 
@@ -70,6 +73,7 @@ public static class LauncherGameSettingsStore
         var settings = Current;
         return new MinecraftLaunchConfiguration
         {
+            EnableUbClient = settings.EnableUbClient,
             MaximumRamMb = settings.MaximumMemoryMb,
             FullScreen = settings.FullScreen,
             ScreenWidth = settings.ScreenWidth,
@@ -77,19 +81,23 @@ public static class LauncherGameSettingsStore
             Java25Path = settings.Java25Path,
             Java21Path = settings.Java21Path,
             Java17Path = settings.Java17Path,
-            Java8Path = settings.Java8Path
+            Java8Path = settings.Java8Path,
+            CustomJvmArguments = settings.CustomJvmArguments,
+            MaxPerformanceMode = settings.MaxPerformanceMode
         };
     }
 
     private static LauncherGameSettings Normalize(LauncherGameSettings settings) => settings with
     {
+        EnableUbClient = false,
         MaximumMemoryMb = Math.Clamp(settings.MaximumMemoryMb, 512, 131072),
         ScreenWidth = Math.Clamp(settings.ScreenWidth, 320, 16384),
         ScreenHeight = Math.Clamp(settings.ScreenHeight, 240, 16384),
         Java25Path = settings.Java25Path?.Trim() ?? string.Empty,
         Java21Path = settings.Java21Path?.Trim() ?? string.Empty,
         Java17Path = settings.Java17Path?.Trim() ?? string.Empty,
-        Java8Path = settings.Java8Path?.Trim() ?? string.Empty
+        Java8Path = settings.Java8Path?.Trim() ?? string.Empty,
+        CustomJvmArguments = settings.CustomJvmArguments?.Trim() ?? string.Empty
     };
 
     private static LauncherGameSettings Load()

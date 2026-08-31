@@ -155,7 +155,9 @@
                                         </DataTemplate>
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
-                                <Button Grid.Column="1" Classes="InstanceEditButton" ToolTip.Tip="Edit instance">
+                                <Button Grid.Column="1" Classes="InstanceEditButton"
+                                        ToolTip.Tip="Edit instance"
+                                        Click="OnEditInstanceClick">
                                     <controls:SvgPathIcon Source="/Assets/edit.svg" Width="26" Height="26"/>
                                 </Button>
                             </Grid>
@@ -196,6 +198,9 @@
                             </StackPanel>
                             <Button Grid.Row="4" Grid.ColumnSpan="2" Classes="PlayButton" Command="{Binding LaunchGameCommand}" IsEnabled="{Binding CanLaunchGame}" Focusable="False" Margin="6 12 6 0">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="14"><TextBlock Text="▶" FontSize="23"/><TextBlock Text="PLAY" Classes="PlayLabel"/></StackPanel>
+                            </Button>
+                            <Button Grid.Row="4" Grid.ColumnSpan="2" Classes="PlayButton" Command="{Binding StopGameCommand}" IsVisible="{Binding IsGameRunning}" Focusable="False" Margin="6 12 6 0" Background="#9B2C35">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="14"><TextBlock Text="■" FontSize="20"/><TextBlock Text="STOP MINECRAFT" Classes="PlayLabel"/></StackPanel>
                             </Button>
                         </Grid>
                     </Border>
@@ -331,7 +336,8 @@
                                     <TranslateTransform Y="3"/>
                                 </TextBlock.RenderTransform>
                             </TextBlock>
-                            <Button Grid.Column="1" Classes="DetailsButton">
+                            <Button Grid.Column="1" Classes="DetailsButton"
+                                    Click="OnViewPerformanceDetailsClick">
                                 <TextBlock Text="View Details" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"/>
                             </Button>
                         </Grid>
@@ -382,10 +388,10 @@
                 <Border x:Name="QuickActionsPanel" Grid.Row="1" Classes="PanelCard HomePanel QuickActionsCard" Padding="18 15 18 19">
                     <StackPanel x:Name="QuickActionsStack" Spacing="7" VerticalAlignment="Bottom">
                         <TextBlock Text="Quick Actions" Classes="QuickActionsTitle" Foreground="White"/>
-                        <Button Classes="QuickButton" Command="{Binding AddInstanceCommand}"><StackPanel Orientation="Horizontal" Spacing="15"><controls:SvgPathIcon Source="/Assets/plus.svg" Width="20" Height="20"/><TextBlock Text="Add instance" VerticalAlignment="Center"/></StackPanel></Button>
-                        <Button Classes="QuickButton" Command="{Binding InstallModsCommand}"><StackPanel Orientation="Horizontal" Spacing="13"><controls:SvgPathIcon Source="/Assets/mods.svg" Width="22" Height="22"/><TextBlock Text="Install Mods" VerticalAlignment="Center"/></StackPanel></Button>
-                        <Button Classes="QuickButton" Command="{Binding EditProfileCommand}"><StackPanel Orientation="Horizontal" Spacing="15"><controls:SvgPathIcon Source="/Assets/edit profile.svg" Width="20" Height="20"/><TextBlock Text="Edit Profile" VerticalAlignment="Center"/></StackPanel></Button>
-                        <Button Classes="QuickButton" Command="{Binding LaunchOptionCommand}">
+                        <Button Classes="QuickButton" Click="OnAddInstanceClick"><StackPanel Orientation="Horizontal" Spacing="15"><controls:SvgPathIcon Source="/Assets/plus.svg" Width="20" Height="20"/><TextBlock Text="Add instance" VerticalAlignment="Center"/></StackPanel></Button>
+                        <Button Classes="QuickButton" Click="OnInstallModsClick"><StackPanel Orientation="Horizontal" Spacing="13"><controls:SvgPathIcon Source="/Assets/mods.svg" Width="22" Height="22"/><TextBlock Text="Install Mods" VerticalAlignment="Center"/></StackPanel></Button>
+                        <Button Classes="QuickButton" Click="OnEditProfileClick"><StackPanel Orientation="Horizontal" Spacing="15"><controls:SvgPathIcon Source="/Assets/edit profile.svg" Width="20" Height="20"/><TextBlock Text="Edit Profile" VerticalAlignment="Center"/></StackPanel></Button>
+                        <Button Classes="QuickButton" Click="OnLaunchOptionsClick">
                             <StackPanel Orientation="Horizontal" Spacing="15">
                                 <controls:SvgPathIcon Source="/Assets/settings.svg" Width="20" Height="20"/>
                                 <TextBlock Text="Launch Option" VerticalAlignment="Center"/>

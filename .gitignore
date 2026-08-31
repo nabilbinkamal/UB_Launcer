@@ -1,6 +1,7 @@
 # .NET build output
 **/bin/
 **/obj/
+.dotnet-sdk/
 artifacts/
 **/.gradle/
 
@@ -33,3 +34,6 @@ run_out.txt
 Thumbs.db
 Desktop.ini
 .DS_Store
+
+# Ignore admin panel
+UBL ADMIN/

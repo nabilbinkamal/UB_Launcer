@@ -601,31 +601,31 @@ public partial class ProfilesViewModel : ViewModelBase
     [RelayCommand]
     private async Task SaveVersionAsync()
     {
-        if (SelectedProfile is null || IsChangingVersion)
+        var profile = SelectedProfile;
+        if (profile is null || IsChangingVersion)
         {
             return;
         }
 
-        var requestedVersion = VersionDraft.Trim();
+        var requestedVersion = VersionDraft?.Trim();
         if (string.IsNullOrWhiteSpace(requestedVersion))
         {
             StatusText = "Enter a Minecraft version first";
             return;
         }
 
-        var previousVersion = SelectedProfile.Version;
+        var previousVersion = profile.Version;
         if (previousVersion.Equals(requestedVersion, StringComparison.OrdinalIgnoreCase))
         {
             IsVersionEditorVisible = false;
-            StatusText = $"{SelectedProfile.Name} already uses Minecraft {requestedVersion}";
+            StatusText = $"{profile.Name} already uses Minecraft {requestedVersion}";
             return;
         }
 
         IsChangingVersion = true;
-        StatusText = $"Installing Minecraft {requestedVersion} into {SelectedProfile.Name}...";
+        StatusText = $"Installing Minecraft {requestedVersion} into {profile.Name}...";
         try
         {
-            var profile = SelectedProfile;
             var launchService = new MinecraftLaunchService(profile.InstancePath);
             await launchService.InstallVersionAsync(
                 requestedVersion,
@@ -729,7 +729,7 @@ public partial class ProfilesViewModel : ViewModelBase
     [RelayCommand]
     private void AddProfile()
     {
-        var requestedName = NewProfileName.Trim();
+        var requestedName = NewProfileName?.Trim();
         if (string.IsNullOrWhiteSpace(requestedName))
         {
             StatusText = "Enter an instance name first";
@@ -745,8 +745,8 @@ public partial class ProfilesViewModel : ViewModelBase
         var uniqueName = CreateUniqueName(requestedName);
         var profile = InstanceStore.CreateProfile(
             uniqueName,
-            NewProfileVersion.Trim(),
-            NewProfileLoader,
+            NewProfileVersion?.Trim() ?? "1.20.4",
+            NewProfileLoader ?? "Vanilla",
             kind: NewProfileLoader == "Vanilla" ? "Vanilla" : "Custom");
 
         Profiles.Add(profile);
@@ -785,8 +785,13 @@ public partial class ProfilesViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void RequestDelete()
+    private void RequestDelete(GameProfile? profile)
     {
+        if (profile is not null)
+        {
+            SelectedProfile = profile;
+        }
+
         if (SelectedProfile is not null)
         {
             IsDeleteConfirmationVisible = true;
@@ -859,7 +864,8 @@ public partial class ProfilesViewModel : ViewModelBase
                 username,
                 profile.Version,
                 LauncherGameSettingsStore.CreateLaunchConfiguration(),
-                progress);
+                progress,
+                instanceLoaderType: profile.LoaderType);
             PlaytimeStore.TrackSession(username, gameProcess);
             DiscordPresenceService.TrackGame(
                 gameProcess,

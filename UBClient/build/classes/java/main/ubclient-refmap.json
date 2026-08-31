@@ -1,0 +1,28 @@
+{
+  "mappings": {
+    "com/ub/client/mixin/GameRendererMixin": {
+      "getFov(Lnet/minecraft/client/render/Camera;FZ)D": "Lnet/minecraft/class_757;method_3196(Lnet/minecraft/class_4184;FZ)D"
+    },
+    "com/ub/client/mixin/LightmapTextureManagerMixin": {
+      "Lnet/minecraft/client/texture/NativeImage;setColor(III)V": "Lnet/minecraft/class_1011;method_4305(III)V",
+      "update": "Lnet/minecraft/class_765;method_3313(F)V"
+    },
+    "com/ub/client/mixin/TitleScreenMixin": {
+      "render": "Lnet/minecraft/class_442;method_25394(Lnet/minecraft/class_332;IIF)V"
+    }
+  },
+  "data": {
+    "named:intermediary": {
+      "com/ub/client/mixin/GameRendererMixin": {
+        "getFov(Lnet/minecraft/client/render/Camera;FZ)D": "Lnet/minecraft/class_757;method_3196(Lnet/minecraft/class_4184;FZ)D"
+      },
+      "com/ub/client/mixin/LightmapTextureManagerMixin": {
+        "Lnet/minecraft/client/texture/NativeImage;setColor(III)V": "Lnet/minecraft/class_1011;method_4305(III)V",
+        "update": "Lnet/minecraft/class_765;method_3313(F)V"
+      },
+      "com/ub/client/mixin/TitleScreenMixin": {
+        "render": "Lnet/minecraft/class_442;method_25394(Lnet/minecraft/class_332;IIF)V"
+      }
+    }
+  }
+}

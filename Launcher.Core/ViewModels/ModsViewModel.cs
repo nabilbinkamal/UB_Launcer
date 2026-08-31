@@ -98,6 +98,10 @@ public partial class ModsViewModel : ViewModelBase
     [ObservableProperty] private string _sourcesText = "Modrinth";
     [ObservableProperty] private string _selectedSortOption = "Relevance";
     [ObservableProperty] private ObservableCollection<ContentItem> _visibleContent = [];
+    [ObservableProperty] private ObservableCollection<string> _installVersions = [];
+    [ObservableProperty] private string? _selectedInstallVersion;
+    [ObservableProperty] private ContentItem? _versionPickerItem;
+    [ObservableProperty] private bool _isVersionPickerOpen;
 
     public IReadOnlyList<string> SortOptions { get; } =
     [
@@ -131,6 +135,7 @@ public partial class ModsViewModel : ViewModelBase
     public string SelectedCompatibility => SelectedInstance is null
         ? "Select an instance"
         : $"{SelectedInstance.Name}  ·  {SelectedInstance.LoaderType} {SelectedInstance.Version}";
+    public bool CanConfirmVersionInstall => !string.IsNullOrWhiteSpace(SelectedInstallVersion);
 
     public ModsViewModel()
     {
@@ -159,6 +164,8 @@ public partial class ModsViewModel : ViewModelBase
     }
 
     partial void OnSelectedSortOptionChanged(string value) => ApplyCurrentSort();
+
+    partial void OnSelectedInstallVersionChanged(string? value) => OnPropertyChanged(nameof(CanConfirmVersionInstall));
 
     [RelayCommand]
     private void SelectCategory(ContentCategory category)
@@ -200,6 +207,12 @@ public partial class ModsViewModel : ViewModelBase
             return;
         }
 
+        if (isStandaloneModpack)
+        {
+            await OpenVersionPickerAsync(item);
+            return;
+        }
+
         item.IsInstalling = true;
         item.InstallProgress = 0;
         item.InstallStatus = isStandaloneModpack
@@ -211,12 +224,6 @@ public partial class ModsViewModel : ViewModelBase
 
         try
         {
-            if (isStandaloneModpack)
-            {
-                await InstallStandaloneModpackAsync(item);
-                return;
-            }
-
             var target = new InstanceInstallTarget(
                 targetInstance!.Name,
                 targetInstance.Version,
@@ -246,7 +253,67 @@ public partial class ModsViewModel : ViewModelBase
         }
     }
 
-    private async Task InstallStandaloneModpackAsync(ContentItem item)
+    private async Task OpenVersionPickerAsync(ContentItem item)
+    {
+        try
+        {
+            StatusText = $"Loading Minecraft versions for {item.Name}...";
+            var projectVersions = item.Project.SourceIds.TryGetValue(CatalogSource.Modrinth, out var projectId)
+                ? await catalogService.GetModpackGameVersionsAsync(projectId)
+                : [];
+            InstallVersions = new ObservableCollection<string>(projectVersions);
+            SelectedInstallVersion = InstallVersions.FirstOrDefault();
+            VersionPickerItem = item;
+            IsVersionPickerOpen = InstallVersions.Count > 0;
+            if (!IsVersionPickerOpen)
+                StatusText = "No installable Minecraft version was found for this modpack.";
+        }
+        catch (Exception exception)
+        {
+            StatusText = $"Could not load Minecraft versions: {exception.Message}";
+        }
+    }
+
+    [RelayCommand]
+    private void CancelVersionPicker()
+    {
+        IsVersionPickerOpen = false;
+        VersionPickerItem = null;
+        InstallVersions.Clear();
+        SelectedInstallVersion = null;
+    }
+
+    [RelayCommand]
+    private async Task ConfirmVersionInstallAsync()
+    {
+        var item = VersionPickerItem;
+        var version = SelectedInstallVersion;
+        if (item is null || string.IsNullOrWhiteSpace(version)) return;
+
+        IsVersionPickerOpen = false;
+        VersionPickerItem = null;
+        InstallVersions.Clear();
+        SelectedInstallVersion = null;
+        item.IsInstalling = true;
+        item.InstallProgress = 0;
+        item.InstallStatus = $"Preparing Minecraft {version}...";
+        StatusText = $"Installing {item.Name} for Minecraft {version}...";
+        try
+        {
+            await InstallStandaloneModpackAsync(item, version);
+        }
+        catch (Exception exception)
+        {
+            item.InstallStatus = exception.Message;
+            StatusText = $"Install failed: {exception.Message}";
+        }
+        finally
+        {
+            item.IsInstalling = false;
+        }
+    }
+
+    private async Task InstallStandaloneModpackAsync(ContentItem item, string? requestedGameVersion = null)
     {
         var instanceName = CreateUniqueInstanceName(item.Name);
         var profile = InstanceStore.CreateProfile(instanceName, "Latest", "Auto", kind: "Modpack");
@@ -268,7 +335,11 @@ public partial class ModsViewModel : ViewModelBase
                 item.InstallProgress = Math.Clamp(update.Percent * 0.82, 0, 82);
                 item.InstallStatus = update.Message;
             });
-            var result = await catalogService.InstallStandaloneModpackAsync(item.Project, target, packProgress);
+            var result = await catalogService.InstallStandaloneModpackAsync(
+                item.Project,
+                target,
+                packProgress,
+                requestedGameVersion: requestedGameVersion);
 
             profile.Version = result.GameVersion;
             profile.LoaderType = result.Loader;
@@ -277,11 +348,15 @@ public partial class ModsViewModel : ViewModelBase
 
             var runtimeProgress = new Progress<string>(message =>
             {
-                item.InstallProgress = Math.Max(item.InstallProgress, 92);
                 item.InstallStatus = message;
             });
+            var runtimePercentage = new Progress<double>(percent =>
+            {
+                // Leave room for the final profile refresh and inventory scan.
+                item.InstallProgress = Math.Max(item.InstallProgress, 92 + (percent * 0.07));
+            });
             var launchService = new MinecraftLaunchService(profile.InstancePath);
-            await launchService.InstallVersionAsync(profile.Version, runtimeProgress);
+            await launchService.InstallVersionAsync(profile.Version, runtimeProgress, runtimePercentage);
 
             profile.RefreshContentInventory();
             InstanceStore.Profiles.Add(profile);

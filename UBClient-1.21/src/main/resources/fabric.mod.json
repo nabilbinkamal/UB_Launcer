@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "ubclient",
+  "version": "${version}",
+  "name": "UB Client",
+  "description": "The custom in-game client for UB Launcher.",
+  "authors": [
+    "UB Team"
+  ],
+  "contact": {},
+  "license": "CC0-1.0",
+  "icon": "assets/ubclient/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "com.ub.client.UBClientMod"
+    ]
+  },
+  "mixins": [
+    "ubclient.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.18.1",
+    "minecraft": ">=1.21 <=1.21.11",
+    "java": ">=21"
+  }
+}

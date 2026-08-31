@@ -67,7 +67,7 @@
                 </Grid>
             </Border>
 
-            <Grid Grid.Row="3" ColumnDefinitions="*,340" ColumnSpacing="18">
+            <Grid x:Name="ProfilesWorkspaceGrid" Grid.Row="3" ColumnDefinitions="*,340" ColumnSpacing="18" RowDefinitions="Auto,Auto">
                 <Grid RowDefinitions="Auto,*">
                     <Grid ColumnDefinitions="*,Auto" Margin="0 0 0 12">
                         <TextBlock Text="Instance library" Classes="WorkspaceSectionTitle"/>
@@ -95,12 +95,20 @@
                                                 <TextBlock Text="{Binding RuntimeLabel}" Classes="WorkspaceSecondary" Foreground="#8DBAFF"/>
                                                 <TextBlock Text="{Binding ActivityLabel}" Classes="WorkspaceSecondary"/>
                                             </StackPanel>
-                                            <Border Grid.Column="2" Classes="WorkspaceReadyBadge" Classes.Default="{Binding IsDefault}" VerticalAlignment="Top">
-                                                <StackPanel Orientation="Horizontal" Spacing="6">
-                                                    <Border Width="6" Height="6" CornerRadius="3" Background="#58D68D" VerticalAlignment="Center"/>
-                                                    <TextBlock Text="{Binding StateBadgeLabel}" Classes="WorkspaceBadgeText"/>
-                                                </StackPanel>
-                                            </Border>
+                                            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Top">
+                                                <Button Classes="InstanceCloseButton"
+                                                        Command="{Binding $parent[UserControl].((vm:ProfilesViewModel)DataContext).RequestDeleteCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        ToolTip.Tip="Delete instance">
+                                                    <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Button>
+                                                <Border Classes="WorkspaceReadyBadge" Classes.Default="{Binding IsDefault}" VerticalAlignment="Center">
+                                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                                        <Border Width="6" Height="6" CornerRadius="3" Background="#58D68D" VerticalAlignment="Center"/>
+                                                        <TextBlock Text="{Binding StateBadgeLabel}" Classes="WorkspaceBadgeText"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
                                         </Grid>
                                         <Grid Grid.Row="1" ColumnDefinitions="*,*,Auto">
                                             <StackPanel Spacing="3"><TextBlock Text="Content" Classes="WorkspaceSecondary"/><TextBlock Text="{Binding TotalInstalledContent, StringFormat='{}{0} items'}" Classes="WorkspaceValue"/></StackPanel>
@@ -129,7 +137,7 @@
                     </Border>
                 </Grid>
 
-                <Border Grid.Column="1" Classes="WorkspaceSection" VerticalAlignment="Top" IsVisible="{Binding IsDetailsPanelVisible}">
+                <Border x:Name="DetailsPanel" Grid.Column="1" Classes="WorkspaceSection" VerticalAlignment="Top" IsVisible="{Binding IsDetailsPanelVisible}">
                     <StackPanel Spacing="20">
                         <Grid ColumnDefinitions="*,Auto">
                             <StackPanel Spacing="4">

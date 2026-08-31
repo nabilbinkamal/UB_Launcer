@@ -10,7 +10,7 @@ namespace Launcher.Core.Services;
 public static class MicrosoftAuthService
 {
     // Public Azure app client ID used by many open-source MC launchers (no secret required for device-code).
-    private const string ClientId = "00000000402b5328";
+    private const string ClientId = "c36a9fb6-4f2a-41ff-90bd-ae7cc92031eb";
     private const string DeviceCodeUrl = "https://login.microsoftonline.com/consumers/oauth2/v2.0/devicecode";
     private const string TokenUrl = "https://login.microsoftonline.com/consumers/oauth2/v2.0/token";
     private const string XblAuthUrl = "https://user.auth.xboxlive.com/user/authenticate";
@@ -24,16 +24,6 @@ public static class MicrosoftAuthService
     // -------------------------------------------------------------------------
     // Public surface
     // -------------------------------------------------------------------------
-
-    public sealed class DeviceCodeChallenge
-    {
-        public string DeviceCode { get; init; } = string.Empty;
-        public string UserCode { get; init; } = string.Empty;
-        public string VerificationUri { get; init; } = string.Empty;
-        public int ExpiresIn { get; init; }
-        public int Interval { get; init; }
-        public string Message { get; init; } = string.Empty;
-    }
 
     public sealed class MicrosoftSession
     {
@@ -55,100 +45,131 @@ public static class MicrosoftAuthService
         public string State { get; init; } = string.Empty;
     }
 
-    /// <summary>Step 1 – request a device code from Microsoft.</summary>
-    public static async Task<DeviceCodeChallenge> RequestDeviceCodeAsync(CancellationToken cancellationToken = default)
-    {
-        using var content = new FormUrlEncodedContent(new Dictionary<string, string>
-        {
-            ["client_id"] = ClientId,
-            ["scope"] = "XboxLive.signin offline_access"
-        });
-
-        using var response = await Http.PostAsync(DeviceCodeUrl, content, cancellationToken);
-        response.EnsureSuccessStatusCode();
-
-        var json = await response.Content.ReadAsStringAsync(cancellationToken);
-        using var doc = JsonDocument.Parse(json);
-        var root = doc.RootElement;
-
-        return new DeviceCodeChallenge
-        {
-            DeviceCode = root.GetProperty("device_code").GetString() ?? string.Empty,
-            UserCode = root.GetProperty("user_code").GetString() ?? string.Empty,
-            VerificationUri = root.GetProperty("verification_uri").GetString() ?? "https://microsoft.com/link",
-            ExpiresIn = root.GetProperty("expires_in").GetInt32(),
-            Interval = root.TryGetProperty("interval", out var iv) ? iv.GetInt32() : 5,
-            Message = root.TryGetProperty("message", out var msg) ? msg.GetString() ?? string.Empty : string.Empty
-        };
-    }
-
     /// <summary>
-    /// Step 2 – poll until the user completes sign-in, then exchange for a full <see cref="MicrosoftSession"/>.
-    /// Throws <see cref="OperationCanceledException"/> if the token expires or the caller cancels.
-    /// Throws <see cref="InvalidOperationException"/> with a user-readable message on auth failure.
+    /// Authenticates using the OAuth 2.0 Authorization Code flow with a localhost loopback.
+    /// Opens the user's default browser to log in securely.
     /// </summary>
-    public static async Task<MicrosoftSession> PollForSessionAsync(
-        DeviceCodeChallenge challenge,
+    public static async Task<MicrosoftSession> AuthenticateInteractiveAsync(
         IProgress<string>? progress = null,
         CancellationToken cancellationToken = default)
     {
-        using var expiryCts = new CancellationTokenSource(TimeSpan.FromSeconds(challenge.ExpiresIn));
-        using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, expiryCts.Token);
+        var redirectUri = "http://localhost:59125/";
+        var authorizeUrl = $"https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?client_id={ClientId}&response_type=code&redirect_uri={Uri.EscapeDataString(redirectUri)}&scope={Uri.EscapeDataString("XboxLive.signin offline_access")}";
 
-        var pollInterval = TimeSpan.FromSeconds(Math.Max(challenge.Interval, 5));
-
-        while (true)
+        using var listener = new System.Net.HttpListener();
+        listener.Prefixes.Add(redirectUri);
+        try
         {
-            await Task.Delay(pollInterval, linked.Token);
-
-            using var content = new FormUrlEncodedContent(new Dictionary<string, string>
-            {
-                ["grant_type"] = "urn:ietf:params:oauth:grant-type:device_code",
-                ["client_id"] = ClientId,
-                ["device_code"] = challenge.DeviceCode
-            });
-
-            using var response = await Http.PostAsync(TokenUrl, content, linked.Token);
-            var body = await response.Content.ReadAsStringAsync(linked.Token);
-
-            using var doc = JsonDocument.Parse(body);
-            var root = doc.RootElement;
-
-            if (root.TryGetProperty("error", out var error))
-            {
-                var errorCode = error.GetString();
-                if (errorCode == "authorization_pending") continue;
-                if (errorCode == "slow_down")
-                {
-                    pollInterval = pollInterval.Add(TimeSpan.FromSeconds(5));
-                    continue;
-                }
-                var errorDesc = root.TryGetProperty("error_description", out var ed)
-                    ? ed.GetString() ?? errorCode
-                    : errorCode;
-                throw new InvalidOperationException($"Microsoft sign-in failed: {errorDesc}");
-            }
-
-            // Got MSA tokens.
-            var msaAccess = root.GetProperty("access_token").GetString()!;
-            var msaRefresh = root.TryGetProperty("refresh_token", out var rt) ? rt.GetString() ?? string.Empty : string.Empty;
-            var expiresIn = root.TryGetProperty("expires_in", out var ei) ? ei.GetInt32() : 3600;
-            var expiresAt = DateTimeOffset.UtcNow.AddSeconds(expiresIn);
-
-            progress?.Report("Microsoft sign-in approved. Connecting to Xbox Live…");
-            var (mcToken, uuid, username, capes) = await ExchangeForMinecraftAsync(msaAccess, linked.Token);
-
-            return new MicrosoftSession
-            {
-                AccessToken = msaAccess,
-                RefreshToken = msaRefresh,
-                ExpiresAt = expiresAt,
-                MinecraftToken = mcToken,
-                MinecraftUuid = uuid,
-                MinecraftUsername = username,
-                Capes = capes
-            };
+            listener.Start();
         }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException($"Could not start local web server for authentication. Is port 59125 in use? ({ex.Message})");
+        }
+
+        // Open the browser
+        progress?.Report("Waiting for you to sign in via your browser…");
+        try
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo { FileName = authorizeUrl, UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException($"Could not open the browser. Please manually navigate to: {authorizeUrl}", ex);
+        }
+
+        // Wait for the redirect
+        System.Net.HttpListenerContext context;
+        using (cancellationToken.Register(() => listener.Stop()))
+        {
+            try
+            {
+                context = await listener.GetContextAsync();
+            }
+            catch (Exception)
+            {
+                throw new OperationCanceledException("Authentication was canceled.");
+            }
+        }
+
+        var requestUrl = context.Request.Url;
+        string? code = null;
+        string? errorMsg = null;
+
+        if (requestUrl != null)
+        {
+            var query = requestUrl.Query.TrimStart('?').Split('&')
+                .Select(q => q.Split('='))
+                .Where(q => q.Length >= 2)
+                .ToDictionary(q => q[0], q => Uri.UnescapeDataString(q[1]));
+
+            code = query.TryGetValue("code", out var c) ? c : null;
+            errorMsg = query.TryGetValue("error_description", out var ed) ? ed : (query.TryGetValue("error", out var e) ? e : null);
+        }
+
+        // Send a response to the browser
+        var responseString = string.IsNullOrEmpty(code)
+            ? $"<html><body style='font-family: sans-serif; text-align: center; margin-top: 50px; background: #0E1A25; color: #fff;'><h1>Authentication Failed</h1><p>{errorMsg}</p></body></html>"
+            : "<html><body style='font-family: sans-serif; text-align: center; margin-top: 50px; background: #0E1A25; color: #fff;'><h1>Authentication Successful!</h1><p style='color: #68DDA8;'>You can now safely close this window and return to UB Launcher.</p><script>window.close();</script></body></html>";
+
+        var buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
+        context.Response.ContentLength64 = buffer.Length;
+        try
+        {
+            await context.Response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+            context.Response.OutputStream.Close();
+        }
+        catch { /* Ignore if browser closes connection early */ }
+
+        listener.Stop();
+
+        if (string.IsNullOrEmpty(code))
+        {
+            throw new InvalidOperationException($"Microsoft sign-in failed: {errorMsg ?? "No code received."}");
+        }
+
+        progress?.Report("Microsoft sign-in approved. Exchanging code for tokens…");
+
+        using var content = new FormUrlEncodedContent(new Dictionary<string, string>
+        {
+            ["grant_type"] = "authorization_code",
+            ["client_id"] = ClientId,
+            ["code"] = code,
+            ["redirect_uri"] = redirectUri
+        });
+
+        using var tokenResponse = await Http.PostAsync(TokenUrl, content, cancellationToken);
+        var body = await tokenResponse.Content.ReadAsStringAsync(cancellationToken);
+
+        using var doc = JsonDocument.Parse(body);
+        var root = doc.RootElement;
+
+        if (root.TryGetProperty("error", out var tokenError))
+        {
+            var errorDesc = root.TryGetProperty("error_description", out var td)
+                ? td.GetString() ?? tokenError.GetString()
+                : tokenError.GetString();
+            throw new InvalidOperationException($"Microsoft sign-in failed during token exchange: {errorDesc}");
+        }
+
+        var msaAccess = root.GetProperty("access_token").GetString()!;
+        var msaRefresh = root.TryGetProperty("refresh_token", out var rt) ? rt.GetString() ?? string.Empty : string.Empty;
+        var expiresIn = root.TryGetProperty("expires_in", out var ei) ? ei.GetInt32() : 3600;
+        var expiresAt = DateTimeOffset.UtcNow.AddSeconds(expiresIn);
+
+        progress?.Report("Connecting to Xbox Live…");
+        var (mcToken, uuid, username, capes) = await ExchangeForMinecraftAsync(msaAccess, cancellationToken);
+
+        return new MicrosoftSession
+        {
+            AccessToken = msaAccess,
+            RefreshToken = msaRefresh,
+            ExpiresAt = expiresAt,
+            MinecraftToken = mcToken,
+            MinecraftUuid = uuid,
+            MinecraftUsername = username,
+            Capes = capes
+        };
     }
 
     /// <summary>

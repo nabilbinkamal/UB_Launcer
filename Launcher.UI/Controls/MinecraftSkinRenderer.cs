@@ -180,7 +180,7 @@ internal readonly record struct TextureRegion(float Left, float Top, float Right
 
 internal sealed class MinecraftSkinRenderer
 {
-    private const int Supersample = 2;
+    private const int Supersample = 1;
     private const float CameraDistance = 72f;
     private const float ModelCenterY = 16f;
     private const float AlphaThreshold = 8f;

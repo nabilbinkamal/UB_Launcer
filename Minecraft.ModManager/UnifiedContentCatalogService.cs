@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Diagnostics;
 using System.IO.Compression;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
@@ -89,10 +90,15 @@ public sealed class UnifiedContentCatalogService
     };
 
     private readonly HttpClient httpClient;
+    private readonly Dictionary<string, IReadOnlyList<string>> modpackVersionCache = new(StringComparer.OrdinalIgnoreCase);
 
     public UnifiedContentCatalogService(HttpClient? httpClient = null)
     {
-        this.httpClient = httpClient ?? new HttpClient { Timeout = TimeSpan.FromSeconds(45) };
+        this.httpClient = httpClient ?? new HttpClient(new SocketsHttpHandler
+        {
+            MaxConnectionsPerServer = 8,
+            AutomaticDecompression = System.Net.DecompressionMethods.All
+        }) { Timeout = TimeSpan.FromSeconds(45) };
         if (!this.httpClient.DefaultRequestHeaders.UserAgent.Any())
         {
             this.httpClient.DefaultRequestHeaders.UserAgent.Add(
@@ -190,7 +196,8 @@ public sealed class UnifiedContentCatalogService
         CatalogProject project,
         InstanceInstallTarget target,
         IProgress<CatalogInstallProgress>? progress = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        string? requestedGameVersion = null)
     {
         if (project.ContentType != CatalogContentType.Modpacks)
         {
@@ -218,11 +225,24 @@ public sealed class UnifiedContentCatalogService
         var releaseVersions = installableVersions
             .Where(version => string.Equals(version.VersionType, "release", StringComparison.OrdinalIgnoreCase))
             .ToList();
-        var selectedVersion = (releaseVersions.Count > 0 ? releaseVersions : installableVersions)
-            .OrderByDescending(version => GetHighestGameVersion(version.GameVersions))
-            .ThenByDescending(version => version.DatePublished)
-            .FirstOrDefault() ??
-            throw new InvalidOperationException("No installable Modrinth modpack release was found.");
+        var selectableVersions = releaseVersions.Count > 0 ? releaseVersions : installableVersions;
+        var selectedVersion = string.IsNullOrWhiteSpace(requestedGameVersion)
+            ? selectableVersions
+                .OrderByDescending(version => GetHighestGameVersion(version.GameVersions))
+                .ThenByDescending(version => version.DatePublished)
+                .FirstOrDefault()
+            : selectableVersions
+                .Where(version => version.GameVersions?.Any(gameVersion =>
+                    gameVersion.Equals(requestedGameVersion, StringComparison.OrdinalIgnoreCase)) == true)
+                .OrderByDescending(version => version.DatePublished)
+                .FirstOrDefault();
+        if (selectedVersion is null)
+        {
+            throw new InvalidOperationException(
+                string.IsNullOrWhiteSpace(requestedGameVersion)
+                    ? "No installable Modrinth modpack release was found."
+                    : $"No installable modpack release was found for Minecraft {requestedGameVersion}.");
+        }
         var packFile = GetPrimaryPackFile(selectedVersion)!;
         var resolvedTarget = target with
         {
@@ -247,6 +267,11 @@ public sealed class UnifiedContentCatalogService
             return [];
         }
 
+        if (modpackVersionCache.TryGetValue(projectId, out var cachedVersions))
+        {
+            return cachedVersions;
+        }
+
         var url = $"{ModrinthBaseUrl}/project/{Uri.EscapeDataString(projectId)}/version?include_changelog=false";
         using var response = await httpClient.GetAsync(url, cancellationToken);
         response.EnsureSuccessStatusCode();
@@ -256,13 +281,15 @@ public sealed class UnifiedContentCatalogService
             JsonOptions,
             cancellationToken) ?? [];
 
-        return versions
+        var result = versions
             .Where(version => GetPrimaryPackFile(version) is not null)
             .SelectMany(version => version.GameVersions ?? [])
             .Where(version => ParseMinecraftVersion(version) > new Version(0, 0))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderByDescending(ParseMinecraftVersion)
             .ToList();
+        modpackVersionCache[projectId] = result;
+        return result;
     }
 
     private async Task<IReadOnlyList<CatalogProject>> SearchModrinthAsync(
@@ -430,7 +457,9 @@ public sealed class UnifiedContentCatalogService
         var temporaryPath = Path.Combine(Path.GetTempPath(), $"ublauncher-{Guid.NewGuid():N}.mrpack");
         try
         {
-            await DownloadToFileAsync(packFile.Url, temporaryPath, packFile.Hashes, progress, cancellationToken);
+            var packProgress = progress is null ? null : new Progress<CatalogInstallProgress>(update =>
+                progress.Report(new CatalogInstallProgress(update.Percent * 0.1, update.Message)));
+            await DownloadToFileAsync(packFile.Url, temporaryPath, packFile.Hashes, packProgress, cancellationToken);
             using var archive = ZipFile.OpenRead(temporaryPath);
             var indexEntry = archive.GetEntry("modrinth.index.json") ??
                              throw new InvalidDataException("The modpack is missing modrinth.index.json.");
@@ -439,6 +468,8 @@ public sealed class UnifiedContentCatalogService
                         throw new InvalidDataException("The modpack index is invalid.");
 
             var files = index.Files ?? [];
+            var fileTasks = new List<Task>();
+            using var downloadLimiter = new SemaphoreSlim(6);
             for (var fileIndex = 0; fileIndex < files.Count; fileIndex++)
             {
                 var file = files[fileIndex];
@@ -448,12 +479,9 @@ public sealed class UnifiedContentCatalogService
                     continue;
                 }
 
-                var destinationPath = GetSafeDestinationPath(target.RootPath, file.Path);
-                Directory.CreateDirectory(Path.GetDirectoryName(destinationPath)!);
-                var basePercent = 10 + 75d * fileIndex / Math.Max(1, files.Count);
-                progress?.Report(new CatalogInstallProgress(basePercent, $"Installing {file.Path}..."));
-                await DownloadToFileAsync(file.Downloads[0], destinationPath, file.Hashes, null, cancellationToken);
+                fileTasks.Add(DownloadPackFileAsync(file, fileIndex, files.Count, target.RootPath, progress, downloadLimiter, cancellationToken));
             }
+            await Task.WhenAll(fileTasks);
 
             await CopyOverridesAsync(archive, "overrides/", target.RootPath, cancellationToken);
             await CopyOverridesAsync(archive, "client-overrides/", target.RootPath, cancellationToken);
@@ -493,6 +521,8 @@ public sealed class UnifiedContentCatalogService
             {
                 var buffer = new byte[81920];
                 long copied = 0;
+                var lastReportedAt = Stopwatch.GetTimestamp();
+                var lastReportedPercent = -1d;
                 int read;
                 while ((read = await source.ReadAsync(buffer, cancellationToken)) > 0)
                 {
@@ -500,9 +530,16 @@ public sealed class UnifiedContentCatalogService
                     copied += read;
                     if (totalBytes is > 0)
                     {
-                        progress?.Report(new CatalogInstallProgress(
-                            Math.Clamp(copied * 100d / totalBytes.Value, 0, 99),
-                            $"Downloading {FormatBytes(copied)} / {FormatBytes(totalBytes.Value)}"));
+                        var percent = Math.Clamp(copied * 100d / totalBytes.Value, 0, 99);
+                        if (Stopwatch.GetElapsedTime(lastReportedAt) >= TimeSpan.FromMilliseconds(100) ||
+                            percent - lastReportedPercent >= 0.5)
+                        {
+                            lastReportedAt = Stopwatch.GetTimestamp();
+                            lastReportedPercent = percent;
+                            progress?.Report(new CatalogInstallProgress(
+                                percent,
+                                $"Downloading {FormatBytes(copied)} / {FormatBytes(totalBytes.Value)}"));
+                        }
                     }
                 }
 
@@ -520,6 +557,34 @@ public sealed class UnifiedContentCatalogService
         finally
         {
             try { File.Delete(temporaryPath); } catch { }
+        }
+    }
+
+    private async Task DownloadPackFileAsync(
+        ModrinthPackFile file,
+        int fileIndex,
+        int fileCount,
+        string rootPath,
+        IProgress<CatalogInstallProgress>? progress,
+        SemaphoreSlim downloadLimiter,
+        CancellationToken cancellationToken)
+    {
+        await downloadLimiter.WaitAsync(cancellationToken);
+        try
+        {
+        var destinationPath = GetSafeDestinationPath(rootPath, file.Path);
+        Directory.CreateDirectory(Path.GetDirectoryName(destinationPath)!);
+        var basePercent = 10 + 75d * fileIndex / Math.Max(1, fileCount);
+        progress?.Report(new CatalogInstallProgress(basePercent, $"Installing {file.Path}..."));
+        var fileProgress = progress is null ? null : new Progress<CatalogInstallProgress>(update =>
+            progress.Report(new CatalogInstallProgress(
+                10 + 75d * (fileIndex + update.Percent / 100d) / Math.Max(1, fileCount),
+                $"Installing {file.Path} · {update.Message}")));
+        await DownloadToFileAsync(file.Downloads![0], destinationPath, file.Hashes, fileProgress, cancellationToken);
+        }
+        finally
+        {
+            downloadLimiter.Release();
         }
     }
 

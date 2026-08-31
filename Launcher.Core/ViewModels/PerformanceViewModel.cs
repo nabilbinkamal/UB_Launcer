@@ -13,6 +13,7 @@ public partial class PerformanceViewModel : ViewModelBase
     [ObservableProperty] private bool _enableGameMode = true;
     [ObservableProperty] private bool _enableHardwareAcceleration = true;
     [ObservableProperty] private bool _useHighProcessPriority;
+    [ObservableProperty] private bool _forceDedicatedGpu;
     [ObservableProperty] private bool _autoOptimize = true;
 
     [ObservableProperty] private string _cpuUsageText = "0%";
@@ -94,6 +95,7 @@ public partial class PerformanceViewModel : ViewModelBase
                 EnableGameMode = true;
                 EnableHardwareAcceleration = true;
                 UseHighProcessPriority = true;
+                ForceDedicatedGpu = true;
                 AutoOptimize = true;
                 break;
             case "Efficiency":
@@ -102,6 +104,7 @@ public partial class PerformanceViewModel : ViewModelBase
                 EnableGameMode = false;
                 EnableHardwareAcceleration = true;
                 UseHighProcessPriority = false;
+                ForceDedicatedGpu = false;
                 AutoOptimize = false;
                 break;
             default:
@@ -110,6 +113,7 @@ public partial class PerformanceViewModel : ViewModelBase
                 EnableGameMode = true;
                 EnableHardwareAcceleration = true;
                 UseHighProcessPriority = false;
+                ForceDedicatedGpu = false;
                 AutoOptimize = true;
                 break;
         }

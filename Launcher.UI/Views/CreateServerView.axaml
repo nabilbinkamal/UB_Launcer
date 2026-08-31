@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Launcher.Core.ViewModels"
+             xmlns:controls="using:Launcher.UI.Controls"
              mc:Ignorable="d"
              d:DesignWidth="1180"
              d:DesignHeight="860"
@@ -25,8 +26,8 @@
                 </Grid>
             </Border>
 
-            <Grid Grid.Row="2" ColumnDefinitions="360,*" ColumnSpacing="18">
-                <Border Classes="WorkspaceSection" VerticalAlignment="Top">
+            <Grid x:Name="ServerWorkspaceGrid" Grid.Row="2" ColumnDefinitions="360,*" ColumnSpacing="18" RowDefinitions="Auto,Auto">
+                <Border x:Name="ServerListPanel" Classes="WorkspaceSection" VerticalAlignment="Top">
                     <StackPanel Spacing="14">
                         <Grid ColumnDefinitions="*,Auto">
                             <StackPanel Spacing="3">
@@ -64,9 +65,9 @@
                     </StackPanel>
                 </Border>
 
-                <Border Grid.Column="1" Classes="WorkspaceSection ServerCreatorPanel" VerticalAlignment="Top" IsVisible="{Binding IsManagerVisible}">
-                    <StackPanel Spacing="16">
-                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                <Border x:Name="ServerManagerPanel" Grid.Column="1" Classes="WorkspaceSection ServerCreatorPanel" VerticalAlignment="Stretch" IsVisible="{Binding IsManagerVisible}">
+                    <Grid RowDefinitions="Auto,*">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" Margin="0,0,0,16">
                             <StackPanel Spacing="4">
                                 <TextBlock Text="{Binding SelectedServer.Name}" Classes="WorkspaceSectionTitle" TextTrimming="CharacterEllipsis"/>
                                 <TextBlock Text="{Binding SelectedServer.Endpoint}" Classes="WorkspaceSecondary" Foreground="#7FA9C4"/>
@@ -76,178 +77,250 @@
                             </Border>
                         </Grid>
 
-                        <Border Classes="ServerHintCard">
-                            <StackPanel Spacing="12">
-                                <Grid ColumnDefinitions="*,*,120" ColumnSpacing="12">
-                                    <StackPanel Spacing="7">
-                                        <TextBlock Text="Minecraft version" Classes="WorkspaceLabel"/>
-                                        <TextBox Text="{Binding EditMinecraftVersion}" Classes="WorkspaceField" IsEnabled="{Binding !SelectedServer.IsRunning}"/>
-                                    </StackPanel>
-                                    <StackPanel Grid.Column="1" Spacing="7">
-                                        <TextBlock Text="Server software" Classes="WorkspaceLabel"/>
-                                        <ComboBox ItemsSource="{Binding ServerTypes}" SelectedItem="{Binding EditServerType}" Classes="WorkspaceField" IsEnabled="{Binding !SelectedServer.IsRunning}"/>
-                                    </StackPanel>
-                                    <StackPanel Grid.Column="2" Spacing="7">
-                                        <TextBlock Text="RAM (GB)" Classes="WorkspaceLabel"/>
-                                        <NumericUpDown Minimum="1" Maximum="32" Value="{Binding EditMemoryGb}" Classes="WorkspaceField" IsEnabled="{Binding !SelectedServer.IsRunning}"/>
-                                    </StackPanel>
-                                </Grid>
-                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                                    <StackPanel Spacing="3">
-                                        <TextBlock Text="{Binding AccountModeText}" Classes="WorkspaceLabel" Foreground="#68DDA8"/>
-                                        <TextBlock Text="Offline mode is easier for friends, but usernames are not verified on public servers." Classes="WorkspaceSecondary" FontSize="10.5" TextWrapping="Wrap"/>
-                                        <TextBlock Text="Paper/Purpur gets ViaVersion compatibility. Fabric, Forge, NeoForge &amp; Quilt support mods." Classes="WorkspaceSecondary" FontSize="11" TextWrapping="Wrap"/>
-                                    </StackPanel>
-                                    <TextBlock Grid.Column="1" Text="Software downloads automatically on Start" Classes="WorkspaceSecondary" Foreground="#82B5FF" VerticalAlignment="Center"/>
-                                </Grid>
-                                <CheckBox Content="I accept the Minecraft server EULA"
-                                          IsChecked="{Binding EditEulaAccepted}"
-                                          IsVisible="{Binding !EditEulaAccepted}"
-                                          FontFamily="Inter" FontSize="13" Foreground="#E7C783"/>
-                            </StackPanel>
-                        </Border>
+                        <TabControl Grid.Row="1" SelectedIndex="{Binding CurrentTab}">
+                            <TabControl.Styles>
+                                <Style Selector="TabItem">
+                                    <Setter Property="FontSize" Value="14"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="Margin" Value="0,0,16,0"/>
+                                    <Setter Property="Padding" Value="0,0,0,8"/>
+                                    <Setter Property="Foreground" Value="#90A4AE"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </Style>
+                                <Style Selector="TabItem:selected">
+                                    <Setter Property="Foreground" Value="#68DDA8"/>
+                                </Style>
+                                <Style Selector="TabControl">
+                                    <Setter Property="Margin" Value="0"/>
+                                    <Setter Property="Padding" Value="0,16,0,0"/>
+                                </Style>
+                            </TabControl.Styles>
 
-                        <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
-                            <Button Classes="ServerPowerButton" Classes.Stop="{Binding SelectedServer.IsRunning}" Command="{Binding ToggleSelectedServerCommand}" HorizontalAlignment="Stretch">
-                                <TextBlock Text="{Binding SelectedServer.ActionLabel}" HorizontalAlignment="Center"/>
-                            </Button>
-                            <Button Grid.Column="1" Content="Open folder" Classes="WorkspaceSecondary" Command="{Binding OpenSelectedServerFolderCommand}"/>
-                            <Button Grid.Column="2" Content="Delete server" Classes="WorkspaceDanger" Command="{Binding RequestDeleteSelectedServerCommand}"/>
-                        </Grid>
-
-                        <Border Classes="ServerSetupNotice" IsVisible="{Binding IsDeleteConfirmationVisible}">
-                            <StackPanel Spacing="10">
-                                <TextBlock Text="Delete this server permanently?" Classes="WorkspaceLabel" Foreground="#FF9AA7"/>
-                                <TextBlock Text="The world, plugins, settings and all files in this server folder will be deleted. This cannot be undone." Classes="WorkspaceSecondary" FontSize="11.5" TextWrapping="Wrap"/>
-                                <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
-                                    <Button Content="Cancel" Classes="WorkspaceSecondary" Command="{Binding CancelDeleteSelectedServerCommand}"/>
-                                    <Button Grid.Column="1" Content="Yes, delete permanently" Classes="WorkspaceDanger" Command="{Binding ConfirmDeleteSelectedServerCommand}"/>
-                                </Grid>
-                            </StackPanel>
-                        </Border>
-
-                        <Expander Header="Share with friends" IsExpanded="True" HorizontalAlignment="Stretch">
-                            <Border Classes="ServerNetworkCard" Margin="0 10 0 0">
-                                <StackPanel Spacing="12">
-                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                                        <StackPanel Spacing="4">
-                                            <TextBlock Text="Same Wi-Fi / LAN" Classes="WorkspaceStatLabel" Foreground="#68DDA8"/>
-                                            <TextBlock Text="{Binding LanJoinAddress}" Classes="ServerJoinAddress"/>
-                                        </StackPanel>
-                                        <Button Grid.Column="1" Content="Copy" Classes="ServerActionButton" Click="CopyLanAddress_OnClick" VerticalAlignment="Center"/>
-                                    </Grid>
-                                    <Border Classes="WorkspaceDivider"/>
-                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                                        <StackPanel Spacing="4">
-                                            <TextBlock Text="Play from anywhere — UB Relay" Classes="WorkspaceStatLabel" Foreground="#82C7FF"/>
-                                            <TextBlock Text="{Binding TunnelJoinAddress}" Classes="ServerJoinAddress" Foreground="#9BD9FF"/>
-                                            <TextBlock Text="{Binding TunnelStatus}" Classes="WorkspaceSecondary" FontSize="11" TextWrapping="Wrap"/>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="1" Spacing="7" VerticalAlignment="Center">
-                                            <Button Content="{Binding TunnelActionLabel}" Classes="ServerActionButton RelayToggleButton" Classes.Stop="{Binding IsTunnelRunning}" Command="{Binding ToggleTunnelCommand}"/>
-                                            <Button Content="Copy" Classes="ServerActionButton" Click="CopyTunnelAddress_OnClick"/>
-                                        </StackPanel>
-                                    </Grid>
-                                </StackPanel>
-                            </Border>
-                        </Expander>
-
-                        <Expander Header="{Binding ExtensionHeaderTitle}" IsExpanded="True" HorizontalAlignment="Stretch">
-                            <Border Classes="ServerNetworkCard" Margin="0 10 0 0">
-                                <StackPanel Spacing="12">
-                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
-                                        <StackPanel Spacing="3">
-                                            <TextBlock Text="{Binding ExtensionTypeTitle}" Classes="WorkspaceSectionTitle" FontSize="15"/>
-                                            <TextBlock Text="{Binding ExtensionSupportText}" Classes="WorkspaceSecondary" FontSize="11.5" TextWrapping="Wrap"/>
-                                        </StackPanel>
-                                        <Button Grid.Column="1" Content="{Binding ExtensionFolderButtonText}" Classes="WorkspaceSecondary" Command="{Binding OpenPluginsFolderCommand}" IsVisible="{Binding IsExtensionSupported}"/>
+                            <!-- Console Tab -->
+                            <TabItem Header="Console">
+                                <Grid x:Name="ConsoleWorkspaceGrid" ColumnDefinitions="*,260" ColumnSpacing="16" RowDefinitions="Auto,Auto" Margin="0,8,0,0">
+                                    <Grid RowDefinitions="*,Auto" RowSpacing="12">
+                                        <Border Background="#05090C" BorderBrush="#152636" BorderThickness="1" CornerRadius="6" Padding="8">
+                                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                                <TextBlock Text="{Binding SelectedServer.LogText}" FontFamily="Consolas, Courier New, monospace" FontSize="13" Foreground="#E2E8ED" TextWrapping="Wrap"/>
+                                            </ScrollViewer>
+                                        </Border>
+                                        <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                            <TextBox Text="{Binding ConsoleCommand}" PlaceholderText="Type a command..." Background="#0C151C" BorderBrush="#1C2F40" Classes="WorkspaceField ServerConsoleInput" IsEnabled="{Binding SelectedServer.IsRunning}" KeyDown="ConsoleCommand_OnKeyDown"/>
+                                            <Button Grid.Column="1" Content="Send" Classes="WorkspacePrimary" Command="{Binding SendConsoleCommandCommand}" IsEnabled="{Binding SelectedServer.IsRunning}"/>
+                                        </Grid>
                                     </Grid>
 
-                                    <StackPanel Spacing="7" IsVisible="{Binding IsExtensionSupported}">
-                                        <TextBlock Text="{Binding InstalledPlugins.Count, StringFormat='{}Installed ({0})'}" Classes="WorkspaceLabel"/>
-                                        <ItemsControl ItemsSource="{Binding InstalledPlugins}">
+                                    <StackPanel x:Name="ConsoleControlsPanel" Grid.Column="1" Spacing="16">
+                                        <Border Classes="ServerControlsCard">
+                                            <StackPanel Spacing="10">
+                                                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                                                    <Button Content="Start" Classes="ServerActionButton ServerStartAction" Click="StartServer_OnClick" IsEnabled="{Binding !SelectedServer.IsRunning}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                                                    <Button Grid.Column="1" Content="Restart" Classes="ServerActionButton ServerRestartAction" Click="RestartServer_OnClick" IsEnabled="{Binding SelectedServer.IsRunning}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                                                    <Button Grid.Column="2" Content="Stop" Classes="ServerActionButton ServerStopAction" Click="StopServer_OnClick" IsEnabled="{Binding SelectedServer.IsRunning}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                                                </Grid>
+                                                <Button Content="Kill / Force Stop" Classes="ServerActionButton ServerKillAction" Click="KillServer_OnClick" IsEnabled="{Binding SelectedServer.IsRunning}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <Border Classes="ServerMetricsCard">
+                                            <StackPanel Spacing="18">
+                                                <StackPanel Spacing="6">
+                                                    <Grid ColumnDefinitions="*,Auto">
+                                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                                            <TextBlock Text="&#xE7F4;" FontFamily="Segoe MDL2 Assets" FontSize="11" Foreground="#68DDA8" VerticalAlignment="Center"/>
+                                                            <TextBlock Text="CPU Usage" Classes="WorkspaceSecondary" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                        <TextBlock Grid.Column="1" Text="0.00%" Classes="WorkspaceValue" Foreground="#68DDA8"/>
+                                                    </Grid>
+                                                    <ProgressBar Minimum="0" Maximum="100" Value="0" Height="4" Foreground="#68DDA8"/>
+                                                </StackPanel>
+
+                                                <StackPanel Spacing="6">
+                                                    <Grid ColumnDefinitions="*,Auto">
+                                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                                            <TextBlock Text="&#xE9A6;" FontFamily="Segoe MDL2 Assets" FontSize="11" Foreground="#82C7FF" VerticalAlignment="Center"/>
+                                                            <TextBlock Text="Memory" Classes="WorkspaceSecondary" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                        <TextBlock Grid.Column="1" Text="{Binding SelectedServer.MemoryGb, StringFormat='{}0 / {0} GB'}" Classes="WorkspaceValue" Foreground="#82C7FF"/>
+                                                    </Grid>
+                                                    <ProgressBar Minimum="0" Maximum="{Binding SelectedServer.MemoryGb}" Value="0" Height="4" Foreground="#82C7FF"/>
+                                                </StackPanel>
+
+                                                <StackPanel Spacing="6">
+                                                    <Grid ColumnDefinitions="*,Auto">
+                                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                                            <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="11" Foreground="#F3C969" VerticalAlignment="Center"/>
+                                                            <TextBlock Text="Disk" Classes="WorkspaceSecondary" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                        <TextBlock Grid.Column="1" Text="124 MB" Classes="WorkspaceValue" Foreground="#F3C969"/>
+                                                    </Grid>
+                                                    <ProgressBar Minimum="0" Maximum="1024" Value="124" Height="4" Foreground="#F3C969"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
+                                </Grid>
+                            </TabItem>
+
+                            <!-- Network Tab -->
+                            <TabItem Header="Network">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <StackPanel Spacing="16" Margin="0,8,0,0">
+                                        <Border Classes="ServerNetworkCard">
+                                            <StackPanel Spacing="12">
+                                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                                    <StackPanel Spacing="4">
+                                                        <TextBlock Text="Same Wi-Fi / LAN" Classes="WorkspaceStatLabel" Foreground="#68DDA8"/>
+                                                        <TextBlock Text="{Binding LanJoinAddress}" Classes="ServerJoinAddress"/>
+                                                    </StackPanel>
+                                                    <Button Grid.Column="1" Content="Copy" Classes="ServerActionButton" Click="CopyLanAddress_OnClick" VerticalAlignment="Center"/>
+                                                </Grid>
+                                                <Border Classes="WorkspaceDivider"/>
+                                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                                    <StackPanel Spacing="4">
+                                                        <TextBlock Text="Play from anywhere — UB Relay" Classes="WorkspaceStatLabel" Foreground="#82C7FF"/>
+                                                        <TextBlock Text="{Binding TunnelJoinAddress}" Classes="ServerJoinAddress" Foreground="#9BD9FF"/>
+                                                        <TextBlock Text="{Binding TunnelStatus}" Classes="WorkspaceSecondary" FontSize="11" TextWrapping="Wrap"/>
+                                                    </StackPanel>
+                                                    <StackPanel Grid.Column="1" Spacing="7" VerticalAlignment="Center">
+                                                        <Button Content="{Binding TunnelActionLabel}" Classes="ServerActionButton RelayToggleButton" Classes.Stop="{Binding IsTunnelRunning}" Command="{Binding ToggleTunnelCommand}"/>
+                                                        <Button Content="Copy" Classes="ServerActionButton" Click="CopyTunnelAddress_OnClick"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </TabItem>
+
+                            <!-- Plugins & Mods Tab -->
+                            <TabItem Header="{Binding ExtensionHeaderTitle}">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <StackPanel Spacing="16" Margin="0,8,0,0">
+                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                            <StackPanel Spacing="3">
+                                                <TextBlock Text="{Binding ExtensionTypeTitle}" Classes="WorkspaceSectionTitle" FontSize="15"/>
+                                                <TextBlock Text="{Binding ExtensionSupportText}" Classes="WorkspaceSecondary" FontSize="11.5" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <Button Grid.Column="1" Content="{Binding ExtensionFolderButtonText}" Classes="WorkspaceSecondary" Command="{Binding OpenPluginsFolderCommand}" IsVisible="{Binding IsExtensionSupported}"/>
+                                        </Grid>
+
+                                        <StackPanel Spacing="7" IsVisible="{Binding IsExtensionSupported}">
+                                            <TextBlock Text="{Binding InstalledPlugins.Count, StringFormat='{}Installed ({0})'}" Classes="WorkspaceLabel"/>
+                                            <ItemsControl ItemsSource="{Binding InstalledPlugins}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate x:DataType="vm:InstalledServerPlugin">
+                                                        <Border Background="#0F171D" BorderBrush="#293844" BorderThickness="1" CornerRadius="7" Padding="10" Margin="0 0 0 6">
+                                                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                                                <StackPanel Spacing="2">
+                                                                    <TextBlock Text="{Binding Name}" Classes="WorkspaceLabel"/>
+                                                                    <TextBlock Text="{Binding FileName}" Classes="WorkspaceSecondary" FontSize="10.5"/>
+                                                                </StackPanel>
+                                                                <Button Grid.Column="1" Content="Remove" Classes="WorkspaceDanger"
+                                                                        Command="{Binding $parent[UserControl].((vm:CreateServerViewModel)DataContext).RemovePluginCommand}"
+                                                                        CommandParameter="{Binding}"
+                                                                        IsEnabled="{Binding !$parent[UserControl].((vm:CreateServerViewModel)DataContext).SelectedServer.IsRunning}"/>
+                                                            </Grid>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+
+                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" IsVisible="{Binding IsExtensionSupported}">
+                                            <TextBox Text="{Binding PluginSearchQuery}" PlaceholderText="{Binding ExtensionSearchPlaceholder}" Classes="WorkspaceField"/>
+                                            <Button Grid.Column="1" Content="Search" Classes="WorkspacePrimary" Command="{Binding SearchPluginsCommand}" IsEnabled="{Binding !IsPluginBusy}"/>
+                                        </Grid>
+                                        <TextBlock Text="{Binding PluginStatusText}" Classes="WorkspaceSecondary" FontSize="11" TextWrapping="Wrap"/>
+
+                                        <ItemsControl ItemsSource="{Binding PluginResults}" IsVisible="{Binding IsExtensionSupported}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate x:DataType="vm:InstalledServerPlugin">
-                                                    <Border Background="#0F171D" BorderBrush="#293844" BorderThickness="1" CornerRadius="7" Padding="10" Margin="0 0 0 6">
-                                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
-                                                            <StackPanel Spacing="2">
-                                                                <TextBlock Text="{Binding Name}" Classes="WorkspaceLabel"/>
-                                                                <TextBlock Text="{Binding FileName}" Classes="WorkspaceSecondary" FontSize="10.5"/>
+                                                <DataTemplate x:DataType="vm:ServerPluginSearchItem">
+                                                    <Border Background="#0F171D" BorderBrush="#293844" BorderThickness="1" CornerRadius="7" Padding="11" Margin="0 0 0 7">
+                                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                                            <StackPanel Spacing="3">
+                                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                                    <TextBlock Text="{Binding Name}" Classes="WorkspaceLabel"/>
+                                                                    <TextBlock Text="{Binding Author}" Classes="WorkspaceSecondary" FontSize="11"/>
+                                                                    <TextBlock Text="{Binding DownloadsLabel}" Classes="WorkspaceSecondary" FontSize="11" Foreground="#76A9C8"/>
+                                                                </StackPanel>
+                                                                <TextBlock Text="{Binding Description}" Classes="WorkspaceSecondary" FontSize="11" TextWrapping="Wrap" MaxLines="2"/>
                                                             </StackPanel>
-                                                            <Button Grid.Column="1" Content="Remove" Classes="WorkspaceDanger"
-                                                                    Command="{Binding $parent[UserControl].((vm:CreateServerViewModel)DataContext).RemovePluginCommand}"
-                                                                    CommandParameter="{Binding}"
-                                                                    IsEnabled="{Binding !$parent[UserControl].((vm:CreateServerViewModel)DataContext).SelectedServer.IsRunning}"/>
+                                                            <Button Grid.Column="1" Content="{Binding ActionLabel}" Classes="ServerActionButton"
+                                                                    Command="{Binding $parent[UserControl].((vm:CreateServerViewModel)DataContext).InstallPluginCommand}"
+                                                                    CommandParameter="{Binding}" IsEnabled="{Binding CanInstall}" VerticalAlignment="Center"/>
                                                         </Grid>
                                                     </Border>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
                                     </StackPanel>
+                                </ScrollViewer>
+                            </TabItem>
 
-                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" IsVisible="{Binding IsExtensionSupported}">
-                                        <TextBox Text="{Binding PluginSearchQuery}" PlaceholderText="{Binding ExtensionSearchPlaceholder}" Classes="WorkspaceField"/>
-                                        <Button Grid.Column="1" Content="Search" Classes="WorkspacePrimary" Command="{Binding SearchPluginsCommand}" IsEnabled="{Binding !IsPluginBusy}"/>
-                                    </Grid>
-                                    <TextBlock Text="{Binding PluginStatusText}" Classes="WorkspaceSecondary" FontSize="11" TextWrapping="Wrap"/>
+                            <!-- Settings Tab -->
+                            <TabItem Header="Settings">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <StackPanel Spacing="16" Margin="0,8,0,0">
+                                        <Border Classes="ServerHintCard">
+                                            <StackPanel Spacing="12">
+                                                <Grid ColumnDefinitions="*,*,120" ColumnSpacing="12">
+                                                    <StackPanel Spacing="7"><TextBlock Text="Minecraft version" Classes="WorkspaceLabel"/><TextBox Text="{Binding EditMinecraftVersion}" Classes="WorkspaceField" IsEnabled="{Binding !SelectedServer.IsRunning}"/></StackPanel>
+                                                    <StackPanel Grid.Column="1" Spacing="7"><TextBlock Text="Server software" Classes="WorkspaceLabel"/><ComboBox ItemsSource="{Binding ServerTypes}" SelectedItem="{Binding EditServerType}" Classes="WorkspaceField" IsEnabled="{Binding !SelectedServer.IsRunning}"/></StackPanel>
+                                                    <StackPanel Grid.Column="2" Spacing="7"><TextBlock Text="RAM (GB)" Classes="WorkspaceLabel"/><NumericUpDown Minimum="1" Maximum="32" Value="{Binding EditMemoryGb}" Classes="WorkspaceField" IsEnabled="{Binding !SelectedServer.IsRunning}"/></StackPanel>
+                                                </Grid>
+                                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                                    <StackPanel Spacing="3">
+                                                        <TextBlock Text="{Binding AccountModeText}" Classes="WorkspaceLabel" Foreground="#68DDA8"/>
+                                                        <TextBlock Text="Offline mode is easier for friends, but usernames are not verified on public servers." Classes="WorkspaceSecondary" FontSize="10.5" TextWrapping="Wrap"/>
+                                                        <TextBlock Text="Paper/Purpur gets ViaVersion compatibility. Fabric, Forge, NeoForge &amp; Quilt support mods." Classes="WorkspaceSecondary" FontSize="11" TextWrapping="Wrap"/>
+                                                    </StackPanel>
+                                                    <TextBlock Grid.Column="1" Text="Software downloads automatically on Start" Classes="WorkspaceSecondary" Foreground="#82B5FF" VerticalAlignment="Center"/>
+                                                </Grid>
+                                                <CheckBox Content="I accept the Minecraft server EULA" IsChecked="{Binding EditEulaAccepted}" IsVisible="{Binding !EditEulaAccepted}" FontFamily="Inter" FontSize="13" Foreground="#E7C783"/>
+                                            </StackPanel>
+                                        </Border>
 
-                                    <ItemsControl ItemsSource="{Binding PluginResults}" IsVisible="{Binding IsExtensionSupported}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate x:DataType="vm:ServerPluginSearchItem">
-                                                <Border Background="#0F171D" BorderBrush="#293844" BorderThickness="1" CornerRadius="7" Padding="11" Margin="0 0 0 7">
-                                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                                                        <StackPanel Spacing="3">
-                                                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                                                <TextBlock Text="{Binding Name}" Classes="WorkspaceLabel"/>
-                                                                <TextBlock Text="{Binding Author}" Classes="WorkspaceSecondary" FontSize="11"/>
-                                                                <TextBlock Text="{Binding DownloadsLabel}" Classes="WorkspaceSecondary" FontSize="11" Foreground="#76A9C8"/>
-                                                            </StackPanel>
-                                                            <TextBlock Text="{Binding Description}" Classes="WorkspaceSecondary" FontSize="11" TextWrapping="Wrap" MaxLines="2"/>
-                                                        </StackPanel>
-                                                        <Button Grid.Column="1" Content="{Binding ActionLabel}" Classes="ServerActionButton"
-                                                                Command="{Binding $parent[UserControl].((vm:CreateServerViewModel)DataContext).InstallPluginCommand}"
-                                                                CommandParameter="{Binding}" IsEnabled="{Binding CanInstall}" VerticalAlignment="Center"/>
-                                                    </Grid>
-                                                </Border>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
-                            </Border>
-                        </Expander>
+                                        <Border Background="#0C151C" BorderBrush="#1C2F40" BorderThickness="1" CornerRadius="8" Padding="16">
+                                            <StackPanel Spacing="12">
+                                                <TextBlock Text="Advanced Properties" Classes="WorkspaceSectionTitle" FontSize="15"/>
+                                                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                                    <StackPanel Spacing="7"><TextBlock Text="Server name" Classes="WorkspaceLabel"/><TextBox Text="{Binding EditServerName}" Classes="WorkspaceField"/></StackPanel>
+                                                    <StackPanel Grid.Column="1" Spacing="7"><TextBlock Text="Port" Classes="WorkspaceLabel"/><NumericUpDown Minimum="1024" Maximum="65535" Value="{Binding EditPort}" Classes="WorkspaceField"/></StackPanel>
+                                                </Grid>
+                                                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                                    <StackPanel Spacing="7"><TextBlock Text="Max players" Classes="WorkspaceLabel"/><NumericUpDown Minimum="1" Maximum="200" Value="{Binding EditMaxPlayers}" Classes="WorkspaceField"/></StackPanel>
+                                                    <StackPanel Grid.Column="1" Spacing="7"><TextBlock Text="View distance" Classes="WorkspaceLabel"/><NumericUpDown Minimum="2" Maximum="32" Value="{Binding EditViewDistance}" Classes="WorkspaceField"/></StackPanel>
+                                                </Grid>
+                                                <StackPanel Spacing="7"><TextBlock Text="Message of the day" Classes="WorkspaceLabel"/><TextBox Text="{Binding EditMotd}" Classes="WorkspaceField"/></StackPanel>
+                                                <StackPanel Spacing="7"><TextBlock Text="Launch JAR" Classes="WorkspaceLabel"/><TextBox Text="{Binding EditLaunchJarName}" Classes="WorkspaceField"/></StackPanel>
+                                                <CheckBox Content="Only allow premium / Microsoft-authenticated accounts" IsChecked="{Binding EditOnlineMode}" FontFamily="Inter" FontSize="13" Foreground="#D3D8DC"/>
+                                                <CheckBox Content="I accept the Minecraft server EULA" IsChecked="{Binding EditEulaAccepted}" FontFamily="Inter" FontSize="13" Foreground="#D3D8DC"/>
+                                                <Button Content="Save advanced settings" Classes="WorkspacePrimary" Command="{Binding SaveSelectedServerCommand}" IsEnabled="{Binding !SelectedServer.IsRunning}"/>
+                                            </StackPanel>
+                                        </Border>
 
-                        <Expander Header="Advanced settings" HorizontalAlignment="Stretch">
-                            <StackPanel Margin="0 12 0 0" Spacing="12">
-                                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                                    <StackPanel Spacing="7"><TextBlock Text="Server name" Classes="WorkspaceLabel"/><TextBox Text="{Binding EditServerName}" Classes="WorkspaceField"/></StackPanel>
-                                    <StackPanel Grid.Column="1" Spacing="7"><TextBlock Text="Port" Classes="WorkspaceLabel"/><NumericUpDown Minimum="1024" Maximum="65535" Value="{Binding EditPort}" Classes="WorkspaceField"/></StackPanel>
-                                </Grid>
-                                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                                    <StackPanel Spacing="7"><TextBlock Text="Max players" Classes="WorkspaceLabel"/><NumericUpDown Minimum="1" Maximum="200" Value="{Binding EditMaxPlayers}" Classes="WorkspaceField"/></StackPanel>
-                                    <StackPanel Grid.Column="1" Spacing="7"><TextBlock Text="View distance" Classes="WorkspaceLabel"/><NumericUpDown Minimum="2" Maximum="32" Value="{Binding EditViewDistance}" Classes="WorkspaceField"/></StackPanel>
-                                </Grid>
-                                <StackPanel Spacing="7"><TextBlock Text="Message of the day" Classes="WorkspaceLabel"/><TextBox Text="{Binding EditMotd}" Classes="WorkspaceField"/></StackPanel>
-                                <StackPanel Spacing="7"><TextBlock Text="Launch JAR" Classes="WorkspaceLabel"/><TextBox Text="{Binding EditLaunchJarName}" Classes="WorkspaceField"/></StackPanel>
-                                <CheckBox Content="Only allow premium / Microsoft-authenticated accounts" IsChecked="{Binding EditOnlineMode}" FontFamily="Inter" FontSize="13" Foreground="#D3D8DC"/>
-                                <CheckBox Content="I accept the Minecraft server EULA" IsChecked="{Binding EditEulaAccepted}" FontFamily="Inter" FontSize="13" Foreground="#D3D8DC"/>
-                                <Button Content="Save advanced settings" Classes="WorkspacePrimary" Command="{Binding SaveSelectedServerCommand}" IsEnabled="{Binding !SelectedServer.IsRunning}"/>
-                            </StackPanel>
-                        </Expander>
-
-                        <Expander Header="Server console" HorizontalAlignment="Stretch">
-                            <StackPanel Margin="0 12 0 0" Spacing="10">
-                                <Border Classes="ServerConsoleSurface">
-                                    <ScrollViewer Height="170" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                        <TextBlock Text="{Binding SelectedServer.LogText}" Classes="ServerConsoleText" TextWrapping="Wrap"/>
-                                    </ScrollViewer>
-                                </Border>
-                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                                    <TextBox Text="{Binding ConsoleCommand}" PlaceholderText="Type a server command..." Classes="WorkspaceField ServerConsoleInput" IsEnabled="{Binding SelectedServer.IsRunning}" KeyDown="ConsoleCommand_OnKeyDown"/>
-                                    <Button Grid.Column="1" Content="Send" Classes="WorkspacePrimary" Command="{Binding SendConsoleCommandCommand}" IsEnabled="{Binding SelectedServer.IsRunning}"/>
-                                </Grid>
-                            </StackPanel>
-                        </Expander>
-                    </StackPanel>
+                                        <Border Classes="ServerSetupNotice" IsVisible="{Binding IsDeleteConfirmationVisible}">
+                                            <StackPanel Spacing="10">
+                                                <TextBlock Text="Delete this server permanently?" Classes="WorkspaceLabel" Foreground="#FF9AA7"/>
+                                                <TextBlock Text="The world, plugins, settings and all files in this server folder will be deleted. This cannot be undone." Classes="WorkspaceSecondary" FontSize="11.5" TextWrapping="Wrap"/>
+                                                <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                                                    <Button Content="Cancel" Classes="WorkspaceSecondary" Command="{Binding CancelDeleteSelectedServerCommand}"/>
+                                                    <Button Grid.Column="1" Content="Yes, delete permanently" Classes="WorkspaceDanger" Command="{Binding ConfirmDeleteSelectedServerCommand}"/>
+                                                </Grid>
+                                            </StackPanel>
+                                        </Border>
+                                        
+                                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,10,0,0">
+                                            <Button Content="Open server folder" Classes="WorkspaceSecondary" Command="{Binding OpenSelectedServerFolderCommand}" HorizontalAlignment="Stretch"/>
+                                            <Button Grid.Column="1" Content="Delete server" Classes="WorkspaceDanger" Command="{Binding RequestDeleteSelectedServerCommand}" HorizontalAlignment="Stretch"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </TabItem>
+                        </TabControl>
+                    </Grid>
                 </Border>
 
                 <Border Grid.Column="1" Classes="WorkspaceSection ServerCreatorPanel" VerticalAlignment="Top" IsVisible="{Binding IsCreatePanelVisible}">
@@ -259,23 +332,178 @@
                             </StackPanel>
                             <Button Grid.Column="1" Content="Cancel" Classes="WorkspaceSecondary" Command="{Binding CancelCreateCommand}"/>
                         </Grid>
-                        <StackPanel Spacing="7"><TextBlock Text="Server name" Classes="WorkspaceLabel"/><TextBox Text="{Binding ServerName}" Classes="WorkspaceField"/></StackPanel>
-                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                            <StackPanel Spacing="7"><TextBlock Text="Minecraft version" Classes="WorkspaceLabel"/><TextBox Text="{Binding MinecraftVersion}" Classes="WorkspaceField"/></StackPanel>
-                            <StackPanel Grid.Column="1" Spacing="7"><TextBlock Text="Server software" Classes="WorkspaceLabel"/><ComboBox ItemsSource="{Binding ServerTypes}" SelectedItem="{Binding ServerType}" Classes="WorkspaceField"/></StackPanel>
-                        </Grid>
-                        <StackPanel Spacing="7"><TextBlock Text="RAM (GB)" Classes="WorkspaceLabel"/><NumericUpDown Minimum="1" Maximum="32" Value="{Binding AllocatedRamGb}" Classes="WorkspaceField"/></StackPanel>
-                        <Border Classes="ServerHintCard">
-                            <StackPanel Spacing="6">
-                                <TextBlock Text="Software options" Classes="WorkspaceLabel" Foreground="#68DDA8"/>
-                                <TextBlock Text="• Paper / Purpur / Folia: Plugin servers with ViaVersion cross-version compatibility." Classes="WorkspaceSecondary" FontSize="11.5" TextWrapping="Wrap"/>
-                                <TextBlock Text="• Fabric / Forge / NeoForge / Quilt: Modded servers for mods and modpacks." Classes="WorkspaceSecondary" FontSize="11.5" TextWrapping="Wrap"/>
-                                <TextBlock Text="• Vanilla: Official Mojang server." Classes="WorkspaceSecondary" FontSize="11" TextWrapping="Wrap"/>
+                        <!-- Step 1: Core Settings -->
+                        <StackPanel IsVisible="{Binding IsCreateStep1}" Spacing="24">
+                            <StackPanel Spacing="5">
+                                <TextBlock Text="Step 1 of 3: Core Settings" Classes="WorkspaceLabel" Foreground="#68DDA8"/>
+                                <TextBlock Text="Select the platform and version for your server." Classes="WorkspaceSecondary"/>
                             </StackPanel>
-                        </Border>
-                        <CheckBox Content="I accept the Minecraft server EULA" IsChecked="{Binding NewServerEulaAccepted}" FontFamily="Inter" FontSize="14" Foreground="#D3D8DC"/>
-                        <Button Content="Create &amp; start server" Classes="WorkspacePrimary" HorizontalAlignment="Stretch" Command="{Binding CreateServerCommand}"/>
-                        <TextBlock Text="On first start the server software downloads and initializes automatically." Classes="WorkspaceSecondary" FontSize="11" TextAlignment="Center" TextWrapping="Wrap"/>
+
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Server Software" Classes="WorkspaceLabel"/>
+                                <ListBox ItemsSource="{Binding ServerTypes}" SelectedItem="{Binding ServerType}" Background="Transparent" BorderThickness="0" Margin="-4,0,-4,0">
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+                                    <ListBox.Styles>
+                                        <Style Selector="ListBoxItem">
+                                            <Setter Property="Padding" Value="4"/>
+                                            <Setter Property="Margin" Value="0"/>
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Setter Property="BorderThickness" Value="0"/>
+                                        </Style>
+                                        <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                        </Style>
+                                        <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                        </Style>
+                                        <Style Selector="ListBoxItem Border.CardBorder">
+                                            <Setter Property="Background" Value="#0D1A25"/>
+                                            <Setter Property="BorderBrush" Value="#1A3045"/>
+                                            <Setter Property="BorderThickness" Value="1"/>
+                                            <Setter Property="CornerRadius" Value="8"/>
+                                            <Setter Property="Transitions">
+                                                <Transitions>
+                                                    <BrushTransition Property="BorderBrush" Duration="0:0:0.15"/>
+                                                    <BrushTransition Property="Background" Duration="0:0:0.15"/>
+                                                </Transitions>
+                                            </Setter>
+                                        </Style>
+                                        <Style Selector="ListBoxItem:pointerover Border.CardBorder">
+                                            <Setter Property="BorderBrush" Value="#325A82"/>
+                                            <Setter Property="Background" Value="#122535"/>
+                                        </Style>
+                                        <Style Selector="ListBoxItem:selected Border.CardBorder">
+                                            <Setter Property="BorderBrush" Value="#4C9BE8"/>
+                                            <Setter Property="Background" Value="#163756"/>
+                                        </Style>
+                                        <Style Selector="ListBoxItem TextBlock.CardText">
+                                            <Setter Property="Foreground" Value="#90A4AE"/>
+                                        </Style>
+                                        <Style Selector="ListBoxItem:selected TextBlock.CardText">
+                                            <Setter Property="Foreground" Value="#FFFFFF"/>
+                                        </Style>
+                                    </ListBox.Styles>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate x:CompileBindings="False">
+                                            <Border Classes="CardBorder" Width="120" Height="48">
+                                                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <controls:SvgPathIcon Source="{Binding StringFormat='/Assets/{0}.svg'}" Width="18" Height="18" />
+                                                    <TextBlock Classes="CardText" Text="{Binding}" FontFamily="Inter" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </StackPanel>
+
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Minecraft Version" Classes="WorkspaceLabel"/>
+                                <TextBox Text="{Binding MinecraftVersion}" Classes="WorkspaceField" FontSize="16" FontWeight="SemiBold" Foreground="#8BEAFF"/>
+                            </StackPanel>
+
+                            <Button Content="Next: Hardware &amp; Details" Classes="WorkspacePrimary" HorizontalAlignment="Stretch" Command="{Binding NextCreateStepCommand}"/>
+                        </StackPanel>
+
+                        <!-- Step 2: Hardware & Details -->
+                        <StackPanel IsVisible="{Binding IsCreateStep2}" Spacing="24">
+                            <StackPanel Spacing="5">
+                                <TextBlock Text="Step 2 of 3: Server Details" Classes="WorkspaceLabel" Foreground="#68DDA8"/>
+                                <TextBlock Text="Give your server a name and allocate memory." Classes="WorkspaceSecondary"/>
+                            </StackPanel>
+
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Server Name" Classes="WorkspaceLabel"/>
+                                <TextBox Text="{Binding ServerName}" Classes="WorkspaceField" FontSize="16"/>
+                            </StackPanel>
+
+                            <!-- PREMIUM 3D LIQUID GLASS RAM SELECTOR -->
+                            <Border CornerRadius="16" Padding="20,18" Margin="0,5"
+                                    BorderThickness="1" BorderBrush="#25ffffff"
+                                    BoxShadow="inset 0 2 10 0 #10ffffff, 0 10 25 0 #40000000">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                        <GradientStop Offset="0" Color="#15ffffff" />
+                                        <GradientStop Offset="0.5" Color="#06ffffff" />
+                                        <GradientStop Offset="1" Color="#02ffffff" />
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                
+                                <StackPanel Spacing="12">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel Spacing="2">
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <controls:SvgPathIcon Source="/Assets/ram.svg" Width="16" Height="16" VerticalAlignment="Center"/>
+                                                <TextBlock Text="Allocated RAM" Classes="WorkspaceLabel" Foreground="#E2E8ED" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                            <TextBlock Text="Automatically detected your maximum system RAM." Classes="WorkspaceSecondary" FontSize="11"/>
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="1" Text="{Binding AllocatedRamGb, StringFormat='{}{0} GB'}" FontSize="26" FontWeight="ExtraBold" Foreground="#68DDA8">
+                                            <TextBlock.Effect>
+                                                <DropShadowEffect BlurRadius="15" Color="#68DDA8" Opacity="0.5" OffsetX="0" OffsetY="0"/>
+                                            </TextBlock.Effect>
+                                        </TextBlock>
+                                    </Grid>
+                                    
+                                    <Slider Minimum="1" Maximum="{Binding MaxSystemRamGb}" Value="{Binding AllocatedRamGb}" 
+                                            TickFrequency="1" IsSnapToTickEnabled="True" Foreground="#68DDA8" Margin="0,10,0,0"/>
+                                    
+                                    <TextBlock Text="Allocating more RAM improves mod and plugin performance. Do not allocate all your RAM to avoid starving other apps." 
+                                               Classes="WorkspaceSecondary" FontSize="11" TextWrapping="Wrap" Opacity="0.6"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                <Button Content="Back" Classes="WorkspaceSecondary" HorizontalAlignment="Stretch" Command="{Binding PreviousCreateStepCommand}"/>
+                                <Button Grid.Column="1" Content="Next: Review" Classes="WorkspacePrimary" HorizontalAlignment="Stretch" Command="{Binding NextCreateStepCommand}"/>
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- Step 3: Review -->
+                        <StackPanel IsVisible="{Binding IsCreateStep3}" Spacing="24">
+                            <StackPanel Spacing="5">
+                                <TextBlock Text="Step 3 of 3: Review &amp; Create" Classes="WorkspaceLabel" Foreground="#68DDA8"/>
+                                <TextBlock Text="Review your choices and accept the EULA to finish." Classes="WorkspaceSecondary"/>
+                            </StackPanel>
+
+                            <Border Background="#09121A" BorderBrush="#152636" BorderThickness="1" CornerRadius="10" Padding="16">
+                                <StackPanel Spacing="12">
+                                    <Grid ColumnDefinitions="120,*">
+                                        <TextBlock Text="Server Name:" Classes="WorkspaceSecondary"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding ServerName}" Classes="WorkspaceLabel" TextTrimming="CharacterEllipsis"/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="120,*">
+                                        <TextBlock Text="Software:" Classes="WorkspaceSecondary"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding ServerType}" Classes="WorkspaceLabel" Foreground="#8BEAFF"/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="120,*">
+                                        <TextBlock Text="Version:" Classes="WorkspaceSecondary"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding MinecraftVersion}" Classes="WorkspaceLabel"/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="120,*">
+                                        <TextBlock Text="Memory:" Classes="WorkspaceSecondary"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding AllocatedRamGb, StringFormat='{}{0} GB'}" Classes="WorkspaceLabel"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Classes="ServerHintCard">
+                                <StackPanel Spacing="10">
+                                    <CheckBox Content="I accept the Minecraft server EULA" IsChecked="{Binding NewServerEulaAccepted}" FontFamily="Inter" FontSize="14" FontWeight="SemiBold" Foreground="#D3D8DC"/>
+                                    <TextBlock Text="Required by Microsoft to host a Minecraft server." Classes="WorkspaceSecondary" FontSize="11" Margin="28,0,0,0"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Grid ColumnDefinitions="*,2*" ColumnSpacing="12">
+                                <Button Content="Back" Classes="WorkspaceSecondary" HorizontalAlignment="Stretch" Command="{Binding PreviousCreateStepCommand}"/>
+                                <Button Grid.Column="1" Content="Create &amp; start server" Classes="WorkspacePrimary" HorizontalAlignment="Stretch" Command="{Binding CreateServerCommand}" Background="#1E8E3E"/>
+                            </Grid>
+                            
+                            <TextBlock Text="UB Launcher will automatically download all required software and start the server immediately." Classes="WorkspaceSecondary" FontSize="11" TextAlignment="Center" TextWrapping="Wrap"/>
+                        </StackPanel>
                     </StackPanel>
                 </Border>
             </Grid>

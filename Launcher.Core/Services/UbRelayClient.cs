@@ -7,7 +7,7 @@ namespace Launcher.Core.Services;
 
 public sealed class UbRelayClient : IAsyncDisposable
 {
-    private const string RelayHost = "62.72.57.85";
+    private const string RelayHost = "213.35.106.78";
     private const int RelayControlPort = 28080;
     private const string RelayToken = "e180334b26744649a87721236b467cb9812a5803f40b4b01b6822cd48dba2bda";
     private const int MaximumFrameSize = 1024 * 1024;

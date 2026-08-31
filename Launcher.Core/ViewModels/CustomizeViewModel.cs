@@ -98,11 +98,16 @@ public partial class CustomizeViewModel : ViewModelBase
         LoadSavedCapes();
         RestoreSelection();
         _ = LoadMicrosoftOwnedCapesAsync();
+        _ = AutoDetectPremiumSkinAsync();
     }
 
     private void RefreshUsername() => OnPropertyChanged(nameof(Username));
 
-    private void OnMicrosoftSessionChanged() => _ = LoadMicrosoftOwnedCapesAsync();
+    private void OnMicrosoftSessionChanged() 
+    {
+        _ = LoadMicrosoftOwnedCapesAsync();
+        _ = AutoDetectPremiumSkinAsync();
+    }
 
     public void ImportSkin(string selectedPath, bool isSlim)
     {
@@ -216,6 +221,87 @@ public partial class CustomizeViewModel : ViewModelBase
         CapePath = cape.ImagePath;
         SaveSelection();
         StatusText = $"{cape.Name} selected from owned capes.";
+    }
+
+    private async Task AutoDetectPremiumSkinAsync()
+    {
+        if (!MicrosoftAccountStore.HasSession) return;
+        var uuid = MicrosoftAccountStore.MinecraftUuid;
+        if (string.IsNullOrWhiteSpace(uuid)) return;
+
+        // If the user explicitly saved a custom skin, don't overwrite it
+        var selection = LoadSelection();
+        if (selection is not null && !string.IsNullOrWhiteSpace(selection.SkinPath) && !selection.SkinPath.Equals(DefaultStevePath, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        try
+        {
+            var profileUrl = $"https://sessionserver.mojang.com/session/minecraft/profile/{uuid}";
+            var profileJson = await TextureClient.GetStringAsync(profileUrl);
+            using var doc = JsonDocument.Parse(profileJson);
+            
+            var properties = doc.RootElement.GetProperty("properties");
+            string? texturesBase64 = null;
+            foreach (var prop in properties.EnumerateArray())
+            {
+                if (prop.GetProperty("name").GetString() == "textures")
+                {
+                    texturesBase64 = prop.GetProperty("value").GetString();
+                    break;
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(texturesBase64)) return;
+            
+            var texturesJson = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(texturesBase64));
+            using var texDoc = JsonDocument.Parse(texturesJson);
+            
+            if (texDoc.RootElement.GetProperty("textures").TryGetProperty("SKIN", out var skinElement))
+            {
+                var skinUrl = skinElement.GetProperty("url").GetString();
+                var isSlim = false;
+                
+                if (skinElement.TryGetProperty("metadata", out var metaElement) && 
+                    metaElement.TryGetProperty("model", out var modelElement))
+                {
+                    isSlim = modelElement.GetString() == "slim";
+                }
+                
+                if (string.IsNullOrWhiteSpace(skinUrl)) return;
+                
+                var skinBytes = await TextureClient.GetByteArrayAsync(skinUrl);
+                var hash = Convert.ToHexString(SHA256.HashData(skinBytes)).ToLowerInvariant();
+                
+                Directory.CreateDirectory(CosmeticsDirectory);
+                var localPath = Path.Combine(CosmeticsDirectory, $"auto_{hash}.png");
+                
+                if (!File.Exists(localPath))
+                {
+                    await File.WriteAllBytesAsync(localPath, skinBytes);
+                }
+
+                // Apply to UI (only if the user hasn't manually selected something else while this was downloading)
+                var currentSelection = LoadSelection();
+                if (currentSelection is null || string.IsNullOrWhiteSpace(currentSelection.SkinPath) || currentSelection.SkinPath.Equals(DefaultStevePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    SkinPath = localPath;
+                    SelectedSkinName = MicrosoftAccountStore.MinecraftUsername ?? "Premium Skin";
+                    UseSlimModel = isSlim;
+                    
+                    // Deselect default skins in the UI
+                    foreach (var s in DefaultSkins) s.IsSelected = false;
+                    foreach (var s in SavedSkins) s.IsSelected = false;
+
+                    StatusText = $"Detected premium skin for {SelectedSkinName}.";
+                }
+            }
+        }
+        catch 
+        {
+            // Ignore network errors, just fallback to Steve
+        }
     }
 
     /// <summary>

@@ -137,10 +137,41 @@ public partial class CreateServerViewModel : ViewModelBase
 
     [ObservableProperty] private LocalServerItem? _selectedServer;
     [ObservableProperty] private bool _isCreatePanelVisible;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsCreateStep1))]
+    [NotifyPropertyChangedFor(nameof(IsCreateStep2))]
+    [NotifyPropertyChangedFor(nameof(IsCreateStep3))]
+    [NotifyPropertyChangedFor(nameof(IsCreateStep4))]
+    private int _createStep = 1;
+
+    public bool IsCreateStep1 => CreateStep == 1;
+    public bool IsCreateStep2 => CreateStep == 2;
+    public bool IsCreateStep3 => CreateStep == 3;
+    public bool IsCreateStep4 => CreateStep == 4;
+
     [ObservableProperty] private string _serverName = "UB Community Server";
     [ObservableProperty] private string _minecraftVersion = "1.20.4";
     [ObservableProperty] private string _serverType = "Paper";
-    [ObservableProperty] private int _allocatedRamGb = 4;
+    [ObservableProperty] private int _allocatedRamGb;
+
+    public int MaxSystemRamGb { get; } = GetTotalSystemMemoryGb();
+
+
+
+    private static int GetTotalSystemMemoryGb()
+    {
+        try
+        {
+            var bytes = GC.GetGCMemoryInfo().TotalAvailableMemoryBytes;
+            var gb = (int)Math.Round((double)bytes / 1024 / 1024 / 1024);
+            return Math.Clamp(gb, 2, 128); // Sanity limits
+        }
+        catch
+        {
+            return 8; // Safe fallback
+        }
+    }
     [ObservableProperty] private int _serverPort = 25565;
     [ObservableProperty] private bool _onlineMode;
     [ObservableProperty] private bool _newServerEulaAccepted;
@@ -165,6 +196,7 @@ public partial class CreateServerViewModel : ViewModelBase
     [ObservableProperty] private string _pluginSearchQuery = string.Empty;
     [ObservableProperty] private bool _isPluginBusy;
     [ObservableProperty] private string _pluginStatusText = "Search Modrinth for compatible server addons.";
+    [ObservableProperty] private int _currentTab = 0;
 
     public ObservableCollection<string> ServerTypes { get; } =
     [
@@ -195,7 +227,7 @@ public partial class CreateServerViewModel : ViewModelBase
             : $"Forward TCP port {SelectedServer.Port} to {LocalIpAddress}:{SelectedServer.Port}. Then friends join using YOUR_PUBLIC_IP:{SelectedServer.Port}.";
     public string TunnelJoinAddress => TunnelRemotePort == 0
         ? "Assigned when relay starts"
-        : $"62.72.57.85:{TunnelRemotePort}";
+        : $"213.35.106.78:{TunnelRemotePort}";
     public string TunnelActionLabel => IsTunnelRunning ? "Stop relay" : "Start relay";
     public bool IsManagerVisible => !IsCreatePanelVisible && SelectedServer is not null;
     public bool IsPluginSupported => SelectedServer is not null &&
@@ -226,6 +258,7 @@ public partial class CreateServerViewModel : ViewModelBase
 
     public CreateServerViewModel()
     {
+        _allocatedRamGb = Math.Min(4, MaxSystemRamGb);
         LocalIpAddress = FindLocalIpv4Address();
         foreach (var server in Servers)
         {
@@ -315,6 +348,18 @@ public partial class CreateServerViewModel : ViewModelBase
     partial void OnEditOnlineModeChanged(bool value) => OnPropertyChanged(nameof(AccountModeText));
 
     [RelayCommand]
+    private void NextCreateStep()
+    {
+        if (CreateStep < 4) CreateStep++;
+    }
+
+    [RelayCommand]
+    private void PreviousCreateStep()
+    {
+        if (CreateStep > 1) CreateStep--;
+    }
+
+    [RelayCommand]
     private void SelectServer(LocalServerItem server)
     {
         ServerStore.Touch(server);
@@ -340,6 +385,7 @@ public partial class CreateServerViewModel : ViewModelBase
         ServerPort = FindAvailablePort();
         OnlineMode = false;
         NewServerEulaAccepted = false;
+        CreateStep = 1;
         IsCreatePanelVisible = true;
         StatusText = "Configure the new server workspace.";
     }
@@ -354,58 +400,68 @@ public partial class CreateServerViewModel : ViewModelBase
     [RelayCommand]
     private async Task CreateServerAsync()
     {
-        var requestedName = ServerName.Trim();
-        if (string.IsNullOrWhiteSpace(requestedName))
+        try
         {
-            StatusText = "Enter a server name first.";
-            return;
+            var requestedName = ServerName?.Trim();
+            if (string.IsNullOrWhiteSpace(requestedName))
+            {
+                StatusText = "Enter a server name first.";
+                return;
+            }
+
+            if (Servers.Any(server => server.Port == ServerPort))
+            {
+                StatusText = $"Port {ServerPort} is already used by another saved server.";
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(MinecraftVersion))
+            {
+                StatusText = "Choose a Minecraft version first.";
+                return;
+            }
+
+            if (!NewServerEulaAccepted)
+            {
+                StatusText = "Accept the Minecraft EULA before creating and starting the server.";
+                return;
+            }
+
+            var folderPath = ServerStore.GetUniqueServerFolder(requestedName);
+            Directory.CreateDirectory(folderPath);
+            var server = new LocalServerItem
+            {
+                Name = requestedName,
+                Version = MinecraftVersion.Trim(),
+                ServerType = ServerType ?? "Paper",
+                Port = ServerPort,
+                MemoryGb = AllocatedRamGb,
+                FolderPath = folderPath,
+                OnlineMode = OnlineMode,
+                EulaAccepted = true,
+                Status = "Setup required",
+                LastActivityAtUtc = DateTimeOffset.UtcNow
+            };
+
+            await Task.Run(() => 
+            {
+                WriteConfigurationFiles(server);
+                SaveServers();
+            });
+            server.RefreshSetupState();
+            Servers.Add(server);
+            NotifyOverviewChanged();
+            SelectedServer = server;
+            await ToggleSelectedServerAsync();
         }
-
-        if (Servers.Any(server => server.Port == ServerPort))
+        catch (Exception ex)
         {
-            StatusText = $"Port {ServerPort} is already used by another saved server.";
-            return;
+            StatusText = $"Could not create server: {ex.Message}";
         }
-
-        if (string.IsNullOrWhiteSpace(MinecraftVersion))
-        {
-            StatusText = "Choose a Minecraft version first.";
-            return;
-        }
-
-        if (!NewServerEulaAccepted)
-        {
-            StatusText = "Accept the Minecraft EULA before creating and starting the server.";
-            return;
-        }
-
-        var folderPath = ServerStore.GetUniqueServerFolder(requestedName);
-        Directory.CreateDirectory(folderPath);
-        var server = new LocalServerItem
-        {
-            Name = requestedName,
-            Version = MinecraftVersion.Trim(),
-            ServerType = ServerType,
-            Port = ServerPort,
-            MemoryGb = AllocatedRamGb,
-            FolderPath = folderPath,
-            OnlineMode = OnlineMode,
-            EulaAccepted = true,
-            Status = "Setup required",
-            LastActivityAtUtc = DateTimeOffset.UtcNow
-        };
-
-        WriteConfigurationFiles(server);
-        server.RefreshSetupState();
-        Servers.Add(server);
-        SaveServers();
-        NotifyOverviewChanged();
-        SelectedServer = server;
-        await ToggleSelectedServerAsync();
     }
 
     [RelayCommand]
-    private void SaveSelectedServer()
+    private async Task SaveSelectedServerAsync()
     {
         var server = SelectedServer;
         if (server is null)
@@ -419,9 +475,10 @@ public partial class CreateServerViewModel : ViewModelBase
             return;
         }
 
-        if (TryApplyEditorSettings(server, out var softwareChanged))
+        var result = await TryApplyEditorSettingsAsync(server);
+        if (result.Success)
         {
-            StatusText = softwareChanged
+            StatusText = result.SoftwareChanged
                 ? "Settings saved. The correct server software will download automatically when you press Start."
                 : $"Saved settings for {server.Name}.";
         }
@@ -442,15 +499,18 @@ public partial class CreateServerViewModel : ViewModelBase
             return;
         }
 
-        if (!TryApplyEditorSettings(server, out var softwareChanged))
+        var applyResult = await TryApplyEditorSettingsAsync(server);
+        if (!applyResult.Success)
         {
             return;
         }
 
+        var softwareChanged = applyResult.SoftwareChanged;
+
         server.RefreshSetupState();
         if (softwareChanged || !server.HasServerJar)
         {
-            WriteConfigurationFiles(server);
+            await Task.Run(() => WriteConfigurationFiles(server));
             await DownloadServerSoftwareAsync(server);
             server.RefreshSetupState();
             if (!server.HasServerJar)
@@ -466,7 +526,7 @@ public partial class CreateServerViewModel : ViewModelBase
             return;
         }
 
-        WriteConfigurationFiles(server);
+        await Task.Run(() => WriteConfigurationFiles(server));
         try
         {
             var startInfo = BuildServerStartInfo(server);
@@ -486,7 +546,7 @@ public partial class CreateServerViewModel : ViewModelBase
             server.IsRunning = true;
             server.Status = "Running";
             server.LastActivityAtUtc = DateTimeOffset.UtcNow;
-            SaveServers();
+            await Task.Run(() => SaveServers());
             AppendLog(server, $"Starting {server.Name} with {server.MemoryGb} GB RAM...");
             NotifyOverviewChanged();
             StatusText = $"{server.Name} is starting on {server.Endpoint}.";
@@ -656,9 +716,9 @@ public partial class CreateServerViewModel : ViewModelBase
             var contentType = IsModSupported ? CatalogContentType.Mods : CatalogContentType.Plugins;
             var loader = IsModSupported ? EditServerType : "Paper";
             var result = await pluginCatalogService.SearchAsync(new CatalogSearchRequest(
-                PluginSearchQuery.Trim(),
+                PluginSearchQuery?.Trim() ?? string.Empty,
                 contentType,
-                EditMinecraftVersion.Trim(),
+                EditMinecraftVersion?.Trim() ?? string.Empty,
                 loader,
                 12));
 
@@ -717,7 +777,7 @@ public partial class CreateServerViewModel : ViewModelBase
         {
             var result = await pluginCatalogService.InstallAsync(
                 item.Project,
-                new InstanceInstallTarget(server.Name, EditMinecraftVersion.Trim(), EditServerType, server.FolderPath));
+                new InstanceInstallTarget(server.Name, EditMinecraftVersion?.Trim() ?? string.Empty, EditServerType, server.FolderPath));
             item.IsInstalled = true;
             RefreshInstalledPlugins();
             PluginStatusText = result.Message.Replace("instance", "server", StringComparison.OrdinalIgnoreCase);
@@ -827,34 +887,33 @@ public partial class CreateServerViewModel : ViewModelBase
     private static string NormalizePluginName(string value) =>
         new(value.Where(char.IsLetterOrDigit).Select(char.ToLowerInvariant).ToArray());
 
-    private bool TryApplyEditorSettings(LocalServerItem server, out bool softwareChanged)
+    private async Task<(bool Success, bool SoftwareChanged)> TryApplyEditorSettingsAsync(LocalServerItem server)
     {
-        softwareChanged = false;
         if (string.IsNullOrWhiteSpace(EditServerName) || string.IsNullOrWhiteSpace(EditMinecraftVersion))
         {
             StatusText = "Server name and Minecraft version are required.";
-            return false;
+            return (false, false);
         }
 
         if (Servers.Any(item => !ReferenceEquals(item, server) && item.Port == EditPort))
         {
             StatusText = $"Port {EditPort} is already used by another saved server.";
-            return false;
+            return (false, false);
         }
 
-        var launchJarName = EditLaunchJarName.Trim();
+        var launchJarName = EditLaunchJarName?.Trim() ?? string.Empty;
         if (string.IsNullOrWhiteSpace(launchJarName) ||
             launchJarName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0 ||
             !launchJarName.EndsWith(".jar", StringComparison.OrdinalIgnoreCase))
         {
             StatusText = "Launch JAR must be a valid .jar filename, such as server.jar.";
-            return false;
+            return (false, false);
         }
 
-        softwareChanged = !server.Version.Equals(EditMinecraftVersion.Trim(), StringComparison.OrdinalIgnoreCase) ||
+        var softwareChanged = !server.Version.Equals(EditMinecraftVersion.Trim(), StringComparison.OrdinalIgnoreCase) ||
                           !server.ServerType.Equals(EditServerType, StringComparison.OrdinalIgnoreCase);
-        server.Name = EditServerName.Trim();
-        server.Version = EditMinecraftVersion.Trim();
+        server.Name = EditServerName?.Trim() ?? string.Empty;
+        server.Version = EditMinecraftVersion?.Trim() ?? string.Empty;
         server.ServerType = EditServerType;
         server.MemoryGb = Math.Clamp(EditMemoryGb, 1, 32);
         server.Port = Math.Clamp(EditPort, 1024, 65535);
@@ -865,15 +924,19 @@ public partial class CreateServerViewModel : ViewModelBase
         server.Motd = string.IsNullOrWhiteSpace(EditMotd) ? "A UB Launcher Minecraft Server" : EditMotd.Trim();
         server.LaunchJarName = Path.GetFileName(launchJarName);
         server.LastActivityAtUtc = DateTimeOffset.UtcNow;
-        WriteConfigurationFiles(server);
+        await Task.Run(() => 
+        {
+            WriteConfigurationFiles(server);
+            SaveServers();
+        });
         server.RefreshSetupState();
-        SaveServers();
         NotifyOverviewChanged();
         OnPropertyChanged(nameof(LanJoinAddress));
         OnPropertyChanged(nameof(InternetJoinHint));
         OnPropertyChanged(nameof(IsPluginSupported));
         OnPropertyChanged(nameof(PluginSupportText));
-        return true;
+        OnPropertyChanged(nameof(PluginSupportText));
+        return (true, softwareChanged);
     }
 
     [RelayCommand]
@@ -1161,8 +1224,45 @@ public partial class CreateServerViewModel : ViewModelBase
         }
         catch (Exception exception)
         {
-            AppendLog(server, $"Stop failed: {exception.Message}");
+            AppendLog(server, $"Error stopping gracefully: {exception.Message}");
         }
+    }
+
+    [RelayCommand]
+    private async Task KillSelectedServerAsync()
+    {
+        var server = SelectedServer;
+        if (server is null || !server.IsRunning) return;
+
+        if (runningProcesses.TryGetValue(server.Id, out var process) && !process.HasExited)
+        {
+            try
+            {
+                process.Kill(entireProcessTree: true);
+                AppendLog(server, "Server process was killed forcefully.");
+                StatusText = $"Killed {server.Name}.";
+            }
+            catch (Exception ex)
+            {
+                AppendLog(server, $"Failed to kill process: {ex.Message}");
+            }
+        }
+    }
+
+    [RelayCommand]
+    private async Task RestartSelectedServerAsync()
+    {
+        var server = SelectedServer;
+        if (server is null) return;
+
+        if (server.IsRunning)
+        {
+            await StopServerAsync(server);
+        }
+
+        // Wait a brief moment to ensure ports are freed
+        await Task.Delay(1000);
+        await ToggleSelectedServerAsync();
     }
 
     private void HandleServerExit(LocalServerItem server, Process process)

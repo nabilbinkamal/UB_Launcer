@@ -23,9 +23,9 @@
         ExtendClientAreaTitleBarHeightHint="-1">
 
     <Grid>
-    <Grid x:Name="MainLayout" ColumnDefinitions="230,*" Background="{DynamicResource PageBrush}"
+        <Grid x:Name="MainLayout" ColumnDefinitions="230,*" Background="{DynamicResource PageBrush}"
           Classes.ModalOpen="{Binding IsAnyModalOpen}"
-          Opacity="{Binding MainContentOpacity}" IsHitTestVisible="{Binding !IsAnyModalOpen}">
+          Opacity="{Binding MainContentOpacity}">
         <Grid.Styles>
             <Style Selector="Grid.ModalOpen">
                 <Setter Property="Effect">
@@ -109,19 +109,28 @@
                                     <ItemsControl ItemsSource="{Binding SavedAccounts}" IsVisible="{Binding HasSavedAccounts}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate x:DataType="vm:SavedAccountItem">
-                                                <Button Classes="SavedAccountButton"
-                                                        Classes.Active="{Binding IsActive}"
-                                                        Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).SelectSavedAccountCommand}"
-                                                        CommandParameter="{Binding}">
-                                                    <Grid ColumnDefinitions="12,28,*" ColumnSpacing="7">
+                                                <Grid ColumnDefinitions="*,28" ColumnSpacing="3">
+                                                    <Button Classes="SavedAccountButton"
+                                                            Classes.Active="{Binding IsActive}"
+                                                            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).SelectSavedAccountCommand}"
+                                                            CommandParameter="{Binding}">
+                                                        <Grid ColumnDefinitions="12,28,*" ColumnSpacing="7">
                                                         <Border Width="9" Height="9" CornerRadius="5" BorderBrush="#00D9FF" BorderThickness="1.25" VerticalAlignment="Center">
                                                             <Border Width="5" Height="5" CornerRadius="3" Background="#00D9FF" IsVisible="{Binding IsActive}"/>
                                                         </Border>
                                                         <Border Grid.Column="1" Width="26" Height="26" CornerRadius="5" Background="#E3E5E6"/>
-                                                        <TextBlock Grid.Column="2" Text="{Binding Username}" Classes="PlayerNameLabel"
-                                                                   TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
-                                                    </Grid>
-                                                </Button>
+                                                            <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="1">
+                                                                <TextBlock Text="{Binding Username}" Classes="PlayerNameLabel" TextTrimming="CharacterEllipsis"/>
+                                                                <TextBlock Text="{Binding AccountTypeLabel}" Classes="AccountOfflineStatus" TextTrimming="CharacterEllipsis"/>
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </Button>
+                                                    <Button Grid.Column="1" Classes="SavedAccountDeleteButton"
+                                                            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).DeleteSavedAccountCommand}"
+                                                            CommandParameter="{Binding}" ToolTip.Tip="Delete saved account">
+                                                        <TextBlock Text="×" FontSize="18" Foreground="#FF8B98" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Button>
+                                                </Grid>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
@@ -344,7 +353,12 @@
                                 <Button Classes="AccountChoiceButton Microsoft" Command="{Binding SignInWithMicrosoftCommand}">
                                     <Grid RowDefinitions="Auto,Auto,Auto" HorizontalAlignment="Stretch">
                                         <Border Classes="AccountChoiceIcon Microsoft" HorizontalAlignment="Left">
-                                            <TextBlock Text="M" FontFamily="Poppins" FontSize="22" FontWeight="SemiBold" Foreground="White"/>
+                                            <Grid Width="22" Height="22" RowDefinitions="*,*" ColumnDefinitions="*,*">
+                                                <Border Grid.Row="0" Grid.Column="0" Background="#F25022" Margin="0,0,1,1" />
+                                                <Border Grid.Row="0" Grid.Column="1" Background="#7FBA00" Margin="1,0,0,1" />
+                                                <Border Grid.Row="1" Grid.Column="0" Background="#00A4EF" Margin="0,1,1,0" />
+                                                <Border Grid.Row="1" Grid.Column="1" Background="#FFB900" Margin="1,1,0,0" />
+                                            </Grid>
                                         </Border>
                                         <TextBlock Grid.Row="1" Text="Microsoft login" Classes="AccountChoiceTitle" Margin="0 18 0 0"/>
                                         <TextBlock Grid.Row="2" Text="Use your official Minecraft account through secure browser sign-in."
@@ -426,8 +440,12 @@
                             <!-- Header row: M icon + title + back button -->
                             <Grid ColumnDefinitions="Auto,*,Auto">
                                 <Border Classes="AccountChoiceIcon Microsoft" Width="40" Height="40">
-                                    <TextBlock Text="M" FontFamily="Poppins" FontSize="18" FontWeight="SemiBold" Foreground="White"
-                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <Grid Width="18" Height="18" RowDefinitions="*,*" ColumnDefinitions="*,*">
+                                        <Border Grid.Row="0" Grid.Column="0" Background="#F25022" Margin="0,0,1,1" />
+                                        <Border Grid.Row="0" Grid.Column="1" Background="#7FBA00" Margin="1,0,0,1" />
+                                        <Border Grid.Row="1" Grid.Column="0" Background="#00A4EF" Margin="0,1,1,0" />
+                                        <Border Grid.Row="1" Grid.Column="1" Background="#FFB900" Margin="1,1,0,0" />
+                                    </Grid>
                                 </Border>
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="12 0 0 0" Spacing="1">
                                     <TextBlock Text="Microsoft sign-in" Classes="AccountChoiceTitle"/>
@@ -442,66 +460,14 @@
                                 </Button>
                             </Grid>
 
-                            <!-- Step 1: open browser instruction -->
-                            <Border Background="#0D1620" BorderBrush="#1E3348" BorderThickness="1" CornerRadius="10" Padding="18 14">
-                                <StackPanel Spacing="10">
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <Border Width="20" Height="20" CornerRadius="10"
-                                                Background="#1A3A5C" VerticalAlignment="Center">
-                                            <TextBlock Text="1" FontFamily="Poppins" FontSize="11" FontWeight="Bold"
-                                                       Foreground="#77CEFF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
-                                        <TextBlock Text="Open your browser and go to:" FontFamily="Poppins" FontSize="12"
-                                                   Foreground="#A0B4C4" VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                    <Border Background="#111E2B" BorderBrush="#1E3A50" BorderThickness="1"
-                                            CornerRadius="7" Padding="12 8">
-                                        <TextBlock Text="{Binding VerificationUri}" FontFamily="Poppins" FontSize="13"
-                                                   FontWeight="SemiBold" Foreground="#4FC3F7" TextWrapping="Wrap"/>
-                                    </Border>
-                                </StackPanel>
-                            </Border>
-
-                            <!-- Step 2: enter device code -->
-                            <Border Background="#0D1620" BorderBrush="#1E3348" BorderThickness="1" CornerRadius="10" Padding="18 14">
-                                <StackPanel Spacing="12">
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <Border Width="20" Height="20" CornerRadius="10"
-                                                Background="#1A3A5C" VerticalAlignment="Center">
-                                            <TextBlock Text="2" FontFamily="Poppins" FontSize="11" FontWeight="Bold"
-                                                       Foreground="#77CEFF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
-                                        <TextBlock Text="Enter this code on the page:" FontFamily="Poppins" FontSize="12"
-                                                   Foreground="#A0B4C4" VerticalAlignment="Center"/>
-                                    </StackPanel>
-
-                                    <!-- Code pill + Copy button -->
-                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
-                                        <Border Background="#071525"
-                                                BorderBrush="#2A6AA8"
-                                                BorderThickness="2"
-                                                CornerRadius="10"
-                                                Padding="0 14">
-                                            <TextBlock Text="{Binding DeviceCode}"
-                                                       FontFamily="Minecraft"
-                                                       FontSize="30"
-                                                       FontWeight="Bold"
-                                                       Foreground="#00D9FF"
-                                                       HorizontalAlignment="Center"
-                                                       LetterSpacing="6"/>
-                                        </Border>
-                                        <Button Grid.Column="1"
-                                                Classes="AccountPrimaryButton"
-                                                Command="{Binding CopyDeviceCodeCommand}"
-                                                x:Name="CopyCodeButton"
-                                                Width="90"
-                                                ToolTip.Tip="Copy code to clipboard">
-                                            <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
-                                                <TextBlock Text="⎘" FontFamily="Poppins" FontSize="14" VerticalAlignment="Center"/>
-                                                <TextBlock Text="Copy" FontFamily="Poppins" FontSize="12" VerticalAlignment="Center"/>
-                                            </StackPanel>
-                                        </Button>
-                                    </Grid>
+                            <!-- Interactive Browser Instruction -->
+                            <Border Background="#0D1620" BorderBrush="#1E3348" BorderThickness="1" CornerRadius="10" Padding="18 24">
+                                <StackPanel Spacing="16" HorizontalAlignment="Center">
+                                    <TextBlock Text="🌐" FontSize="36" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Your browser should open automatically." FontFamily="Poppins" FontSize="13"
+                                               Foreground="#A0B4C4" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Please log in there to continue." FontFamily="Poppins" FontSize="14" FontWeight="SemiBold"
+                                               Foreground="#77CEFF" HorizontalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
 

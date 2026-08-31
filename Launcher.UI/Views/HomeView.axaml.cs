@@ -210,6 +210,63 @@ public partial class HomeView : UserControl, INavigationAwarePage
         }
     }
 
+    private void OnEditInstanceClick(object? sender, Avalonia.Interactivity.RoutedEventArgs eventArgs) =>
+        NavigateToProfiles();
+
+    private void OnViewPerformanceDetailsClick(object? sender, Avalonia.Interactivity.RoutedEventArgs eventArgs) =>
+        NavigateToPerformance();
+
+    private void OnAddInstanceClick(object? sender, Avalonia.Interactivity.RoutedEventArgs eventArgs) =>
+        NavigateToProfiles();
+
+    private void OnEditProfileClick(object? sender, Avalonia.Interactivity.RoutedEventArgs eventArgs) =>
+        NavigateToProfiles();
+
+    private void OnInstallModsClick(object? sender, Avalonia.Interactivity.RoutedEventArgs eventArgs) =>
+        NavigateToMods();
+
+    private void OnLaunchOptionsClick(object? sender, Avalonia.Interactivity.RoutedEventArgs eventArgs) =>
+        NavigateToSettings();
+
+    private MainWindowViewModel? GetMainWindowViewModel() =>
+        TopLevel.GetTopLevel(this)?.DataContext as MainWindowViewModel;
+
+    private void NavigateToProfiles()
+    {
+        var viewModel = GetMainWindowViewModel();
+        if (viewModel?.NavigateProfilesCommand.CanExecute(null) == true)
+        {
+            viewModel.NavigateProfilesCommand.Execute(null);
+        }
+    }
+
+    private void NavigateToMods()
+    {
+        var viewModel = GetMainWindowViewModel();
+        if (viewModel?.NavigateModsCommand.CanExecute(null) == true)
+        {
+            viewModel.NavigateModsCommand.Execute(null);
+        }
+    }
+
+    private void NavigateToPerformance()
+    {
+        var viewModel = GetMainWindowViewModel();
+        if (viewModel?.NavigatePerformanceCommand.CanExecute(null) == true)
+        {
+            viewModel.NavigatePerformanceCommand.Execute(null);
+        }
+    }
+
+    private void NavigateToSettings()
+    {
+        var viewModel = GetMainWindowViewModel();
+        if (viewModel?.NavigateSettingsCommand.CanExecute(null) == true)
+        {
+            viewModel.NavigateSettingsCommand.Execute(null);
+        }
+    }
+
     private void OnRecentServerClick(object? sender, Avalonia.Interactivity.RoutedEventArgs eventArgs)
     {
         if (sender is not Button { DataContext: LocalServerItem server } ||

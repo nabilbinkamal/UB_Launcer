@@ -37,6 +37,29 @@ public static class OfflineAccountStore
         AccountChanged?.Invoke();
     }
 
+    public static void Remove(string username)
+    {
+        var match = SavedAccounts.FirstOrDefault(account =>
+            string.Equals(account, username, StringComparison.OrdinalIgnoreCase));
+        if (match is null) return;
+        SavedAccounts.Remove(match);
+        if (string.Equals(Username, match, StringComparison.OrdinalIgnoreCase))
+        {
+            Username = SavedAccounts.FirstOrDefault() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(Username))
+            {
+                if (File.Exists(AccountFile)) File.Delete(AccountFile);
+            }
+            else
+            {
+                Directory.CreateDirectory(AccountDirectory);
+                File.WriteAllText(AccountFile, Username);
+            }
+        }
+        SaveAccounts();
+        AccountChanged?.Invoke();
+    }
+
     private static string Load()
     {
         try { return File.Exists(AccountFile) ? File.ReadAllText(AccountFile).Trim() : string.Empty; }
