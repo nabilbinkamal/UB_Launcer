@@ -1711,9 +1711,9 @@
         <Setter Property="Opacity" Value="0.42"/>
     </Style>
     <Style Selector="Button.ServerActionButton:pointerover">
-        <Setter Property="Background" Value="#1A4777"/>
-        <Setter Property="BorderBrush" Value="#6AA5E8"/>
+        <Setter Property="Background" Value="#184775"/>
         <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="#6AABE2"/>
     </Style>
     <Style Selector="Button.RelayToggleButton.Stop">
         <Setter Property="Background" Value="#6D2630"/>
@@ -2097,11 +2097,11 @@
         <Setter Property="BorderBrush" Value="#52A5E8"/>
     </Style>
     <Style Selector="Border.WorkspaceContentCard">
-        <Setter Property="Background" Value="#090F14"/>
+        <Setter Property="Background" Value="#080D12"/>
         <Setter Property="BorderBrush" Value="#293F4E"/>
     </Style>
     <Style Selector="Border.WorkspaceContentCard:pointerover">
-        <Setter Property="Background" Value="#090F14"/>
+        <Setter Property="Background" Value="#0B131C"/>
         <Setter Property="BorderBrush" Value="#4A91BE"/>
     </Style>
     <Style Selector="Button.WorkspaceInstallButton">
@@ -2262,23 +2262,30 @@
         <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
 
+    <!-- ============================================== -->
+    <!-- OVERHAULED 10/10 WORKSPACE UI COMPONENTS       -->
+    <!-- ============================================== -->
     <Style Selector="Border.WorkspaceSection">
-        <Setter Property="Background" Value="#081118"/>
-        <Setter Property="BorderBrush" Value="#263A48"/>
-        <Setter Property="CornerRadius" Value="11"/>
+        <Setter Property="Background" Value="#080C11"/>
+        <Setter Property="BorderBrush" Value="#152636"/>
+        <Setter Property="CornerRadius" Value="14"/>
     </Style>
     <Style Selector="Border.WorkspaceToolbar">
-        <Setter Property="Background" Value="#09131A"/>
-        <Setter Property="BorderBrush" Value="#2A4252"/>
+        <Setter Property="Background" Value="#0B131A"/>
+        <Setter Property="BorderBrush" Value="#1A2F42"/>
+        <Setter Property="CornerRadius" Value="10"/>
     </Style>
     <Style Selector="Border.WorkspaceHeaderStat">
-        <Setter Property="Background" Value="#0A151D"/>
-        <Setter Property="BorderBrush" Value="#2C4659"/>
+        <Setter Property="Background" Value="#0E1821"/>
+        <Setter Property="BorderBrush" Value="#1C3347"/>
+        <Setter Property="CornerRadius" Value="10"/>
     </Style>
+
     <Style Selector="Button.WorkspacePrimary">
         <Setter Property="Background" Value="{DynamicResource BrandGradientBrush}"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="BorderBrush" Value="#5DA9E7"/>
+        <Setter Property="CornerRadius" Value="8"/>
     </Style>
     <Style Selector="Button.WorkspacePrimary:pointerover">
         <Setter Property="Background" Value="{DynamicResource BrandGradientHoverBrush}"/>
@@ -2288,55 +2295,67 @@
         <Setter Property="Background" Value="#174A83"/>
         <Setter Property="BorderBrush" Value="#6EB4E8"/>
     </Style>
+
     <Style Selector="Button.WorkspaceSecondary">
-        <Setter Property="Background" Value="#0C151B"/>
+        <Setter Property="Background" Value="#0F1821"/>
         <Setter Property="Foreground" Value="#D8E1E7"/>
-        <Setter Property="BorderBrush" Value="#2A3F4C"/>
+        <Setter Property="BorderBrush" Value="#1C3246"/>
+        <Setter Property="CornerRadius" Value="8"/>
     </Style>
     <Style Selector="Button.WorkspaceSecondary:pointerover">
-        <Setter Property="Background" Value="#102638"/>
+        <Setter Property="Background" Value="#162533"/>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="BorderBrush" Value="#41789A"/>
+        <Setter Property="BorderBrush" Value="#294A67"/>
     </Style>
     <Style Selector="Button.WorkspaceSecondary:pressed">
-        <Setter Property="Background" Value="#0B1C28"/>
-        <Setter Property="BorderBrush" Value="#315E79"/>
+        <Setter Property="Background" Value="#0C131A"/>
+        <Setter Property="BorderBrush" Value="#152737"/>
+    </Style>
+    <Style Selector="Button.WorkspaceTab">
+        <Setter Property="CornerRadius" Value="20"/>
     </Style>
     <Style Selector="Button.WorkspaceTab:pointerover">
-        <Setter Property="Background" Value="#0E1D27"/>
+        <Setter Property="Background" Value="#0D1924"/>
         <Setter Property="Foreground" Value="#EDF7FD"/>
-        <Setter Property="BorderBrush" Value="#2B5269"/>
+        <Setter Property="BorderBrush" Value="#24455E"/>
     </Style>
     <Style Selector="Button.WorkspaceTab.Active">
-        <Setter Property="Background" Value="#12345A"/>
+        <Setter Property="Background" Value="#122A42"/>
         <Setter Property="Foreground" Value="#C6EAFF"/>
-        <Setter Property="BorderBrush" Value="#4688BD"/>
+        <Setter Property="BorderBrush" Value="#2F608F"/>
     </Style>
     <Style Selector="Button.WorkspaceTab.Active:pointerover">
-        <Setter Property="Background" Value="#184775"/>
+        <Setter Property="Background" Value="#163452"/>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="BorderBrush" Value="#65A9DB"/>
+        <Setter Property="BorderBrush" Value="#3F7BAF"/>
     </Style>
     <Style Selector="TextBox.WorkspaceField">
-        <Setter Property="Background" Value="#081219"/>
-        <Setter Property="BorderBrush" Value="#2B4353"/>
+        <Setter Property="Background" Value="#05090C"/>
+        <Setter Property="BorderBrush" Value="#1A2C3D"/>
+        <Setter Property="CornerRadius" Value="8"/>
     </Style>
     <Style Selector="TextBox.WorkspaceField:pointerover">
-        <Setter Property="BorderBrush" Value="#3B6883"/>
+        <Setter Property="Background" Value="#080E13"/>
+        <Setter Property="BorderBrush" Value="#284B66"/>
     </Style>
     <Style Selector="TextBox.WorkspaceField:focus">
+        <Setter Property="Background" Value="#0A1117"/>
         <Setter Property="BorderBrush" Value="#4B91BE"/>
+
     </Style>
     <Style Selector="ComboBox.WorkspaceField">
-        <Setter Property="Background" Value="#081219"/>
-        <Setter Property="BorderBrush" Value="#2B4353"/>
+        <Setter Property="Background" Value="#05090C"/>
+        <Setter Property="BorderBrush" Value="#1A2C3D"/>
+        <Setter Property="CornerRadius" Value="8"/>
     </Style>
     <Style Selector="ComboBox.WorkspaceField:pointerover">
-        <Setter Property="Background" Value="#0B1922"/>
-        <Setter Property="BorderBrush" Value="#3B6883"/>
+        <Setter Property="Background" Value="#080E13"/>
+        <Setter Property="BorderBrush" Value="#284B66"/>
     </Style>
     <Style Selector="ComboBox.WorkspaceField:focus">
+        <Setter Property="Background" Value="#0A1117"/>
         <Setter Property="BorderBrush" Value="#4B91BE"/>
+
     </Style>
     <Style Selector="NumericUpDown.WorkspaceField">
         <Setter Property="Background" Value="#081219"/>
@@ -2424,11 +2443,13 @@
         <Setter Property="Background" Value="#10243A"/>
         <Setter Property="Foreground" Value="#B5DAFF"/>
         <Setter Property="BorderBrush" Value="#35648F"/>
+        <Setter Property="CornerRadius" Value="8"/>
     </Style>
     <Style Selector="Button.ServerActionButton:pointerover">
         <Setter Property="Background" Value="#184775"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="BorderBrush" Value="#6AABE2"/>
+
     </Style>
 
     <Style Selector="Border.SettingsShell">
@@ -2510,20 +2531,22 @@
     <Style Selector="Border.ManagedContentRow">
         <Setter Property="MinHeight" Value="72"/>
         <Setter Property="Padding" Value="13 15"/>
-        <Setter Property="CornerRadius" Value="11"/>
-        <Setter Property="Background" Value="#080E13"/>
+        <Setter Property="CornerRadius" Value="14"/>
+        <Setter Property="Background" Value="#080C11"/>
         <Setter Property="BorderBrush" Value="#26323B"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Opacity" Value="0.78"/>
+        <Setter Property="Opacity" Value="0.75"/>
     </Style>
     <Style Selector="Border.ManagedContentRow.Enabled">
-        <Setter Property="Background" Value="#09141B"/>
-        <Setter Property="BorderBrush" Value="#2B4656"/>
+        <Setter Property="Background" Value="#0B151C"/>
+        <Setter Property="BorderBrush" Value="#2A4252"/>
         <Setter Property="Opacity" Value="1"/>
+        <Setter Property="BoxShadow" Value="0 4 15 0 #20000000"/>
     </Style>
     <Style Selector="Border.ManagedContentRow:pointerover">
-        <Setter Property="Background" Value="#0A1821"/>
+        <Setter Property="Background" Value="#0D1A23"/>
         <Setter Property="BorderBrush" Value="#3D7596"/>
+        <Setter Property="BoxShadow" Value="0 8 22 0 #30103A5A"/>
     </Style>
     <Style Selector="Button.ManagedContentToggle">
         <Setter Property="Width" Value="48"/>
@@ -3364,4 +3387,13 @@
         <Setter Property="OffContent" Value="{x:Null}"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
     </Style>
+    <Style Selector="ProgressBar">
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="Background" Value="#1A2833"/>
+    </Style>
+    <Style Selector="ProgressBar /template/ Border#PART_Indicator">
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="BoxShadow" Value="0 0 10 0 #40000000"/>
+    </Style>
 </Styles>
+
