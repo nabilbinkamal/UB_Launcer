@@ -86,12 +86,12 @@
                                         <Grid ColumnDefinitions="58,*,Auto" ColumnSpacing="14">
                                             <Border Width="56" Height="56" CornerRadius="7" Background="{Binding Accent}" ClipToBounds="True">
                                                 <Grid>
-                                                    <TextBlock Text="{Binding Initials}" IsVisible="{Binding !HasIcon}" FontFamily="Inter" FontSize="16" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding Initials}" IsVisible="{Binding !HasIcon}" FontFamily="Segoe UI" FontSize="16" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                     <controls:RemoteImage SourceUrl="{Binding IconUrl}" IsVisible="{Binding HasIcon}" Stretch="UniformToFill"/>
                                                 </Grid>
                                             </Border>
                                             <StackPanel Grid.Column="1" Spacing="5" VerticalAlignment="Center">
-                                                <TextBlock Text="{Binding Name}" FontFamily="Inter" FontSize="16" FontWeight="SemiBold" Foreground="#F0F2F3" TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Text="{Binding Name}" FontFamily="Segoe UI" FontSize="16" FontWeight="SemiBold" Foreground="#F0F2F3" TextTrimming="CharacterEllipsis"/>
                                                 <TextBlock Text="{Binding RuntimeLabel}" Classes="WorkspaceSecondary" Foreground="#8DBAFF"/>
                                                 <TextBlock Text="{Binding ActivityLabel}" Classes="WorkspaceSecondary"/>
                                             </StackPanel>
@@ -120,7 +120,7 @@
                                                     VerticalAlignment="Bottom">
                                                 <StackPanel Orientation="Horizontal" Spacing="7" VerticalAlignment="Bottom">
                                                     <TextBlock Text="Manage content" Classes="WorkspaceLabel" Foreground="#82B5FF"/>
-                                                    <TextBlock Text="›" FontFamily="Inter" FontSize="19" Foreground="#82B5FF" Margin="0 -5 0 0"/>
+                                                    <TextBlock Text="›" FontFamily="Segoe UI" FontSize="19" Foreground="#82B5FF" Margin="0 -5 0 0"/>
                                                 </StackPanel>
                                             </Button>
                                         </Grid>
@@ -158,7 +158,7 @@
                                     <Border Width="56" Height="56" CornerRadius="9" Background="{Binding SelectedProfile.Accent}" ClipToBounds="True"
                                             HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <Grid>
-                                            <TextBlock Text="{Binding SelectedProfile.Initials}" IsVisible="{Binding !SelectedProfile.HasIcon}" FontFamily="Inter" FontSize="16" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding SelectedProfile.Initials}" IsVisible="{Binding !SelectedProfile.HasIcon}" FontFamily="Segoe UI" FontSize="16" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             <controls:RemoteImage SourceUrl="{Binding SelectedProfile.IconUrl}" IsVisible="{Binding SelectedProfile.HasIcon}" Stretch="UniformToFill"/>
                                             <Border Classes="InstanceArtworkHover" Background="#B20A1118">
                                                 <Border Width="27" Height="27" CornerRadius="9"
@@ -173,9 +173,9 @@
                                 </Grid>
                             </Button>
                             <StackPanel Grid.Column="1" Spacing="5" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding SelectedProfile.Name}" FontFamily="Inter" FontSize="17" FontWeight="SemiBold" Foreground="#F0F2F3" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Text="{Binding SelectedProfile.Name}" FontFamily="Segoe UI" FontSize="17" FontWeight="SemiBold" Foreground="#F0F2F3" TextTrimming="CharacterEllipsis"/>
                                 <TextBlock Text="{Binding SelectedProfile.RuntimeLabel}" Classes="WorkspaceSecondary" Foreground="#8DBAFF"/>
-                                            <TextBlock Text="Click the picture to customize" FontFamily="Inter" FontSize="10.5" Foreground="#91AFC2"/>
+                                            <TextBlock Text="Click the picture to customize" FontFamily="Segoe UI" FontSize="10.5" Foreground="#91AFC2"/>
                             </StackPanel>
                         </Grid>
                         <Button Classes="WorkspaceSecondary" HorizontalAlignment="Stretch"
@@ -257,9 +257,9 @@
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate>
                                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" MinWidth="218" Margin="11 3">
-                                                    <TextBlock Text="{Binding}" FontFamily="Inter" FontSize="13" FontWeight="SemiBold" Foreground="#F5F8FA" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding}" FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold" Foreground="#F5F8FA" VerticalAlignment="Center"/>
                                                     <Border Grid.Column="1" Background="#102A24" BorderBrush="#245743" BorderThickness="1" CornerRadius="8" Padding="7 3" VerticalAlignment="Center">
-                                                        <TextBlock Text="RELEASE" FontFamily="Inter" FontSize="8" FontWeight="Bold" Foreground="#75D9AA"/>
+                                                        <TextBlock Text="RELEASE" FontFamily="Segoe UI" FontSize="8" FontWeight="Bold" Foreground="#75D9AA"/>
                                                     </Border>
                                                 </Grid>
                                             </DataTemplate>
@@ -331,7 +331,7 @@
                     <Grid>
                         <TextBlock Text="{Binding SelectedProfile.Initials}"
                                    IsVisible="{Binding !SelectedProfile.HasIcon}"
-                                   FontFamily="Inter" FontSize="16" FontWeight="Bold" Foreground="White"
+                                   FontFamily="Segoe UI" FontSize="16" FontWeight="Bold" Foreground="White"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         <controls:RemoteImage SourceUrl="{Binding SelectedProfile.IconUrl}"
                                               IsVisible="{Binding SelectedProfile.HasIcon}"
@@ -373,7 +373,7 @@
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
                             <Border Classes="ManagedContentCountBadge">
-                                <TextBlock Text="{Binding Count}" FontFamily="Inter" FontSize="10" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding Count}" FontFamily="Segoe UI" FontSize="10" FontWeight="SemiBold" VerticalAlignment="Center"/>
                             </Border>
                         </StackPanel>
                     </Button>
@@ -413,12 +413,12 @@
                                         ClipToBounds="True" VerticalAlignment="Center">
                                     <Grid>
                                         <controls:RemoteImage SourceUrl="{Binding IconSource}" IsVisible="{Binding HasIcon}" Stretch="UniformToFill"/>
-                                        <TextBlock Text="{Binding IconLabel}" IsVisible="{Binding !HasIcon}" FontFamily="Inter" FontSize="10" FontWeight="Bold" Foreground="White"
+                                        <TextBlock Text="{Binding IconLabel}" IsVisible="{Binding !HasIcon}" FontFamily="Segoe UI" FontSize="10" FontWeight="Bold" Foreground="White"
                                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Grid>
                                 </Border>
                                 <StackPanel Grid.Column="1" Spacing="5" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding Name}" FontFamily="Inter" FontSize="15" FontWeight="SemiBold" Foreground="#F1F6F9" TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock Text="{Binding Name}" FontFamily="Segoe UI" FontSize="15" FontWeight="SemiBold" Foreground="#F1F6F9" TextTrimming="CharacterEllipsis"/>
                                     <TextBlock Text="{Binding DetailsLabel}" Classes="WorkspaceSecondary" TextTrimming="CharacterEllipsis"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">

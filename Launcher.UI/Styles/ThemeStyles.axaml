@@ -146,27 +146,27 @@
         <Setter Property="FontWeight" Value="Medium"/>
     </Style>
     <Style Selector="TextBlock.VersionLabel">
-        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="FontWeight" Value="Medium"/>
     </Style>
     <Style Selector="TextBlock.TagLabel">
-        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="11"/>
         <Setter Property="FontWeight" Value="Medium"/>
     </Style>
     <Style Selector="TextBlock.PanelTitle">
-        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="FontWeight" Value="Medium"/>
     </Style>
     <Style Selector="TextBlock.QuickActionsTitle">
-        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="15"/>
         <Setter Property="FontWeight" Value="Medium"/>
     </Style>
     <Style Selector="TextBlock.PremiumLabel">
-        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="10"/>
         <Setter Property="FontWeight" Value="Medium"/>
         <Setter Property="Foreground" Value="#87E3F2"/>
@@ -179,7 +179,7 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
     <Style Selector="TextBlock.PlayerChevron">
-        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="20"/>
         <Setter Property="Foreground" Value="#F3F6FB"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
@@ -290,7 +290,7 @@
         <Setter Property="MinHeight" Value="76"/>
     </Style>
     <Style Selector="TextBlock.MetricLabel">
-        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="10"/>
         <Setter Property="FontWeight" Value="Medium"/>
         <Setter Property="Foreground" Value="#66FFFFFF"/>
@@ -451,7 +451,7 @@
         <Setter Property="Padding" Value="12 8"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="BorderThickness" Value="0 0 0 2"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="CornerRadius" Value="0"/>
@@ -584,7 +584,7 @@
     </Style>
     <Style Selector="Border.RecentCard:pointerover"><Setter Property="Background" Value="{DynamicResource PanelHoverBrush}"/><Setter Property="BorderBrush" Value="#4786B6"/></Style>
     <Style Selector="Button.DetailsButton">
-        <Setter Property="Width" Value="86"/><Setter Property="Height" Value="27"/><Setter Property="Background" Value="#1AFFFFFF"/><Setter Property="Foreground" Value="#14C0FF"/><Setter Property="BorderBrush" Value="#0DFFFFFF"/><Setter Property="BorderThickness" Value="1"/><Setter Property="Padding" Value="10"/><Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontWeight" Value="Medium"/><Setter Property="FontSize" Value="10"/><Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="Width" Value="86"/><Setter Property="Height" Value="27"/><Setter Property="Background" Value="#1AFFFFFF"/><Setter Property="Foreground" Value="#14C0FF"/><Setter Property="BorderBrush" Value="#0DFFFFFF"/><Setter Property="BorderThickness" Value="1"/><Setter Property="Padding" Value="10"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontWeight" Value="Medium"/><Setter Property="FontSize" Value="10"/><Setter Property="CornerRadius" Value="6"/>
     </Style>
     <Style Selector="Button.DetailsButton:pointerover"><Setter Property="Background" Value="#1B527A"/><Setter Property="BorderBrush" Value="#69C2FF"/><Setter Property="Foreground" Value="White"/></Style>
     <Style Selector="Button.QuickButton">
@@ -638,7 +638,7 @@
         <Setter Property="Background" Value="Transparent"/>
     </Style>
     <Style Selector="TextBlock.AccountMenuTitle">
-        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="10.5"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Foreground" Value="#A8C7D8"/>
@@ -658,7 +658,7 @@
     <Style Selector="Button.SavedAccountButton:pressed"><Setter Property="Background" Value="Transparent"/></Style>
     <Style Selector="Button.SavedAccountButton.Active"><Setter Property="Background" Value="Transparent"/></Style>
     <Style Selector="TextBlock.AccountOfflineStatus">
-        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="8"/>
         <Setter Property="Foreground" Value="#7FA7BE"/>
     </Style>
@@ -695,7 +695,7 @@
         <Setter Property="ClipToBounds" Value="True"/>
     </Style>
     <Style Selector="TextBlock.SettingsTitle">
-        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="24"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Foreground" Value="#F4F5F6"/>
@@ -714,7 +714,7 @@
     </Style>
     <Style Selector="Button.SettingsCloseButton:pointerover"><Setter Property="Background" Value="#40434A"/><Setter Property="Foreground" Value="White"/></Style>
     <Style Selector="TextBlock.SettingsGroupLabel">
-        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="11"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Foreground" Value="#A6ADB7"/>
@@ -730,7 +730,7 @@
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
-        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
     </Style>
@@ -745,19 +745,19 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
     <Style Selector="TextBlock.SettingsPageHeading">
-        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="20"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Foreground" Value="#F2F3F4"/>
     </Style>
     <Style Selector="TextBlock.SettingsSectionTitle">
-        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="18"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Foreground" Value="#F0F2F3"/>
     </Style>
     <Style Selector="TextBlock.SettingsDescription">
-        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="Foreground" Value="#A6ADB7"/>
     </Style>
@@ -770,7 +770,7 @@
     </Style>
     <Style Selector="Border.ThemeChoiceCard.Selected"><Setter Property="BorderBrush" Value="#4B4E55"/></Style>
     <Style Selector="TextBlock.ThemeChoiceLabel">
-        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="FontWeight" Value="Medium"/>
         <Setter Property="Foreground" Value="#F1F3F4"/>
@@ -799,7 +799,7 @@
         <Setter Property="FontFamily" Value="Minecraft"/><Setter Property="FontSize" Value="22"/><Setter Property="FontWeight" Value="Medium"/>
     </Style>
     <Style Selector="TextBlock.PageSubtitle">
-        <Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontSize" Value="12"/><Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="12"/><Setter Property="FontWeight" Value="Medium"/>
     </Style>
     <Style Selector="Border.InstanceCard">
         <Setter Property="Background" Value="#111111"/><Setter Property="BorderBrush" Value="#2E3740"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/>
@@ -811,13 +811,13 @@
         <Setter Property="FontFamily" Value="Minecraft Ten"/><Setter Property="FontSize" Value="18"/><Setter Property="FontWeight" Value="Medium"/>
     </Style>
     <Style Selector="TextBlock.InstanceCardMeta">
-        <Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="Medium"/>
     </Style>
     <Style Selector="TextBlock.InstanceCardSmall">
-        <Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontSize" Value="10"/><Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="10"/><Setter Property="FontWeight" Value="Medium"/>
     </Style>
     <Style Selector="TextBlock.FormLabel">
-        <Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="Medium"/>
     </Style>
     <Style Selector="Button.CreateInstanceButton">
         <Setter Property="Background" Value="#1E58A5"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#3D82D9"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="14 8"/>
@@ -864,20 +864,20 @@
         <Setter Property="Background" Value="#0C1319"/><Setter Property="BorderBrush" Value="#263847"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="12"/><Setter Property="Padding" Value="19 17"/>
     </Style>
     <Style Selector="TextBlock.PerformanceMetricLabel">
-        <Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8.5"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#89959E"/><Setter Property="LetterSpacing" Value="0.8"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="8.5"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#89959E"/><Setter Property="LetterSpacing" Value="0.8"/>
     </Style>
     <Style Selector="TextBlock.PerformanceLiveLabel">
-        <Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#5ACF87"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="9"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#5ACF87"/>
     </Style>
     <Style Selector="TextBlock.PerformanceMetricValue">
-        <Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="31"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#F1F4F6"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="31"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#F1F4F6"/>
     </Style>
     <Style Selector="TextBlock.PerformanceMetricValue.Compact"><Setter Property="FontSize" Value="20"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
     <Style Selector="TextBlock.PerformanceSectionTitle">
-        <Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#EDF0F2"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#EDF0F2"/>
     </Style>
     <Style Selector="TextBlock.PerformanceSectionDescription">
-        <Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/><Setter Property="Foreground" Value="#77828D"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="10"/><Setter Property="Foreground" Value="#77828D"/>
     </Style>
     <Style Selector="Button.PerformancePresetCard">
         <Setter Property="MinHeight" Value="102"/><Setter Property="HorizontalAlignment" Value="Stretch"/><Setter Property="Background" Value="#0D1318"/><Setter Property="Foreground" Value="#E8EBEE"/><Setter Property="BorderBrush" Value="#26313A"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="10"/><Setter Property="Padding" Value="14 12"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="VerticalContentAlignment" Value="Stretch"/>
@@ -889,38 +889,38 @@
         <Setter Property="Width" Value="22"/><Setter Property="Height" Value="3"/><Setter Property="CornerRadius" Value="2"/><Setter Property="Background" Value="#37434C"/><Setter Property="BorderBrush" Value="Transparent"/><Setter Property="BorderThickness" Value="0"/><Setter Property="HorizontalAlignment" Value="Left"/>
     </Style>
     <Style Selector="Border.PerformancePresetIndicator.Active"><Setter Property="Background" Value="#62D38F"/><Setter Property="BorderBrush" Value="#62D38F"/></Style>
-    <Style Selector="TextBlock.PerformancePresetTitle"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="11.5"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
-    <Style Selector="TextBlock.PerformancePresetDescription"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8.5"/><Setter Property="LineHeight" Value="13"/><Setter Property="Foreground" Value="#79848F"/></Style>
+    <Style Selector="TextBlock.PerformancePresetTitle"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="11.5"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
+    <Style Selector="TextBlock.PerformancePresetDescription"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="8.5"/><Setter Property="LineHeight" Value="13"/><Setter Property="Foreground" Value="#79848F"/></Style>
     <Style Selector="Border.PerformanceOptionCard">
         <Setter Property="MinHeight" Value="76"/><Setter Property="Background" Value="#0D1318"/><Setter Property="BorderBrush" Value="#202A32"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="Padding" Value="13 11"/>
     </Style>
-    <Style Selector="TextBlock.PerformanceOptionTitle"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="Medium"/><Setter Property="Foreground" Value="#E6EAED"/></Style>
-    <Style Selector="TextBlock.PerformanceOptionDescription"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/><Setter Property="Foreground" Value="#707B85"/><Setter Property="TextWrapping" Value="Wrap"/></Style>
-    <Style Selector="TextBlock.PerformanceHealthLabel"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/><Setter Property="Foreground" Value="#919BA4"/></Style>
-    <Style Selector="TextBlock.PerformanceHealthValue"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#DCE1E5"/></Style>
+    <Style Selector="TextBlock.PerformanceOptionTitle"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="Medium"/><Setter Property="Foreground" Value="#E6EAED"/></Style>
+    <Style Selector="TextBlock.PerformanceOptionDescription"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="9"/><Setter Property="Foreground" Value="#707B85"/><Setter Property="TextWrapping" Value="Wrap"/></Style>
+    <Style Selector="TextBlock.PerformanceHealthLabel"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="10"/><Setter Property="Foreground" Value="#919BA4"/></Style>
+    <Style Selector="TextBlock.PerformanceHealthValue"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="10"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#DCE1E5"/></Style>
     <Style Selector="Button.PerformanceSecondaryButton">
-        <Setter Property="Background" Value="#141B21"/><Setter Property="Foreground" Value="#DDE2E6"/><Setter Property="BorderBrush" Value="#303B44"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="13 7"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/>
+        <Setter Property="Background" Value="#141B21"/><Setter Property="Foreground" Value="#DDE2E6"/><Setter Property="BorderBrush" Value="#303B44"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="13 7"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="10"/>
     </Style>
     <Style Selector="Button.PerformanceSecondaryButton:pointerover"><Setter Property="Background" Value="#1A232B"/><Setter Property="BorderBrush" Value="#43515D"/></Style>
     <Style Selector="Button.PerformancePrimaryButton">
-        <Setter Property="HorizontalAlignment" Value="Stretch"/><Setter Property="Background" Value="#225FA9"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#3778C4"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="0 10"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/><Setter Property="Background" Value="#225FA9"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#3778C4"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="0 10"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="SemiBold"/>
     </Style>
     <Style Selector="Button.PerformancePrimaryButton:pointerover"><Setter Property="Background" Value="#2D6DB8"/><Setter Property="BorderBrush" Value="#5792D4"/></Style>
-    <Style Selector="TextBlock.PerformanceEyebrow"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8.5"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#52D493"/><Setter Property="LetterSpacing" Value="1.5"/></Style>
-    <Style Selector="TextBlock.PerformancePageHeading"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="25"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#F2F5F7"/></Style>
-    <Style Selector="TextBlock.PerformancePageDescription"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10.5"/><Setter Property="Foreground" Value="#77838D"/></Style>
-    <Style Selector="TextBlock.PerformanceHeaderLoad"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8.5"/><Setter Property="Foreground" Value="#65717A"/><Setter Property="HorizontalAlignment" Value="Right"/></Style>
-    <Style Selector="TextBlock.PerformanceMetricContext"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="7"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#53616B"/><Setter Property="LetterSpacing" Value="0.7"/></Style>
-    <Style Selector="TextBlock.PerformanceMetricHint"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8"/><Setter Property="Foreground" Value="#59656F"/><Setter Property="VerticalAlignment" Value="Bottom"/><Setter Property="Margin" Value="0 0 0 4"/></Style>
+    <Style Selector="TextBlock.PerformanceEyebrow"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="8.5"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#52D493"/><Setter Property="LetterSpacing" Value="1.5"/></Style>
+    <Style Selector="TextBlock.PerformancePageHeading"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="25"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#F2F5F7"/></Style>
+    <Style Selector="TextBlock.PerformancePageDescription"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="10.5"/><Setter Property="Foreground" Value="#77838D"/></Style>
+    <Style Selector="TextBlock.PerformanceHeaderLoad"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="8.5"/><Setter Property="Foreground" Value="#65717A"/><Setter Property="HorizontalAlignment" Value="Right"/></Style>
+    <Style Selector="TextBlock.PerformanceMetricContext"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="7"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#53616B"/><Setter Property="LetterSpacing" Value="0.7"/></Style>
+    <Style Selector="TextBlock.PerformanceMetricHint"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="8"/><Setter Property="Foreground" Value="#59656F"/><Setter Property="VerticalAlignment" Value="Bottom"/><Setter Property="Margin" Value="0 0 0 4"/></Style>
     <Style Selector="Border.PerformanceChartSurface"><Setter Property="Background" Value="#080D11"/><Setter Property="BorderBrush" Value="#1E2931"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="ClipToBounds" Value="True"/></Style>
-    <Style Selector="TextBlock.PerformanceAxisLabel"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="6.5"/><Setter Property="Foreground" Value="#46535D"/></Style>
-    <Style Selector="TextBlock.PerformanceChartCaption"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="7"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#53616B"/><Setter Property="LetterSpacing" Value="0.7"/></Style>
-    <Style Selector="TextBlock.PerformanceChartMeta"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="7.5"/><Setter Property="Foreground" Value="#4D5962"/></Style>
-    <Style Selector="TextBlock.PerformanceMemoryBadge"><Setter Property="Background" Value="#10271E"/><Setter Property="Foreground" Value="#68D79B"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Padding" Value="7 4"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+    <Style Selector="TextBlock.PerformanceAxisLabel"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="6.5"/><Setter Property="Foreground" Value="#46535D"/></Style>
+    <Style Selector="TextBlock.PerformanceChartCaption"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="7"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#53616B"/><Setter Property="LetterSpacing" Value="0.7"/></Style>
+    <Style Selector="TextBlock.PerformanceChartMeta"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="7.5"/><Setter Property="Foreground" Value="#4D5962"/></Style>
+    <Style Selector="TextBlock.PerformanceMemoryBadge"><Setter Property="Background" Value="#10271E"/><Setter Property="Foreground" Value="#68D79B"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="9"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Padding" Value="7 4"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
     <Style Selector="Border.PerformanceStepBadge"><Setter Property="Width" Value="18"/><Setter Property="Height" Value="18"/><Setter Property="CornerRadius" Value="9"/><Setter Property="Background" Value="#14291F"/><Setter Property="BorderBrush" Value="#2D6247"/><Setter Property="BorderThickness" Value="1"/></Style>
-    <Style Selector="Border.PerformanceStepBadge TextBlock"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#64D697"/><Setter Property="HorizontalAlignment" Value="Center"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
-    <Style Selector="TextBlock.PerformanceStepLabel"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="7.5"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#65727B"/><Setter Property="LetterSpacing" Value="1"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
-    <Style Selector="TextBlock.PerformanceSafeLabel"><Setter Property="Background" Value="#101A16"/><Setter Property="Foreground" Value="#6FA48A"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8"/><Setter Property="Padding" Value="8 4"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+    <Style Selector="Border.PerformanceStepBadge TextBlock"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="8"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#64D697"/><Setter Property="HorizontalAlignment" Value="Center"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+    <Style Selector="TextBlock.PerformanceStepLabel"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="7.5"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#65727B"/><Setter Property="LetterSpacing" Value="1"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+    <Style Selector="TextBlock.PerformanceSafeLabel"><Setter Property="Background" Value="#101A16"/><Setter Property="Foreground" Value="#6FA48A"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="8"/><Setter Property="Padding" Value="8 4"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
     <Style Selector="Border.PerformanceRecommendation"><Setter Property="Background" Value="#0E1519"/><Setter Property="BorderBrush" Value="#233039"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="10"/></Style>
     <Style Selector="Border.ModCard">
         <Setter Property="Background" Value="#111111"/><Setter Property="BorderBrush" Value="#2D2D2D"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/>
@@ -935,7 +935,7 @@
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="18"/>
         <Setter Property="Padding" Value="17 10"/>
-        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="FontSize" Value="13"/>
     </Style>
@@ -967,17 +967,17 @@
         <Setter Property="Padding" Value="0 9 12 9"/>
     </Style>
     <Style Selector="Button.ContentFilterButton">
-        <Setter Property="Height" Value="36"/><Setter Property="Background" Value="#363942"/><Setter Property="Foreground" Value="#B4BFCE"/><Setter Property="BorderBrush" Value="#424650"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="Padding" Value="15 6"/><Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="FontSize" Value="13"/>
+        <Setter Property="Height" Value="36"/><Setter Property="Background" Value="#363942"/><Setter Property="Foreground" Value="#B4BFCE"/><Setter Property="BorderBrush" Value="#424650"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="Padding" Value="15 6"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="FontSize" Value="13"/>
     </Style>
     <Style Selector="Button.ContentFilterButton:pointerover">
         <Setter Property="Background" Value="#516579"/><Setter Property="BorderBrush" Value="#A8D9FF"/><Setter Property="Foreground" Value="White"/>
     </Style>
     <Style Selector="Button.ContentFilterButton:pressed"><Setter Property="Background" Value="#2C3540"/></Style>
     <Style Selector="TextBlock.ContentPageActive">
-        <Setter Property="Width" Value="36"/><Setter Property="Height" Value="36"/><Setter Property="Background" Value="#125637"/><Setter Property="Foreground" Value="#29E687"/><Setter Property="TextAlignment" Value="Center"/><Setter Property="LineHeight" Value="36"/><Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="FontSize" Value="14"/>
+        <Setter Property="Width" Value="36"/><Setter Property="Height" Value="36"/><Setter Property="Background" Value="#125637"/><Setter Property="Foreground" Value="#29E687"/><Setter Property="TextAlignment" Value="Center"/><Setter Property="LineHeight" Value="36"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="FontSize" Value="14"/>
     </Style>
     <Style Selector="TextBlock.ContentPageNumber">
-        <Setter Property="Foreground" Value="#AEB8C7"/><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="#AEB8C7"/><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="FontSize" Value="14"/>
     </Style>
     <Style Selector="Border.ContentResultCard">
         <Setter Property="MinHeight" Value="112"/><Setter Property="Background" Value="#272A31"/><Setter Property="BorderBrush" Value="#393D46"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="14"/>
@@ -986,22 +986,22 @@
         <Setter Property="Background" Value="#2C3038"/><Setter Property="BorderBrush" Value="#4875A4"/>
     </Style>
     <Style Selector="TextBlock.ContentTitle">
-        <Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontSize" Value="18"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#F8FAFD"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="18"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#F8FAFD"/>
     </Style>
     <Style Selector="TextBlock.ContentByline">
-        <Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontSize" Value="14"/><Setter Property="Foreground" Value="#9AA5B4"/><Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="14"/><Setter Property="Foreground" Value="#9AA5B4"/><Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
     <Style Selector="TextBlock.ContentDescription">
-        <Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontSize" Value="13"/><Setter Property="Foreground" Value="#B9C2CE"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="13"/><Setter Property="Foreground" Value="#B9C2CE"/>
     </Style>
     <Style Selector="TextBlock.ContentTags">
-        <Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontSize" Value="11"/><Setter Property="Foreground" Value="#9AA5B4"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="11"/><Setter Property="Foreground" Value="#9AA5B4"/>
     </Style>
     <Style Selector="TextBlock.ContentMetric">
-        <Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontSize" Value="13"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#B7C2D0"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="13"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#B7C2D0"/>
     </Style>
     <Style Selector="Button.ContentInstallButton">
-        <Setter Property="Height" Value="37"/><Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#32EE93"/><Setter Property="BorderBrush" Value="#22E37D"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="10"/><Setter Property="Padding" Value="15 5"/><Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="FontSize" Value="14"/>
+        <Setter Property="Height" Value="37"/><Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#32EE93"/><Setter Property="BorderBrush" Value="#22E37D"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="10"/><Setter Property="Padding" Value="15 5"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="FontSize" Value="14"/>
     </Style>
     <Style Selector="Button.ContentInstallButton:pointerover">
         <Setter Property="Background" Value="#267D59"/><Setter Property="Foreground" Value="#D8FFEA"/><Setter Property="BorderBrush" Value="#8CFFBF"/>
@@ -1081,7 +1081,7 @@
         <Setter Property="Padding" Value="12 10"/>
     </Style>
     <Style Selector="TextBlock.SkinSectionTitle">
-        <Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontSize" Value="19"/><Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="19"/><Setter Property="FontWeight" Value="SemiBold"/>
     </Style>
     <Style Selector="Button.SkinAddTile">
         <Setter Property="Background" Value="#15191E"/><Setter Property="BorderBrush" Value="#48515A"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="18"/><Setter Property="Padding" Value="0"/><Setter Property="HorizontalAlignment" Value="Stretch"/><Setter Property="HorizontalContentAlignment" Value="Center"/><Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -1109,14 +1109,14 @@
                 <GradientStop Color="#1E58A5" Offset="1"/>
             </LinearGradientBrush>
         </Setter>
-        <Setter Property="Foreground" Value="#FFFFFF"/><Setter Property="BorderBrush" Value="#78CFFF"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="Padding" Value="22 9"/><Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="#FFFFFF"/><Setter Property="BorderBrush" Value="#78CFFF"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="Padding" Value="22 9"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontWeight" Value="SemiBold"/>
     </Style>
     <Style Selector="Button.SkinEditButton:pointerover">
         <Setter Property="Background" Value="#4B98F0"/><Setter Property="BorderBrush" Value="#D3F2FF"/>
     </Style>
     <Style Selector="Button.SkinEditButton:pressed"><Setter Property="Background" Value="#1C4E94"/></Style>
     <Style Selector="Button.SkinResetButton">
-        <Setter Property="Background" Value="#17FFFFFF"/><Setter Property="Foreground" Value="#AFC5D8"/><Setter Property="BorderBrush" Value="#22FFFFFF"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="16 7"/><Setter Property="FontFamily" Value="Poppins"/><Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Background" Value="#17FFFFFF"/><Setter Property="Foreground" Value="#AFC5D8"/><Setter Property="BorderBrush" Value="#22FFFFFF"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="16 7"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontWeight" Value="SemiBold"/>
     </Style>
     <Style Selector="Button.SkinResetButton:pointerover">
         <Setter Property="Background" Value="#261E58A5"/><Setter Property="Foreground" Value="#DDF8FF"/><Setter Property="BorderBrush" Value="#457FD3"/>
@@ -1179,16 +1179,16 @@
 
     <!-- Instance workspace -->
     <Style Selector="TextBlock.InstanceEyebrow">
-        <Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#45D991"/><Setter Property="LetterSpacing" Value="1.6"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="9"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#45D991"/><Setter Property="LetterSpacing" Value="1.6"/>
     </Style>
     <Style Selector="TextBlock.InstancePageHeading">
-        <Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="25"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#F3F6F8"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="25"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#F3F6F8"/>
     </Style>
     <Style Selector="TextBlock.InstancePageDescription">
-        <Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="11"/><Setter Property="Foreground" Value="#77838D"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="11"/><Setter Property="Foreground" Value="#77838D"/>
     </Style>
     <Style Selector="Button.InstanceCreatePrimary">
-        <Setter Property="MinHeight" Value="40"/><Setter Property="Background" Value="#24D579"/><Setter Property="Foreground" Value="#07140D"/><Setter Property="BorderBrush" Value="#49E594"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="10"/><Setter Property="Padding" Value="16 8"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="MinHeight" Value="40"/><Setter Property="Background" Value="#24D579"/><Setter Property="Foreground" Value="#07140D"/><Setter Property="BorderBrush" Value="#49E594"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="10"/><Setter Property="Padding" Value="16 8"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
     <Style Selector="Button.InstanceCreatePrimary:pointerover"><Setter Property="Background" Value="#3BE28B"/><Setter Property="BorderBrush" Value="#80F1B2"/></Style>
     <Style Selector="Button.InstanceCreatePrimary:pressed"><Setter Property="Background" Value="#1FB86A"/></Style>
@@ -1200,86 +1200,86 @@
             </LinearGradientBrush>
         </Setter>
     </Style>
-    <Style Selector="TextBlock.InstanceHeroMonogram"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="17"/><Setter Property="FontWeight" Value="Bold"/><Setter Property="Foreground" Value="White"/><Setter Property="HorizontalAlignment" Value="Center"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
-    <Style Selector="TextBlock.InstanceHeroLabel"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#6BD69B"/><Setter Property="LetterSpacing" Value="1.2"/></Style>
-    <Style Selector="TextBlock.InstanceHeroTitle"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="18"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#F4F7F8"/></Style>
-    <Style Selector="TextBlock.InstanceHeroSubtitle"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/><Setter Property="Foreground" Value="#83909A"/></Style>
+    <Style Selector="TextBlock.InstanceHeroMonogram"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="17"/><Setter Property="FontWeight" Value="Bold"/><Setter Property="Foreground" Value="White"/><Setter Property="HorizontalAlignment" Value="Center"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+    <Style Selector="TextBlock.InstanceHeroLabel"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="8"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#6BD69B"/><Setter Property="LetterSpacing" Value="1.2"/></Style>
+    <Style Selector="TextBlock.InstanceHeroTitle"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="18"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#F4F7F8"/></Style>
+    <Style Selector="TextBlock.InstanceHeroSubtitle"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="10"/><Setter Property="Foreground" Value="#83909A"/></Style>
     <Style Selector="Border.InstanceHeroMetric"><Setter Property="Width" Value="82"/><Setter Property="MinHeight" Value="70"/><Setter Property="Background" Value="#0AFFFFFF"/><Setter Property="BorderBrush" Value="#12FFFFFF"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="10"/><Setter Property="Padding" Value="12 10"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
-    <Style Selector="TextBlock.InstanceMetricLabel"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="7.5"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#697782"/><Setter Property="LetterSpacing" Value="0.8"/></Style>
-    <Style Selector="TextBlock.InstanceMetricValue"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="19"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#E8ECEF"/></Style>
-    <Style Selector="Button.InstanceCategoryTab"><Setter Property="MinHeight" Value="32"/><Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#7F8A94"/><Setter Property="BorderBrush" Value="Transparent"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="13 6"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
+    <Style Selector="TextBlock.InstanceMetricLabel"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="7.5"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#697782"/><Setter Property="LetterSpacing" Value="0.8"/></Style>
+    <Style Selector="TextBlock.InstanceMetricValue"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="19"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#E8ECEF"/></Style>
+    <Style Selector="Button.InstanceCategoryTab"><Setter Property="MinHeight" Value="32"/><Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#7F8A94"/><Setter Property="BorderBrush" Value="Transparent"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="13 6"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="10"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
     <Style Selector="Button.InstanceCategoryTab:pointerover"><Setter Property="Background" Value="#11191F"/><Setter Property="Foreground" Value="#C3CBD1"/></Style>
     <Style Selector="Button.InstanceCategoryTab.Selected"><Setter Property="Background" Value="#13251D"/><Setter Property="Foreground" Value="#52DC94"/><Setter Property="BorderBrush" Value="#28543F"/></Style>
     <Style Selector="Button.InstanceCategoryTab.Selected:pointerover"><Setter Property="Background" Value="#162B22"/><Setter Property="Foreground" Value="#67E6A5"/></Style>
-    <Style Selector="TextBlock.InstanceStatusText"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/><Setter Property="Foreground" Value="#75818A"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+    <Style Selector="TextBlock.InstanceStatusText"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="9"/><Setter Property="Foreground" Value="#75818A"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
     <Style Selector="Border.InstanceSearchField"><Setter Property="Height" Value="40"/><Setter Property="Background" Value="#10151A"/><Setter Property="BorderBrush" Value="#273039"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="Padding" Value="12 7"/></Style>
     <Style Selector="Border.InstanceSearchField:pointerover"><Setter Property="BorderBrush" Value="#3B4954"/></Style>
     <Style Selector="TextBlock.InstanceSearchGlyph"><Setter Property="Width" Value="20"/><Setter Property="Height" Value="20"/><Setter Property="Background" Value="#192229"/><Setter Property="Foreground" Value="#83909B"/><Setter Property="FontFamily" Value="Segoe MDL2 Assets"/><Setter Property="FontSize" Value="10"/><Setter Property="TextAlignment" Value="Center"/><Setter Property="LineHeight" Value="20"/></Style>
-    <Style Selector="ComboBox.InstanceToolbarCombo"><Setter Property="Height" Value="40"/><Setter Property="Background" Value="#10151A"/><Setter Property="Foreground" Value="#BDC5CB"/><Setter Property="BorderBrush" Value="#273039"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="Padding" Value="10 6"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/></Style>
+    <Style Selector="ComboBox.InstanceToolbarCombo"><Setter Property="Height" Value="40"/><Setter Property="Background" Value="#10151A"/><Setter Property="Foreground" Value="#BDC5CB"/><Setter Property="BorderBrush" Value="#273039"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="Padding" Value="10 6"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="10"/></Style>
     <Style Selector="ComboBox.InstanceToolbarCombo:pointerover"><Setter Property="Background" Value="#131A20"/><Setter Property="BorderBrush" Value="#3B4954"/></Style>
-    <Style Selector="TextBlock.InstanceSectionLabel"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#77838D"/><Setter Property="LetterSpacing" Value="1.2"/></Style>
-    <Style Selector="TextBlock.InstanceResultCount"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/><Setter Property="Foreground" Value="#59656E"/></Style>
+    <Style Selector="TextBlock.InstanceSectionLabel"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="8"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#77838D"/><Setter Property="LetterSpacing" Value="1.2"/></Style>
+    <Style Selector="TextBlock.InstanceResultCount"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="9"/><Setter Property="Foreground" Value="#59656E"/></Style>
     <Style Selector="Button.InstanceDashboardCard"><Setter Property="Background" Value="#0D1216"/><Setter Property="Foreground" Value="#E9EDF0"/><Setter Property="BorderBrush" Value="#232C33"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="12"/><Setter Property="ClipToBounds" Value="True"/></Style>
     <Style Selector="Button.InstanceDashboardCard:pointerover"><Setter Property="Background" Value="#11181D"/><Setter Property="BorderBrush" Value="#35434D"/></Style>
     <Style Selector="Button.InstanceDashboardCard:pressed"><Setter Property="Background" Value="#0B1014"/></Style>
     <Style Selector="Button.InstanceDashboardCard.Selected"><Setter Property="Background" Value="#101A18"/><Setter Property="BorderBrush" Value="#347254"/><Setter Property="BorderThickness" Value="1"/></Style>
     <Style Selector="Button.InstanceDashboardCard.Selected:pointerover"><Setter Property="Background" Value="#12201C"/><Setter Property="BorderBrush" Value="#438B68"/></Style>
-    <Style Selector="TextBlock.InstanceCardMonogram"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="Bold"/><Setter Property="Foreground" Value="White"/><Setter Property="HorizontalAlignment" Value="Center"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
-    <Style Selector="TextBlock.InstanceDashboardTitle"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="12"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#EDF1F3"/></Style>
-    <Style Selector="TextBlock.InstanceDashboardRuntime"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9.5"/><Setter Property="FontWeight" Value="Medium"/><Setter Property="Foreground" Value="#82CDA5"/></Style>
-    <Style Selector="TextBlock.InstanceDashboardActivity"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8.5"/><Setter Property="Foreground" Value="#626E77"/></Style>
+    <Style Selector="TextBlock.InstanceCardMonogram"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="Bold"/><Setter Property="Foreground" Value="White"/><Setter Property="HorizontalAlignment" Value="Center"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+    <Style Selector="TextBlock.InstanceDashboardTitle"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="12"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#EDF1F3"/></Style>
+    <Style Selector="TextBlock.InstanceDashboardRuntime"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="9.5"/><Setter Property="FontWeight" Value="Medium"/><Setter Property="Foreground" Value="#82CDA5"/></Style>
+    <Style Selector="TextBlock.InstanceDashboardActivity"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="8.5"/><Setter Property="Foreground" Value="#626E77"/></Style>
     <Style Selector="Border.InstanceReadyBadge"><Setter Property="Background" Value="#102219"/><Setter Property="BorderBrush" Value="#244B37"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="6 3"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
-    <Style Selector="Border.InstanceReadyBadge TextBlock"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="6.5"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#72D69B"/></Style>
-    <Style Selector="TextBlock.InstanceCardStatLabel"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="7"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#52606A"/><Setter Property="LetterSpacing" Value="0.7"/></Style>
-    <Style Selector="TextBlock.InstanceCardStatValue"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#B9C2C9"/></Style>
-    <Style Selector="TextBlock.InstanceInspectLabel"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8.5"/><Setter Property="Foreground" Value="#6E7A83"/></Style>
-    <Style Selector="TextBlock.InstanceInspectArrow"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/><Setter Property="Foreground" Value="#4AD98E"/></Style>
+    <Style Selector="Border.InstanceReadyBadge TextBlock"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="6.5"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#72D69B"/></Style>
+    <Style Selector="TextBlock.InstanceCardStatLabel"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="7"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#52606A"/><Setter Property="LetterSpacing" Value="0.7"/></Style>
+    <Style Selector="TextBlock.InstanceCardStatValue"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="10"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#B9C2C9"/></Style>
+    <Style Selector="TextBlock.InstanceInspectLabel"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="8.5"/><Setter Property="Foreground" Value="#6E7A83"/></Style>
+    <Style Selector="TextBlock.InstanceInspectArrow"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="10"/><Setter Property="Foreground" Value="#4AD98E"/></Style>
     <Style Selector="Border.InstanceEmptyState"><Setter Property="MinHeight" Value="220"/><Setter Property="Background" Value="#080C0F"/><Setter Property="BorderBrush" Value="#20282E"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="12"/><Setter Property="Padding" Value="30"/></Style>
-    <Style Selector="TextBlock.InstanceEmptyTitle"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="12"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#C8D0D5"/></Style>
-    <Style Selector="TextBlock.InstanceEmptyDescription"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/><Setter Property="Foreground" Value="#68747D"/></Style>
+    <Style Selector="TextBlock.InstanceEmptyTitle"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="12"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#C8D0D5"/></Style>
+    <Style Selector="TextBlock.InstanceEmptyDescription"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="9"/><Setter Property="Foreground" Value="#68747D"/></Style>
     <Style Selector="Border.InstanceInspectorCard"><Setter Property="Background" Value="#0C1115"/><Setter Property="BorderBrush" Value="#263038"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="13"/><Setter Property="Padding" Value="17"/><Setter Property="VerticalAlignment" Value="Top"/></Style>
     <Style Selector="Border.InstanceInspectorCard.Create"><Setter Property="BorderBrush" Value="#2C4539"/></Style>
-    <Style Selector="TextBlock.InstanceInspectorHint"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8.5"/><Setter Property="Foreground" Value="#5E6A73"/></Style>
-    <Style Selector="TextBlock.InstanceInspectorTitle"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="12"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#ECF0F2"/></Style>
-    <Style Selector="TextBlock.InstanceInspectorRuntime"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/><Setter Property="Foreground" Value="#7D8992"/></Style>
-    <Style Selector="Button.InstanceLaunchButton"><Setter Property="Height" Value="39"/><Setter Property="HorizontalAlignment" Value="Stretch"/><Setter Property="Background" Value="#1FCB72"/><Setter Property="Foreground" Value="#06130B"/><Setter Property="BorderBrush" Value="#41DF8A"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
+    <Style Selector="TextBlock.InstanceInspectorHint"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="8.5"/><Setter Property="Foreground" Value="#5E6A73"/></Style>
+    <Style Selector="TextBlock.InstanceInspectorTitle"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="12"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#ECF0F2"/></Style>
+    <Style Selector="TextBlock.InstanceInspectorRuntime"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="9"/><Setter Property="Foreground" Value="#7D8992"/></Style>
+    <Style Selector="Button.InstanceLaunchButton"><Setter Property="Height" Value="39"/><Setter Property="HorizontalAlignment" Value="Stretch"/><Setter Property="Background" Value="#1FCB72"/><Setter Property="Foreground" Value="#06130B"/><Setter Property="BorderBrush" Value="#41DF8A"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="10"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
     <Style Selector="Button.InstanceLaunchButton:pointerover"><Setter Property="Background" Value="#35DC84"/><Setter Property="BorderBrush" Value="#75ECAA"/></Style>
     <Style Selector="Button.InstanceLaunchButton:pressed"><Setter Property="Background" Value="#1AAF62"/></Style>
     <Style Selector="Border.InstanceInspectorDivider"><Setter Property="Height" Value="1"/><Setter Property="Background" Value="#20282E"/></Style>
-    <Style Selector="TextBlock.InstanceDetailLabel"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/><Setter Property="Foreground" Value="#69757E"/></Style>
-    <Style Selector="TextBlock.InstanceDetailValue"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/><Setter Property="FontWeight" Value="Medium"/><Setter Property="Foreground" Value="#C6CDD2"/></Style>
+    <Style Selector="TextBlock.InstanceDetailLabel"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="9"/><Setter Property="Foreground" Value="#69757E"/></Style>
+    <Style Selector="TextBlock.InstanceDetailValue"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="9"/><Setter Property="FontWeight" Value="Medium"/><Setter Property="Foreground" Value="#C6CDD2"/></Style>
     <Style Selector="TextBlock.InstanceDetailValue.Accent"><Setter Property="Foreground" Value="#63D499"/></Style>
     <Style Selector="Border.InstanceContentMiniCard"><Setter Property="MinHeight" Value="35"/><Setter Property="Background" Value="#10171B"/><Setter Property="BorderBrush" Value="#273139"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="9 7"/></Style>
-    <Style Selector="TextBlock.InstanceContentType"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="7.5"/><Setter Property="Foreground" Value="#7C8992"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
-    <Style Selector="TextBlock.InstanceContentCount"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#62D89A"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
-    <Style Selector="Button.InstanceSecondaryAction"><Setter Property="MinHeight" Value="34"/><Setter Property="HorizontalAlignment" Value="Stretch"/><Setter Property="Background" Value="#12191E"/><Setter Property="Foreground" Value="#AEB8BF"/><Setter Property="BorderBrush" Value="#2A353D"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="10 6"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/></Style>
+    <Style Selector="TextBlock.InstanceContentType"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="7.5"/><Setter Property="Foreground" Value="#7C8992"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+    <Style Selector="TextBlock.InstanceContentCount"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#62D89A"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+    <Style Selector="Button.InstanceSecondaryAction"><Setter Property="MinHeight" Value="34"/><Setter Property="HorizontalAlignment" Value="Stretch"/><Setter Property="Background" Value="#12191E"/><Setter Property="Foreground" Value="#AEB8BF"/><Setter Property="BorderBrush" Value="#2A353D"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="10 6"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="9"/></Style>
     <Style Selector="Button.InstanceSecondaryAction:pointerover"><Setter Property="Background" Value="#172128"/><Setter Property="BorderBrush" Value="#3B4B56"/><Setter Property="Foreground" Value="#D5DBDF"/></Style>
-    <Style Selector="Button.InstanceDangerAction"><Setter Property="MinHeight" Value="32"/><Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#A97378"/><Setter Property="BorderBrush" Value="#3A292D"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="10 6"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/></Style>
+    <Style Selector="Button.InstanceDangerAction"><Setter Property="MinHeight" Value="32"/><Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#A97378"/><Setter Property="BorderBrush" Value="#3A292D"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="10 6"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="9"/></Style>
     <Style Selector="Button.InstanceDangerAction:pointerover"><Setter Property="Background" Value="#241517"/><Setter Property="BorderBrush" Value="#714047"/><Setter Property="Foreground" Value="#E0989E"/></Style>
     <Style Selector="Button.InstanceDangerAction.Solid"><Setter Property="Background" Value="#8F3741"/><Setter Property="Foreground" Value="#FFF4F5"/><Setter Property="BorderBrush" Value="#B54A57"/></Style>
     <Style Selector="Border.InstanceDeleteConfirm"><Setter Property="Background" Value="#1A1113"/><Setter Property="BorderBrush" Value="#533038"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="9"/><Setter Property="Padding" Value="12"/></Style>
-    <Style Selector="TextBlock.InstanceDeleteTitle"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#E7C6C9"/></Style>
-    <Style Selector="TextBlock.InstanceDeleteDescription"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8.5"/><Setter Property="Foreground" Value="#9A7479"/></Style>
-    <Style Selector="Button.InstanceCloseButton"><Setter Property="Width" Value="28"/><Setter Property="Height" Value="28"/><Setter Property="Padding" Value="0"/><Setter Property="Background" Value="#12191E"/><Setter Property="Foreground" Value="#84909A"/><Setter Property="BorderBrush" Value="#29343C"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="14"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/></Style>
+    <Style Selector="TextBlock.InstanceDeleteTitle"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="10"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#E7C6C9"/></Style>
+    <Style Selector="TextBlock.InstanceDeleteDescription"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="8.5"/><Setter Property="Foreground" Value="#9A7479"/></Style>
+    <Style Selector="Button.InstanceCloseButton"><Setter Property="Width" Value="28"/><Setter Property="Height" Value="28"/><Setter Property="Padding" Value="0"/><Setter Property="Background" Value="#12191E"/><Setter Property="Foreground" Value="#84909A"/><Setter Property="BorderBrush" Value="#29343C"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="14"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="10"/></Style>
     <Style Selector="Button.InstanceCloseButton:pointerover"><Setter Property="Background" Value="#1A232A"/><Setter Property="Foreground" Value="#D0D6DA"/></Style>
     <Style Selector="Border.InstanceCreatePreview"><Setter Property="Background" Value="#101A17"/><Setter Property="BorderBrush" Value="#274737"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="10"/><Setter Property="Padding" Value="12"/></Style>
-    <Style Selector="TextBlock.InstanceFormLabel"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="9"/><Setter Property="FontWeight" Value="Medium"/><Setter Property="Foreground" Value="#8A959E"/></Style>
-    <Style Selector="TextBox.InstanceFormField"><Setter Property="MinHeight" Value="37"/><Setter Property="Background" Value="#10161B"/><Setter Property="Foreground" Value="#E2E7EA"/><Setter Property="BorderBrush" Value="#2B363E"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="10 7"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/></Style>
-    <Style Selector="ComboBox.InstanceFormCombo"><Setter Property="MinHeight" Value="37"/><Setter Property="Background" Value="#10161B"/><Setter Property="Foreground" Value="#E2E7EA"/><Setter Property="BorderBrush" Value="#2B363E"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="10 7"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="10"/></Style>
+    <Style Selector="TextBlock.InstanceFormLabel"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="9"/><Setter Property="FontWeight" Value="Medium"/><Setter Property="Foreground" Value="#8A959E"/></Style>
+    <Style Selector="TextBox.InstanceFormField"><Setter Property="MinHeight" Value="37"/><Setter Property="Background" Value="#10161B"/><Setter Property="Foreground" Value="#E2E7EA"/><Setter Property="BorderBrush" Value="#2B363E"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="10 7"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="10"/></Style>
+    <Style Selector="ComboBox.InstanceFormCombo"><Setter Property="MinHeight" Value="37"/><Setter Property="Background" Value="#10161B"/><Setter Property="Foreground" Value="#E2E7EA"/><Setter Property="BorderBrush" Value="#2B363E"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="10 7"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="10"/></Style>
     <Style Selector="Border.InstanceCreateNote"><Setter Property="Background" Value="#0E1713"/><Setter Property="BorderBrush" Value="#223C30"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="11"/></Style>
-    <Style Selector="TextBlock.InstanceCreateNoteText"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="8.5"/><Setter Property="Foreground" Value="#789485"/><Setter Property="LineHeight" Value="13"/></Style>
+    <Style Selector="TextBlock.InstanceCreateNoteText"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="8.5"/><Setter Property="Foreground" Value="#789485"/><Setter Property="LineHeight" Value="13"/></Style>
     <!-- Design.md compliant workspace system. Used only outside Home. -->
-    <Style Selector="TextBlock.WorkspacePageTitle"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="28"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#F2F4F5"/><Setter Property="LineHeight" Value="34"/></Style>
-    <Style Selector="TextBlock.WorkspacePageDescription"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="15"/><Setter Property="Foreground" Value="#A1A9B0"/><Setter Property="LineHeight" Value="22"/></Style>
-    <Style Selector="TextBlock.WorkspaceSectionTitle"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="18"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#E9ECEE"/><Setter Property="LineHeight" Value="24"/></Style>
-    <Style Selector="TextBlock.WorkspaceBody"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="15"/><Setter Property="Foreground" Value="#C5CBD0"/><Setter Property="LineHeight" Value="22"/></Style>
-    <Style Selector="TextBlock.WorkspaceSecondary"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="Foreground" Value="#909AA2"/><Setter Property="LineHeight" Value="20"/></Style>
-    <Style Selector="TextBlock.WorkspaceLabel"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="Medium"/><Setter Property="Foreground" Value="#B8C0C6"/></Style>
-    <Style Selector="TextBlock.WorkspaceValue"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#E6E9EB"/></Style>
+    <Style Selector="TextBlock.WorkspacePageTitle"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="28"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#F2F4F5"/><Setter Property="LineHeight" Value="34"/></Style>
+    <Style Selector="TextBlock.WorkspacePageDescription"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="15"/><Setter Property="Foreground" Value="#A1A9B0"/><Setter Property="LineHeight" Value="22"/></Style>
+    <Style Selector="TextBlock.WorkspaceSectionTitle"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="18"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#E9ECEE"/><Setter Property="LineHeight" Value="24"/></Style>
+    <Style Selector="TextBlock.WorkspaceBody"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="15"/><Setter Property="Foreground" Value="#C5CBD0"/><Setter Property="LineHeight" Value="22"/></Style>
+    <Style Selector="TextBlock.WorkspaceSecondary"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="14"/><Setter Property="Foreground" Value="#909AA2"/><Setter Property="LineHeight" Value="20"/></Style>
+    <Style Selector="TextBlock.WorkspaceLabel"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="Medium"/><Setter Property="Foreground" Value="#B8C0C6"/></Style>
+    <Style Selector="TextBlock.WorkspaceValue"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#E6E9EB"/></Style>
     <Style Selector="Border.WorkspaceSection"><Setter Property="Background" Value="#0C1115"/><Setter Property="BorderBrush" Value="#283139"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="22"/></Style>
     <Style Selector="Border.WorkspaceToolbar"><Setter Property="Background" Value="#0B1014"/><Setter Property="BorderBrush" Value="#283139"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="10"/></Style>
     <Style Selector="Border.WorkspaceDivider"><Setter Property="Height" Value="1"/><Setter Property="Background" Value="#283139"/></Style>
-    <Style Selector="Button.WorkspacePrimary"><Setter Property="MinHeight" Value="44"/><Setter Property="Background" Value="#3B82F6"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#3B82F6"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="18 10"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
+    <Style Selector="Button.WorkspacePrimary"><Setter Property="MinHeight" Value="44"/><Setter Property="Background" Value="#3B82F6"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#3B82F6"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="18 10"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
     <Style Selector="Button.WorkspacePrimary:pointerover"><Setter Property="Background" Value="#4C8DFF"/><Setter Property="BorderBrush" Value="#4C8DFF"/></Style>
     <Style Selector="Button.WorkspacePrimary:pressed"><Setter Property="Background" Value="#2E6ED8"/><Setter Property="BorderBrush" Value="#2E6ED8"/></Style>
     <Style Selector="Button.UpdateExitButton">
@@ -1296,7 +1296,7 @@
         <Setter Property="Padding" Value="20 0"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
-        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
     </Style>
@@ -1312,15 +1312,15 @@
         <Setter Property="Background" Value="#0B1722"/>
         <Setter Property="BorderBrush" Value="#3C6D8D"/>
     </Style>
-    <Style Selector="Button.WorkspaceSecondary"><Setter Property="MinHeight" Value="42"/><Setter Property="Background" Value="#12191E"/><Setter Property="Foreground" Value="#D0D5D9"/><Setter Property="BorderBrush" Value="#354049"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="15 9"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="Medium"/><Setter Property="HorizontalContentAlignment" Value="Center"/><Setter Property="VerticalContentAlignment" Value="Center"/></Style>
+    <Style Selector="Button.WorkspaceSecondary"><Setter Property="MinHeight" Value="42"/><Setter Property="Background" Value="#12191E"/><Setter Property="Foreground" Value="#D0D5D9"/><Setter Property="BorderBrush" Value="#354049"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="15 9"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="Medium"/><Setter Property="HorizontalContentAlignment" Value="Center"/><Setter Property="VerticalContentAlignment" Value="Center"/></Style>
     <Style Selector="Button.WorkspaceSecondary:pointerover"><Setter Property="Background" Value="#182129"/><Setter Property="BorderBrush" Value="#4A5863"/><Setter Property="Foreground" Value="#F0F2F3"/></Style>
-    <Style Selector="Button.WorkspaceDanger"><Setter Property="MinHeight" Value="42"/><Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#E2939B"/><Setter Property="BorderBrush" Value="#663840"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="15 9"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="Medium"/><Setter Property="HorizontalContentAlignment" Value="Center"/><Setter Property="VerticalContentAlignment" Value="Center"/></Style>
+    <Style Selector="Button.WorkspaceDanger"><Setter Property="MinHeight" Value="42"/><Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#E2939B"/><Setter Property="BorderBrush" Value="#663840"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="15 9"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="Medium"/><Setter Property="HorizontalContentAlignment" Value="Center"/><Setter Property="VerticalContentAlignment" Value="Center"/></Style>
     <Style Selector="Button.WorkspaceDanger:pointerover"><Setter Property="Background" Value="#251619"/><Setter Property="BorderBrush" Value="#8D4B56"/></Style>
-    <Style Selector="Button.WorkspaceTab"><Setter Property="MinHeight" Value="40"/><Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#A6AFB6"/><Setter Property="BorderBrush" Value="Transparent"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="6"/><Setter Property="Padding" Value="15 8"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="Medium"/></Style>
+    <Style Selector="Button.WorkspaceTab"><Setter Property="MinHeight" Value="40"/><Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#A6AFB6"/><Setter Property="BorderBrush" Value="Transparent"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="6"/><Setter Property="Padding" Value="15 8"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="Medium"/></Style>
     <Style Selector="Button.WorkspaceTab:pointerover"><Setter Property="Background" Value="#12191E"/><Setter Property="Foreground" Value="#E0E4E6"/></Style>
     <Style Selector="Button.WorkspaceTab.Active"><Setter Property="Background" Value="#11233B"/><Setter Property="Foreground" Value="#82B5FF"/><Setter Property="BorderBrush" Value="#315F9E"/></Style>
-    <Style Selector="TextBox.WorkspaceField"><Setter Property="MinHeight" Value="44"/><Setter Property="Background" Value="#0F151A"/><Setter Property="Foreground" Value="#E7EAEC"/><Setter Property="BorderBrush" Value="#354049"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="12 9"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/></Style>
-    <Style Selector="ComboBox.WorkspaceField"><Setter Property="MinHeight" Value="44"/><Setter Property="Background" Value="#0F151A"/><Setter Property="Foreground" Value="#E7EAEC"/><Setter Property="BorderBrush" Value="#354049"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="12 8"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/></Style>
+    <Style Selector="TextBox.WorkspaceField"><Setter Property="MinHeight" Value="44"/><Setter Property="Background" Value="#0F151A"/><Setter Property="Foreground" Value="#E7EAEC"/><Setter Property="BorderBrush" Value="#354049"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="12 9"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="14"/></Style>
+    <Style Selector="ComboBox.WorkspaceField"><Setter Property="MinHeight" Value="44"/><Setter Property="Background" Value="#0F151A"/><Setter Property="Foreground" Value="#E7EAEC"/><Setter Property="BorderBrush" Value="#354049"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="12 8"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="14"/></Style>
     <Style Selector="ComboBox.InstanceTargetPicker"><Setter Property="MinHeight" Value="48"/><Setter Property="BorderBrush" Value="#3A6EAF"/><Setter Property="Background" Value="#101B2A"/></Style>
     <Style Selector="ComboBox.InstanceTargetPicker:pointerover"><Setter Property="BorderBrush" Value="#6599DF"/></Style>
     <Style Selector="ComboBox.OfficialVersionPicker">
@@ -1352,27 +1352,27 @@
         <Setter Property="Margin" Value="0 7 0 0"/>
         <Setter Property="BoxShadow" Value="0 14 34 0 #B8000000"/>
     </Style>
-    <Style Selector="NumericUpDown.WorkspaceField"><Setter Property="MinHeight" Value="44"/><Setter Property="Background" Value="#0F151A"/><Setter Property="Foreground" Value="#E7EAEC"/><Setter Property="BorderBrush" Value="#354049"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="ClipToBounds" Value="True"/></Style>
+    <Style Selector="NumericUpDown.WorkspaceField"><Setter Property="MinHeight" Value="44"/><Setter Property="Background" Value="#0F151A"/><Setter Property="Foreground" Value="#E7EAEC"/><Setter Property="BorderBrush" Value="#354049"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="14"/><Setter Property="ClipToBounds" Value="True"/></Style>
     <Style Selector="Button.WorkspaceInstanceCard"><Setter Property="Background" Value="#0D1216"/><Setter Property="Foreground" Value="#E8EBED"/><Setter Property="BorderBrush" Value="#2B343B"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/></Style>
     <Style Selector="Button.WorkspaceInstanceCard:pointerover"><Setter Property="Background" Value="#11181D"/><Setter Property="BorderBrush" Value="#46525B"/></Style>
     <Style Selector="Button.WorkspaceInstanceCard.Selected"><Setter Property="Background" Value="#101A29"/><Setter Property="BorderBrush" Value="#3A6EAF"/></Style>
     <Style Selector="Border.WorkspaceContentCard"><Setter Property="MinHeight" Value="98"/><Setter Property="Background" Value="#0D1318"/><Setter Property="BorderBrush" Value="#293640"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="10"/></Style>
-    <Style Selector="Button.WorkspaceInstallButton"><Setter Property="MinWidth" Value="112"/><Setter Property="MinHeight" Value="42"/><Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#82B5FF"/><Setter Property="BorderBrush" Value="#3A6EAF"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="16 9"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
+    <Style Selector="Button.WorkspaceInstallButton"><Setter Property="MinWidth" Value="112"/><Setter Property="MinHeight" Value="42"/><Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#82B5FF"/><Setter Property="BorderBrush" Value="#3A6EAF"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="16 9"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="14"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
     <Style Selector="Button.WorkspaceInstallButton:pointerover"><Setter Property="Background" Value="#11233B"/><Setter Property="BorderBrush" Value="#6599DF"/></Style>
     <Style Selector="Button.WorkspaceInstallButton.Installed"><Setter Property="Background" Value="#12243C"/><Setter Property="Foreground" Value="#A9CBFF"/><Setter Property="BorderBrush" Value="#315F9E"/></Style>
     <Style Selector="Border.ReadableMetricCard"><Setter Property="Background" Value="#0C1115"/><Setter Property="BorderBrush" Value="#2B343B"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="20"/></Style>
     <Style Selector="Border.ReadableMetricCard.Cpu"><Setter Property="BorderBrush" Value="#304451"/></Style>
     <Style Selector="Border.ReadableMetricCard.Gpu"><Setter Property="BorderBrush" Value="#403A57"/></Style>
     <Style Selector="Border.ReadableMetricCard.Memory"><Setter Property="BorderBrush" Value="#30483D"/></Style>
-    <Style Selector="TextBlock.ReadableMetricValue"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="32"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#F2F4F5"/></Style>
+    <Style Selector="TextBlock.ReadableMetricValue"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="32"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#F2F4F5"/></Style>
     <Style Selector="TextBlock.ReadableMetricValue.Compact"><Setter Property="FontSize" Value="23"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
     <Style Selector="Border.ReadableChartSurface"><Setter Property="Background" Value="#080C0F"/><Setter Property="BorderBrush" Value="#273139"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="6"/><Setter Property="ClipToBounds" Value="True"/></Style>
-    <Style Selector="TextBlock.ReadableAxisLabel"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="12"/><Setter Property="Foreground" Value="#75818A"/></Style>
-    <Style Selector="TextBlock.ReadableChartCaption"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="12"/><Setter Property="Foreground" Value="#7D8992"/></Style>
+    <Style Selector="TextBlock.ReadableAxisLabel"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="12"/><Setter Property="Foreground" Value="#75818A"/></Style>
+    <Style Selector="TextBlock.ReadableChartCaption"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="12"/><Setter Property="Foreground" Value="#7D8992"/></Style>
     <Style Selector="Button.ReadablePreset"><Setter Property="MinHeight" Value="118"/><Setter Property="HorizontalAlignment" Value="Stretch"/><Setter Property="VerticalAlignment" Value="Stretch"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="VerticalContentAlignment" Value="Center"/><Setter Property="Background" Value="#10161B"/><Setter Property="Foreground" Value="#E8EBED"/><Setter Property="BorderBrush" Value="#303A42"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="16"/></Style>
     <Style Selector="Button.ReadablePreset:pointerover"><Setter Property="Background" Value="#151D23"/><Setter Property="BorderBrush" Value="#46535D"/></Style>
     <Style Selector="Button.ReadablePreset.Active"><Setter Property="Background" Value="#101F33"/><Setter Property="BorderBrush" Value="#3A6EAF"/></Style>
-    <Style Selector="TextBlock.ReadablePresetTitle"><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="16"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#EDF0F2"/></Style>
+    <Style Selector="TextBlock.ReadablePresetTitle"><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="16"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#EDF0F2"/></Style>
     <Style Selector="Border.ReadableSkinPreview"><Setter Property="Background" Value="#080C0F"/><Setter Property="BorderBrush" Value="#303A42"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="ClipToBounds" Value="True"/></Style>
     <Style Selector="Button.CosmeticAddCard"><Setter Property="Background" Value="#0D1317"/><Setter Property="Foreground" Value="#E6E9EB"/><Setter Property="BorderBrush" Value="#3A454D"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/><Setter Property="HorizontalContentAlignment" Value="Center"/><Setter Property="VerticalContentAlignment" Value="Center"/></Style>
     <Style Selector="Button.CosmeticAddCard:pointerover"><Setter Property="Background" Value="#131B20"/><Setter Property="BorderBrush" Value="#56636D"/></Style>
@@ -1380,7 +1380,7 @@
     <Style Selector="Border.CosmeticItemFrame.Selected"><Setter Property="BorderBrush" Value="#4C86D5"/><Setter Property="BorderThickness" Value="2"/></Style>
     <Style Selector="Button.CosmeticSelectSurface"><Setter Property="Background" Value="Transparent"/><Setter Property="BorderBrush" Value="Transparent"/><Setter Property="BorderThickness" Value="0"/><Setter Property="Padding" Value="0"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="VerticalContentAlignment" Value="Stretch"/></Style>
     <Style Selector="Button.CosmeticSelectSurface:pointerover"><Setter Property="Background" Value="#0BFFFFFF"/></Style>
-    <Style Selector="Button.CosmeticDeleteButton"><Setter Property="Background" Value="#B64653"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#D45A67"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="6"/><Setter Property="Padding" Value="0"/><Setter Property="FontFamily" Value="Inter"/><Setter Property="FontSize" Value="18"/></Style>
+    <Style Selector="Button.CosmeticDeleteButton"><Setter Property="Background" Value="#B64653"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#D45A67"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="6"/><Setter Property="Padding" Value="0"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="18"/></Style>
     <Style Selector="Button.CosmeticDeleteButton:pointerover"><Setter Property="Background" Value="#CB5260"/></Style>
     <Style Selector="Border.ReadableServerRow"><Setter Property="Background" Value="#10161A"/><Setter Property="BorderBrush" Value="#303A42"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/></Style>
     <!-- Settings readability overrides -->
@@ -1514,19 +1514,19 @@
         <Setter Property="Padding" Value="12 6"/>
     </Style>
     <Style Selector="TextBlock.WorkspaceStatLabel">
-        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="9.5"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Foreground" Value="#708695"/>
     </Style>
     <Style Selector="TextBlock.WorkspaceStatValue">
-        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="17"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Foreground" Value="#F3F6F8"/>
     </Style>
     <Style Selector="TextBlock.WorkspaceBadgeText">
-        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="9.5"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Foreground" Value="#9CDDBD"/>
@@ -1555,7 +1555,7 @@
         <Setter Property="BorderBrush" Value="#315F9E"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="6"/>
-        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="11"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
     </Style>
@@ -1613,7 +1613,7 @@
         <Setter Property="Padding" Value="8 3"/>
     </Style>
     <Style Selector="TextBlock.WorkspaceTagText">
-        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="11"/>
         <Setter Property="Foreground" Value="#9CACB7"/>
     </Style>
@@ -1669,7 +1669,7 @@
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="8"/>
         <Setter Property="Padding" Value="12 7"/>
-        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
     </Style>
@@ -1799,7 +1799,7 @@
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="8"/>
         <Setter Property="Padding" Value="16 9"/>
-        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
     </Style>
@@ -2611,7 +2611,7 @@
         <Setter Property="Foreground" Value="#F5FBFF"/>
     </Style>
     <Style Selector="TextBlock.AccountModalSubtitle">
-        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="11.5"/>
         <Setter Property="FontWeight" Value="Medium"/>
         <Setter Property="Foreground" Value="#8095A3"/>
@@ -2753,13 +2753,13 @@
         <Setter Property="BorderThickness" Value="1"/>
     </Style>
     <Style Selector="TextBlock.AccountChoiceTitle">
-        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="15"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Foreground" Value="#F4FAFD"/>
     </Style>
     <Style Selector="TextBlock.AccountChoiceDescription">
-        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="11"/>
         <Setter Property="FontWeight" Value="Medium"/>
         <Setter Property="Foreground" Value="#8295A2"/>
@@ -2788,13 +2788,13 @@
         <Setter Property="BoxShadow" Value="0 0 34 0 #4B1689FF"/>
     </Style>
     <Style Selector="TextBlock.AccountPickerTitle">
-        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="31"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Foreground" Value="#F6F8FF"/>
     </Style>
     <Style Selector="TextBlock.AccountPickerSubtitle">
-        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="15"/>
         <Setter Property="Foreground" Value="#B6C8E5"/>
     </Style>
@@ -2827,13 +2827,13 @@
         <Setter Property="BoxShadow" Value="0 0 27 0 #4B692EF2"/>
     </Style>
     <Style Selector="TextBlock.AccountPickerChoiceTitle">
-        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="21"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Foreground" Value="#F9FAFF"/>
     </Style>
     <Style Selector="TextBlock.AccountPickerChoiceDescription">
-        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="LineHeight" Value="18"/>
         <Setter Property="Foreground" Value="#BDCAE2"/>
@@ -2853,18 +2853,18 @@
         <Setter Property="BorderBrush" Value="#A36CFF"/>
     </Style>
     <Style Selector="TextBlock.AccountSecurityTitle">
-        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Foreground" Value="#F1F5FF"/>
     </Style>
     <Style Selector="TextBlock.AccountSecurityDescription, TextBlock.AccountPickerFooter">
-        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="10.5"/>
         <Setter Property="Foreground" Value="#9CB0CB"/>
     </Style>
     <Style Selector="TextBlock.AccountCardSpark">
-        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="22"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
     </Style>
@@ -2900,7 +2900,7 @@
         <Setter Property="BorderThickness" Value="1"/>
     </Style>
     <Style Selector="TextBlock.AccountFieldLabel">
-        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="10"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Foreground" Value="#8CA9BA"/>
@@ -2913,21 +2913,21 @@
         <Setter Property="BorderBrush" Value="#35576B"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="13"/>
     </Style>
     <Style Selector="TextBox.AccountUsernameInput:focus">
         <Setter Property="BorderBrush" Value="#59B8F1"/>
     </Style>
     <Style Selector="TextBlock.AccountStatusText">
-        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="11"/>
         <Setter Property="Foreground" Value="#87CFFF"/>
     </Style>
     <Style Selector="Button.AccountPrimaryButton, Button.AccountSecondaryButton">
         <Setter Property="Height" Value="42"/>
         <Setter Property="CornerRadius" Value="8"/>
-        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Padding" Value="16 10"/>

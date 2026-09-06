@@ -140,16 +140,16 @@
                                             <Grid ColumnDefinitions="38,*,Auto" ColumnSpacing="10" MinWidth="270" Margin="9 5">
                                                 <Border Width="36" Height="36" CornerRadius="8" Background="{Binding Accent}" ClipToBounds="True">
                                                     <Grid>
-                                                        <TextBlock Text="{Binding Initials}" IsVisible="{Binding !HasIcon}" FontFamily="Inter" FontSize="10" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                        <TextBlock Text="{Binding Initials}" IsVisible="{Binding !HasIcon}" FontFamily="Segoe UI" FontSize="10" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                         <controls:RemoteImage SourceUrl="{Binding IconUrl}" IsVisible="{Binding HasIcon}" Stretch="UniformToFill"/>
                                                     </Grid>
                                                 </Border>
                                                 <StackPanel Grid.Column="1" Spacing="3" VerticalAlignment="Center">
-                                                    <TextBlock Text="{Binding Name}" FontFamily="Inter" FontSize="12" FontWeight="SemiBold" Foreground="#F4F7F9" TextTrimming="CharacterEllipsis"/>
-                                                    <TextBlock Text="{Binding RuntimeLabel}" FontFamily="Inter" FontSize="10.5" Foreground="#A9C6D8"/>
+                                                    <TextBlock Text="{Binding Name}" FontFamily="Segoe UI" FontSize="12" FontWeight="SemiBold" Foreground="#F4F7F9" TextTrimming="CharacterEllipsis"/>
+                                                    <TextBlock Text="{Binding RuntimeLabel}" FontFamily="Segoe UI" FontSize="10.5" Foreground="#A9C6D8"/>
                                                 </StackPanel>
                                                 <Border Grid.Column="2" IsVisible="{Binding IsDefault}" Background="#102A45" BorderBrush="#326E9B" BorderThickness="1" CornerRadius="8" Padding="7 3" VerticalAlignment="Center">
-                                            <TextBlock Text="DEFAULT" FontFamily="Inter" FontSize="9.5" FontWeight="Bold" Foreground="#A6DAFA"/>
+                                            <TextBlock Text="DEFAULT" FontFamily="Segoe UI" FontSize="9.5" FontWeight="Bold" Foreground="#A6DAFA"/>
                                                 </Border>
                                             </Grid>
                                         </DataTemplate>
@@ -248,8 +248,8 @@
                                 </ItemsControl>
                             </ScrollViewer>
                             <StackPanel Grid.Row="1" IsVisible="{Binding !HasPartnerServers}" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="3">
-                                <TextBlock Text="No partner servers published" FontFamily="Inter" FontSize="10.5" Foreground="#B7C9D4"/>
-                                <TextBlock Text="Add servers from UB Admin" FontFamily="Inter" FontSize="9.5" Foreground="#728FA1"/>
+                                <TextBlock Text="No partner servers published" FontFamily="Segoe UI" FontSize="10.5" Foreground="#B7C9D4"/>
+                                <TextBlock Text="Add servers from UB Admin" FontFamily="Segoe UI" FontSize="9.5" Foreground="#728FA1"/>
                             </StackPanel>
                         </Grid>
                     </Border>
@@ -269,23 +269,23 @@
                                             <Grid ColumnDefinitions="43,*" RowDefinitions="*,Auto" ColumnSpacing="9" Margin="10 12 10 10">
                                                 <Border Width="43" Height="43" CornerRadius="5" Background="{Binding Accent}" ClipToBounds="True" HorizontalAlignment="Left" VerticalAlignment="Top">
                                                         <Grid>
-                                                            <TextBlock Text="{Binding Initials}" IsVisible="{Binding !HasIcon}" FontFamily="Inter" FontSize="10" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            <TextBlock Text="{Binding Initials}" IsVisible="{Binding !HasIcon}" FontFamily="Segoe UI" FontSize="10" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                             <controls:RemoteImage SourceUrl="{Binding IconUrl}" IsVisible="{Binding HasIcon}" Stretch="UniformToFill"/>
                                                         </Grid>
                                                 </Border>
                                                 <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Top" Margin="0 3 0 0">
-                                                    <TextBlock Text="{Binding Name}" FontFamily="Poppins" FontSize="12.25" FontWeight="Medium" Foreground="White" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" MaxLines="2"/>
-                                                    <TextBlock Text="{Binding ModCount, StringFormat='{}{0} Mods'}" FontFamily="Poppins" FontSize="10.5" FontWeight="Medium" Foreground="#99FFFFFF"/>
+                                                    <TextBlock Text="{Binding Name}" FontFamily="Segoe UI" FontSize="12.25" FontWeight="Medium" Foreground="White" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" MaxLines="2"/>
+                                                    <TextBlock Text="{Binding ModCount, StringFormat='{}{0} Mods'}" FontFamily="Segoe UI" FontSize="10.5" FontWeight="Medium" Foreground="#99FFFFFF"/>
                                                 </StackPanel>
-                                                <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding RecentActivityLabel, StringFormat='Last played: {0}'}" FontFamily="Poppins" FontSize="10.5" FontWeight="Medium" Foreground="#99FFFFFF" TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding RecentActivityLabel, StringFormat='Last played: {0}'}" FontFamily="Segoe UI" FontSize="10.5" FontWeight="Medium" Foreground="#99FFFFFF" TextTrimming="CharacterEllipsis"/>
                                             </Grid>
                                         </Button>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                             <StackPanel Grid.Row="1" IsVisible="{Binding !HasRecentInstances}" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="4">
-                                <TextBlock Text="No instances yet" FontFamily="Inter" FontSize="11" FontWeight="SemiBold" Foreground="#D8E3EA" HorizontalAlignment="Center"/>
-                                <TextBlock Text="Create or import one from Instances" FontFamily="Inter" FontSize="10.5" Foreground="#9BB2C1"/>
+                                <TextBlock Text="No instances yet" FontFamily="Segoe UI" FontSize="11" FontWeight="SemiBold" Foreground="#D8E3EA" HorizontalAlignment="Center"/>
+                                <TextBlock Text="Create or import one from Instances" FontFamily="Segoe UI" FontSize="10.5" Foreground="#9BB2C1"/>
                             </StackPanel>
                         </Grid>
                     </Border>
@@ -314,8 +314,8 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                             <StackPanel Grid.Row="1" IsVisible="{Binding !HasRecentServers}" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="4">
-                                <TextBlock Text="No local servers yet" FontFamily="Inter" FontSize="11" FontWeight="SemiBold" Foreground="#D8E3EA"/>
-                                <TextBlock Text="Create one from Create Server" FontFamily="Inter" FontSize="10.5" Foreground="#9BB2C1"/>
+                                <TextBlock Text="No local servers yet" FontFamily="Segoe UI" FontSize="11" FontWeight="SemiBold" Foreground="#D8E3EA"/>
+                                <TextBlock Text="Create one from Create Server" FontFamily="Segoe UI" FontSize="10.5" Foreground="#9BB2C1"/>
                             </StackPanel>
                         </Grid>
                     </Border>
@@ -373,8 +373,8 @@
                                 <StackPanel Spacing="16" VerticalAlignment="Center">
                                     <TextBlock Text="Memory Usage" Classes="MetricLabel"/>
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding MemoryUsedText}" FontFamily="Poppins" FontSize="22" FontWeight="Medium" Foreground="White"/>
-                                            <TextBlock Text="{Binding MemoryCapacityText}" FontFamily="Poppins" FontSize="10.5" FontWeight="Medium" Foreground="#A6FFFFFF" VerticalAlignment="Bottom" Margin="3 0 0 4"/>
+                                        <TextBlock Text="{Binding MemoryUsedText}" FontFamily="Segoe UI" FontSize="22" FontWeight="Medium" Foreground="White"/>
+                                            <TextBlock Text="{Binding MemoryCapacityText}" FontFamily="Segoe UI" FontSize="10.5" FontWeight="Medium" Foreground="#A6FFFFFF" VerticalAlignment="Bottom" Margin="3 0 0 4"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <Grid x:Name="MemoryRingContainer" Grid.Column="1" Width="50" Height="50">

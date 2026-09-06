@@ -50,7 +50,7 @@
                                                 <TextBlock Text="UB" FontFamily="Minecraft Ten" FontSize="14" Foreground="#8BEAFF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                             <StackPanel Grid.Column="1" Spacing="5" VerticalAlignment="Center">
-                                                <TextBlock Text="{Binding Name}" FontFamily="Inter" FontSize="15" FontWeight="SemiBold" Foreground="#F2F5F7" TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Text="{Binding Name}" FontFamily="Segoe UI" FontSize="15" FontWeight="SemiBold" Foreground="#F2F5F7" TextTrimming="CharacterEllipsis"/>
                                                 <TextBlock Text="{Binding Version, StringFormat='{}Minecraft {0}'}" Classes="WorkspaceSecondary" FontSize="12"/>
                                                 <TextBlock Text="{Binding ServerType}" Classes="WorkspaceSecondary" Foreground="#7FA9C4" FontSize="12"/>
                                             </StackPanel>
@@ -278,7 +278,7 @@
                                                     </StackPanel>
                                                     <TextBlock Grid.Column="1" Text="Software downloads automatically on Start" Classes="WorkspaceSecondary" Foreground="#82B5FF" VerticalAlignment="Center"/>
                                                 </Grid>
-                                                <CheckBox Content="I accept the Minecraft server EULA" IsChecked="{Binding EditEulaAccepted}" IsVisible="{Binding !EditEulaAccepted}" FontFamily="Inter" FontSize="13" Foreground="#E7C783"/>
+                                                <CheckBox Content="I accept the Minecraft server EULA" IsChecked="{Binding EditEulaAccepted}" IsVisible="{Binding !EditEulaAccepted}" FontFamily="Segoe UI" FontSize="13" Foreground="#E7C783"/>
                                             </StackPanel>
                                         </Border>
 
@@ -295,8 +295,8 @@
                                                 </Grid>
                                                 <StackPanel Spacing="7"><TextBlock Text="Message of the day" Classes="WorkspaceLabel"/><TextBox Text="{Binding EditMotd}" Classes="WorkspaceField"/></StackPanel>
                                                 <StackPanel Spacing="7"><TextBlock Text="Launch JAR" Classes="WorkspaceLabel"/><TextBox Text="{Binding EditLaunchJarName}" Classes="WorkspaceField"/></StackPanel>
-                                                <CheckBox Content="Only allow premium / Microsoft-authenticated accounts" IsChecked="{Binding EditOnlineMode}" FontFamily="Inter" FontSize="13" Foreground="#D3D8DC"/>
-                                                <CheckBox Content="I accept the Minecraft server EULA" IsChecked="{Binding EditEulaAccepted}" FontFamily="Inter" FontSize="13" Foreground="#D3D8DC"/>
+                                                <CheckBox Content="Only allow premium / Microsoft-authenticated accounts" IsChecked="{Binding EditOnlineMode}" FontFamily="Segoe UI" FontSize="13" Foreground="#D3D8DC"/>
+                                                <CheckBox Content="I accept the Minecraft server EULA" IsChecked="{Binding EditEulaAccepted}" FontFamily="Segoe UI" FontSize="13" Foreground="#D3D8DC"/>
                                                 <Button Content="Save advanced settings" Classes="WorkspacePrimary" Command="{Binding SaveSelectedServerCommand}" IsEnabled="{Binding !SelectedServer.IsRunning}"/>
                                             </StackPanel>
                                         </Border>
@@ -392,7 +392,7 @@
                                             <Border Classes="CardBorder" Width="120" Height="48">
                                                 <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                     <controls:SvgPathIcon Source="{Binding StringFormat='/Assets/{0}.svg'}" Width="18" Height="18" />
-                                                    <TextBlock Classes="CardText" Text="{Binding}" FontFamily="Inter" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                                    <TextBlock Classes="CardText" Text="{Binding}" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
                                                 </StackPanel>
                                             </Border>
                                         </DataTemplate>
@@ -492,7 +492,7 @@
 
                             <Border Classes="ServerHintCard">
                                 <StackPanel Spacing="10">
-                                    <CheckBox Content="I accept the Minecraft server EULA" IsChecked="{Binding NewServerEulaAccepted}" FontFamily="Inter" FontSize="14" FontWeight="SemiBold" Foreground="#D3D8DC"/>
+                                    <CheckBox Content="I accept the Minecraft server EULA" IsChecked="{Binding NewServerEulaAccepted}" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" Foreground="#D3D8DC"/>
                                     <TextBlock Text="Required by Microsoft to host a Minecraft server." Classes="WorkspaceSecondary" FontSize="11" Margin="28,0,0,0"/>
                                 </StackPanel>
                             </Border>

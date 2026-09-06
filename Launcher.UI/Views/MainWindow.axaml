@@ -99,7 +99,7 @@
                                     <Border Grid.Column="1" MinWidth="22" Height="18" Padding="6 0"
                                             Background="#122B3B" BorderBrush="#31566E" BorderThickness="1" CornerRadius="9"
                                             VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding SavedAccounts.Count}" FontFamily="Poppins" FontSize="10.5"
+                                        <TextBlock Text="{Binding SavedAccounts.Count}" FontFamily="Segoe UI" FontSize="10.5"
                                                    FontWeight="SemiBold" Foreground="#87E3F2"
                                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Border>
@@ -138,13 +138,13 @@
 
                                 <TextBlock Text="No saved accounts yet"
                                            IsVisible="{Binding !HasSavedAccounts}"
-                                           FontFamily="Poppins" FontSize="10" Foreground="#77838E"
+                                           FontFamily="Segoe UI" FontSize="10" Foreground="#77838E"
                                            HorizontalAlignment="Center" Margin="0 8"/>
 
                                 <Button Classes="AddAccountButton" Command="{Binding AddAccountCommand}">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <TextBlock Text="+" FontFamily="Poppins" FontSize="14" Foreground="#E8EAEC" VerticalAlignment="Center" Margin="0 -2 0 0"/>
-                                        <TextBlock Text="Add account" FontFamily="Poppins" FontSize="11.5" VerticalAlignment="Center"/>
+                                        <TextBlock Text="+" FontFamily="Segoe UI" FontSize="14" Foreground="#E8EAEC" VerticalAlignment="Center" Margin="0 -2 0 0"/>
+                                        <TextBlock Text="Add account" FontFamily="Segoe UI" FontSize="11.5" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
                             </StackPanel>
@@ -230,7 +230,7 @@
                         <Border Grid.Column="1" Height="47" VerticalAlignment="Top"
                                 Background="#0D151F" BorderBrush="#334E6375" BorderThickness="0 0 1 1"
                                 CornerRadius="0 0 16 16">
-                            <TextBlock Text="UB Launcher" FontFamily="Inter" FontSize="17" FontWeight="Bold"
+                            <TextBlock Text="UB Launcher" FontFamily="Segoe UI" FontSize="17" FontWeight="Bold"
                                        Foreground="#53A8FF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <Border Grid.Column="2" Height="1" Background="#294D6580" VerticalAlignment="Center"/>
@@ -258,27 +258,27 @@
                                 <Border Width="34" Height="34" CornerRadius="17" Background="#281014" BorderBrush="#FF4F5D" BorderThickness="2"
                                         HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0 16 2 0"
                                         BoxShadow="0 0 15 0 #72FF3548">
-                                    <TextBlock Text="!" FontFamily="Inter" FontSize="21" FontWeight="Bold" Foreground="#FF5A67"
+                                    <TextBlock Text="!" FontFamily="Segoe UI" FontSize="21" FontWeight="Bold" Foreground="#FF5A67"
                                                HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 -2 0 0"/>
                                 </Border>
                             </Grid>
 
-                            <TextBlock Text="{Binding UpdatePopupHeading}" FontFamily="Inter" FontSize="35" FontWeight="Bold"
+                            <TextBlock Text="{Binding UpdatePopupHeading}" FontFamily="Segoe UI" FontSize="35" FontWeight="Bold"
                                        Foreground="#F6FAFF" HorizontalAlignment="Center" TextAlignment="Center"
                                        TextWrapping="Wrap" Margin="0 15 0 0"/>
-                            <TextBlock Text="{Binding UpdateMessage}" FontFamily="Inter" FontSize="15" LineHeight="23"
+                            <TextBlock Text="{Binding UpdateMessage}" FontFamily="Segoe UI" FontSize="15" LineHeight="23"
                                        Foreground="#B8C5D0" HorizontalAlignment="Center" TextAlignment="Center"
                                        TextWrapping="Wrap" MaxWidth="480" Margin="0 11 0 0"/>
 
                             <Border Background="#97101722" BorderBrush="#403A7CC6" BorderThickness="1" CornerRadius="10"
                                     Padding="20 15" Margin="0 25 0 0">
                                 <Grid RowDefinitions="Auto,1,Auto" ColumnDefinitions="*,Auto">
-                                    <TextBlock Text="Current Version" FontFamily="Inter" FontSize="14" Foreground="#B7C4CF"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding InstalledVersionText}" FontFamily="Inter" FontSize="15"
+                                    <TextBlock Text="Current Version" FontFamily="Segoe UI" FontSize="14" Foreground="#B7C4CF"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding InstalledVersionText}" FontFamily="Segoe UI" FontSize="15"
                                                FontWeight="Bold" Foreground="#D8E1E8"/>
                                     <Border Grid.Row="1" Grid.ColumnSpan="2" Height="1" Background="#26394857" Margin="0 13"/>
-                                    <TextBlock Grid.Row="2" Text="Latest Version" FontFamily="Inter" FontSize="14" Foreground="#B7C4CF"/>
-                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding LatestVersionText}" FontFamily="Inter" FontSize="15"
+                                    <TextBlock Grid.Row="2" Text="Latest Version" FontFamily="Segoe UI" FontSize="14" Foreground="#B7C4CF"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding LatestVersionText}" FontFamily="Segoe UI" FontSize="15"
                                                FontWeight="Bold" Foreground="#73C1FF"/>
                                 </Grid>
                             </Border>
@@ -289,8 +289,8 @@
                                     HorizontalAlignment="Center" Margin="0 12 0 -8" Padding="12 7"
                                     Background="Transparent" BorderThickness="0" Foreground="#4CA5FF">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <TextBlock Text="What's New" FontFamily="Inter" FontSize="14" FontWeight="Bold"/>
-                                    <TextBlock Text=">" FontFamily="Inter" FontSize="17" FontWeight="Bold" Margin="0 -2 0 0"/>
+                                    <TextBlock Text="What's New" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold"/>
+                                    <TextBlock Text=">" FontFamily="Segoe UI" FontSize="17" FontWeight="Bold" Margin="0 -2 0 0"/>
                                 </StackPanel>
                             </Button>
 
@@ -298,7 +298,7 @@
                                     Background="#694ED7FF" BoxShadow="0 0 28 2 #804C8FFF">
                                 <Button Command="{Binding OpenUpdateCommand}" IsEnabled="{Binding HasUpdateUrl}"
                                         Height="70" Padding="22 0" BorderBrush="#67DEFF" BorderThickness="1.5" CornerRadius="10"
-                                        Foreground="White" FontFamily="Inter" FontSize="24" FontWeight="Bold">
+                                        Foreground="White" FontFamily="Segoe UI" FontSize="24" FontWeight="Bold">
                                     <Button.Background>
                                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                             <GradientStop Color="#125BE8" Offset="0"/>
@@ -324,7 +324,7 @@
                                     />
 
                             <TextBlock Text="This update is required to continue using UB Launcher."
-                                       IsVisible="{Binding IsMandatoryUpdate}" FontFamily="Inter" FontSize="10.5"
+                                       IsVisible="{Binding IsMandatoryUpdate}" FontFamily="Segoe UI" FontSize="10.5"
                                        Foreground="#7791A4" HorizontalAlignment="Center" Margin="0 14 0 0"/>
                         </StackPanel>
                     </ScrollViewer>
@@ -343,7 +343,7 @@
                             <TextBlock Text="Choose how you want to play Minecraft." Classes="AccountModalSubtitle"/>
                         </StackPanel>
                         <Button Grid.Column="1" Classes="AccountModalCloseButton" Command="{Binding CloseAccountDialogCommand}" ToolTip.Tip="Close">
-                            <TextBlock Text="×" FontFamily="Poppins" FontSize="21" Margin="0 -3 0 0"/>
+                            <TextBlock Text="×" FontFamily="Segoe UI" FontSize="21" Margin="0 -3 0 0"/>
                         </Button>
                     </Grid>
 
@@ -383,9 +383,9 @@
 
                             <Border Classes="AccountSecurityNote">
                                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-                                    <TextBlock Text="✓" FontFamily="Poppins" FontSize="13" Foreground="#77CEFF" VerticalAlignment="Center"/>
+                                    <TextBlock Text="✓" FontFamily="Segoe UI" FontSize="13" Foreground="#77CEFF" VerticalAlignment="Center"/>
                                     <TextBlock Grid.Column="1" Text="UB Launcher never asks for or stores your Microsoft password."
-                                               FontFamily="Poppins" FontSize="11" Foreground="#8CA0AE" VerticalAlignment="Center"/>
+                                               FontFamily="Segoe UI" FontSize="11" Foreground="#8CA0AE" VerticalAlignment="Center"/>
                                 </Grid>
                             </Border>
                         </StackPanel>
@@ -393,8 +393,8 @@
                         <StackPanel IsVisible="{Binding IsOfflineAccountEntryVisible}" Spacing="20">
                             <Button Classes="AccountBackButton" Command="{Binding ShowAccountChoicesCommand}" HorizontalAlignment="Left">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <TextBlock Text="‹" FontFamily="Poppins" FontSize="20" Margin="0 -4 0 0"/>
-                                    <TextBlock Text="Back" FontFamily="Poppins" FontSize="12" VerticalAlignment="Center"/>
+                                    <TextBlock Text="‹" FontFamily="Segoe UI" FontSize="20" Margin="0 -4 0 0"/>
+                                    <TextBlock Text="Back" FontFamily="Segoe UI" FontSize="12" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button>
 
@@ -454,8 +454,8 @@
                                 <Button Grid.Column="2" Classes="AccountBackButton" Command="{Binding CancelMicrosoftSignInCommand}"
                                         VerticalAlignment="Center">
                                     <StackPanel Orientation="Horizontal" Spacing="6">
-                                        <TextBlock Text="✕" FontFamily="Poppins" FontSize="13" VerticalAlignment="Center"/>
-                                        <TextBlock Text="Cancel" FontFamily="Poppins" FontSize="12" VerticalAlignment="Center"/>
+                                        <TextBlock Text="✕" FontFamily="Segoe UI" FontSize="13" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Cancel" FontFamily="Segoe UI" FontSize="12" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
                             </Grid>
@@ -464,9 +464,9 @@
                             <Border Background="#0D1620" BorderBrush="#1E3348" BorderThickness="1" CornerRadius="10" Padding="18 24">
                                 <StackPanel Spacing="16" HorizontalAlignment="Center">
                                     <TextBlock Text="🌐" FontSize="36" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Your browser should open automatically." FontFamily="Poppins" FontSize="13"
+                                    <TextBlock Text="Your browser should open automatically." FontFamily="Segoe UI" FontSize="13"
                                                Foreground="#A0B4C4" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Please log in there to continue." FontFamily="Poppins" FontSize="14" FontWeight="SemiBold"
+                                    <TextBlock Text="Please log in there to continue." FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold"
                                                Foreground="#77CEFF" HorizontalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
@@ -498,7 +498,7 @@
                                 </Border>
                                 <TextBlock Grid.Column="1"
                                            Text="{Binding DeviceCodeStatus}"
-                                           FontFamily="Poppins" FontSize="12"
+                                           FontFamily="Segoe UI" FontSize="12"
                                            Foreground="#8CA8BE"
                                            VerticalAlignment="Center"
                                            TextWrapping="Wrap"

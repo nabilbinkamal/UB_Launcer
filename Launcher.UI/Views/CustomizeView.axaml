@@ -72,7 +72,7 @@
                                 <StackPanel Orientation="Horizontal" Spacing="6">
                                     <Ellipse Width="5" Height="5" Fill="#DDFBFF" VerticalAlignment="Center"/>
                                     <TextBlock Text="LIVE 3D"
-                                               FontFamily="Poppins"
+                                               FontFamily="Segoe UI"
                                                FontSize="9"
                                                FontWeight="SemiBold"
                                                Foreground="#DDF8FF"
@@ -90,7 +90,7 @@
                     </Border>
                     <TextBlock Grid.Row="2"
                                Text="↔  Drag to rotate"
-                               FontFamily="Poppins"
+                               FontFamily="Segoe UI"
                                FontSize="12"
                                Foreground="#A5AFB8"
                                HorizontalAlignment="Center"/>
@@ -122,9 +122,9 @@
                                         Height="246"
                                         Click="OnBrowseSkinClick">
                                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
-                                        <TextBlock Text="+" FontFamily="Poppins" FontSize="34" Foreground="White" HorizontalAlignment="Center"/>
-                                        <TextBlock Text="Add skin" FontFamily="Poppins" FontSize="14" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center"/>
-                                        <TextBlock Text="Browse PNG" FontFamily="Poppins" FontSize="11" Foreground="#9DA6AE" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="+" FontFamily="Segoe UI" FontSize="34" Foreground="White" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Add skin" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Browse PNG" FontFamily="Segoe UI" FontSize="11" Foreground="#9DA6AE" HorizontalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
                                 <ItemsControl ItemsSource="{Binding SavedSkins}">
@@ -154,7 +154,7 @@
                                                             Command="{Binding $parent[UserControl].((vm:CustomizeViewModel)DataContext).DeleteSavedSkinCommand}"
                                                             CommandParameter="{Binding}">
                                                         <TextBlock Text="✕"
-                                                                   FontFamily="Poppins"
+                                                                   FontFamily="Segoe UI"
                                                                    FontSize="13"
                                                                    FontWeight="Bold"
                                                                    Foreground="White"
@@ -219,12 +219,12 @@
                                     VerticalAlignment="Center">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                     <TextBlock Text="♛"
-                                               FontFamily="Poppins"
+                                               FontFamily="Segoe UI"
                                                FontSize="10"
                                                Foreground="#5EC95E"
                                                VerticalAlignment="Center"/>
                                     <TextBlock Text="Microsoft"
-                                               FontFamily="Poppins"
+                                               FontFamily="Segoe UI"
                                                FontSize="10"
                                                FontWeight="SemiBold"
                                                Foreground="#5EC95E"
@@ -268,7 +268,7 @@
                                                         Padding="5 3"
                                                         IsHitTestVisible="False">
                                                     <TextBlock Text="♛"
-                                                               FontFamily="Poppins"
+                                                               FontFamily="Segoe UI"
                                                                FontSize="11"
                                                                Foreground="#5EC95E"
                                                                HorizontalAlignment="Center"
@@ -294,9 +294,9 @@
                                         Height="245"
                                         Click="OnBrowseCapeClick">
                                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
-                                        <TextBlock Text="+" FontFamily="Poppins" FontSize="34" Foreground="White" HorizontalAlignment="Center"/>
-                                        <TextBlock Text="Add cape" FontFamily="Poppins" FontSize="14" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center"/>
-                                        <TextBlock Text="Browse PNG" FontFamily="Poppins" FontSize="11" Foreground="#9DA6AE" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="+" FontFamily="Segoe UI" FontSize="34" Foreground="White" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Add cape" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Browse PNG" FontFamily="Segoe UI" FontSize="11" Foreground="#9DA6AE" HorizontalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
                                 <ItemsControl ItemsSource="{Binding SavedCapes}">

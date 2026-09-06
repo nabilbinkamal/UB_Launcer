@@ -52,8 +52,8 @@
                             <ComboBox.ItemTemplate>
                                 <DataTemplate x:DataType="vm:GameProfile">
                                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                                        <TextBlock Text="{Binding Name}" FontFamily="Inter" FontSize="14" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock Grid.Column="1" Text="{Binding RuntimeLabel}" FontFamily="Inter" FontSize="14" Foreground="#8DBAFF"/>
+                                        <TextBlock Text="{Binding Name}" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding RuntimeLabel}" FontFamily="Segoe UI" FontSize="14" Foreground="#8DBAFF"/>
                                     </Grid>
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
@@ -63,11 +63,11 @@
                                 Padding="14 9">
                             <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
                                 <Border Width="28" Height="28" CornerRadius="8" Background="#17345B">
-                                    <TextBlock Text="+" FontFamily="Inter" FontSize="18" Foreground="#8FC5FF"
+                                    <TextBlock Text="+" FontFamily="Segoe UI" FontSize="18" Foreground="#8FC5FF"
                                                HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
                                 <StackPanel Grid.Column="1" Spacing="1" VerticalAlignment="Center">
-                                    <TextBlock Text="New standalone instance" FontFamily="Inter" FontSize="13" FontWeight="SemiBold"/>
+                                    <TextBlock Text="New standalone instance" FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"/>
                                     <TextBlock Text="Minecraft and loader resolve automatically"
                                                Classes="WorkspaceSecondary" FontSize="11"/>
                                 </StackPanel>
@@ -116,12 +116,12 @@
                             <Grid ColumnDefinitions="74,*,184" ColumnSpacing="16">
                                 <Border Width="72" Height="72" CornerRadius="12" Background="{Binding Accent}" BorderBrush="#30FFFFFF" BorderThickness="1" ClipToBounds="True" VerticalAlignment="Center">
                                     <Grid>
-                                        <TextBlock Text="{Binding Mark}" FontFamily="Inter" FontSize="17" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding Mark}" FontFamily="Segoe UI" FontSize="17" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         <controls:RemoteImage SourceUrl="{Binding IconUrl}" Stretch="UniformToFill"/>
                                     </Grid>
                                 </Border>
                                 <Grid Grid.Column="1" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="4" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding Name}" FontFamily="Inter" FontSize="17" FontWeight="SemiBold" Foreground="#F1F3F4" TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock Text="{Binding Name}" FontFamily="Segoe UI" FontSize="17" FontWeight="SemiBold" Foreground="#F1F3F4" TextTrimming="CharacterEllipsis"/>
                                     <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="7">
                                         <TextBlock Text="by" Classes="WorkspaceSecondary"/>
                                         <TextBlock Text="{Binding Author}" Classes="WorkspaceLabel"/>
@@ -152,7 +152,7 @@
                                             CommandParameter="{Binding}"
                                             HorizontalAlignment="Stretch">
                                         <TextBlock Text="{Binding ActionLabel}"
-                                                   FontFamily="Inter"
+                                                   FontFamily="Segoe UI"
                                                    FontSize="15"
                                                    FontWeight="SemiBold"
                                                    HorizontalAlignment="Center"
