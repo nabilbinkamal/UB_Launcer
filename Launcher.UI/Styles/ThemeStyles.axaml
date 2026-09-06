@@ -2634,7 +2634,7 @@
         <Setter Property="Foreground" Value="White"/>
     </Style>
     <Style Selector="Button.AccountChoiceButton">
-        <Setter Property="Width" Value="338"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="Height" Value="255"/>
         <Setter Property="Padding" Value="18"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
