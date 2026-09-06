@@ -2316,8 +2316,10 @@
         <Setter Property="CornerRadius" Value="20"/>
     </Style>
     <Style Selector="Button.WorkspaceTab:pointerover">
-        <Setter Property="Background" Value="#1A2F45"/>
         <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="Button.WorkspaceTab:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="#1A2F45"/>
         <Setter Property="BorderBrush" Value="#325270"/>
     </Style>
     <Style Selector="Button.WorkspaceTab.Active">
@@ -2326,8 +2328,10 @@
         <Setter Property="BorderBrush" Value="#2F608F"/>
     </Style>
     <Style Selector="Button.WorkspaceTab.Active:pointerover">
-        <Setter Property="Background" Value="#122A42"/>
         <Setter Property="Foreground" Value="#C6EAFF"/>
+    </Style>
+    <Style Selector="Button.WorkspaceTab.Active:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="#122A42"/>
         <Setter Property="BorderBrush" Value="#2F608F"/>
     </Style>
     <Style Selector="TextBox.WorkspaceField">
