@@ -2099,12 +2099,10 @@
     <Style Selector="Border.WorkspaceContentCard">
         <Setter Property="Background" Value="#090F14"/>
         <Setter Property="BorderBrush" Value="#293F4E"/>
-        <Setter Property="BoxShadow" Value="0 5 16 0 #38000000"/>
     </Style>
     <Style Selector="Border.WorkspaceContentCard:pointerover">
         <Setter Property="Background" Value="#090F14"/>
         <Setter Property="BorderBrush" Value="#4A91BE"/>
-        <Setter Property="BoxShadow" Value="0 7 20 0 #332A78A8"/>
     </Style>
     <Style Selector="Button.WorkspaceInstallButton">
         <Setter Property="MinHeight" Value="42"/>
