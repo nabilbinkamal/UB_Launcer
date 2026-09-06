@@ -16,7 +16,9 @@ public static class InstanceStore
         "UBLauncher",
         "instances.json");
     private static string? loadedSelectedPath;
+    private static string? loadedDefaultPath;
     private static GameProfile? selectedProfile;
+    private static GameProfile? defaultProfile;
     private static Task? iconRefreshTask;
 
     public static ObservableCollection<GameProfile> Profiles { get; } = LoadProfiles();
@@ -29,18 +31,48 @@ public static class InstanceStore
         }
 
         Profiles.CollectionChanged += OnProfilesCollectionChanged;
+
+        GameProfile? defProfile = null;
+        if (!string.IsNullOrWhiteSpace(loadedDefaultPath))
+        {
+            defProfile = Profiles.FirstOrDefault(profile =>
+                profile.InstancePath.Equals(loadedDefaultPath, StringComparison.OrdinalIgnoreCase));
+        }
+
+        if (defProfile is null)
+        {
+            defProfile = Profiles.FirstOrDefault(profile => profile.IsDefault) ??
+                         Profiles.FirstOrDefault(profile =>
+                             profile.InstancePath.Equals(loadedSelectedPath, StringComparison.OrdinalIgnoreCase)) ??
+                         Profiles.FirstOrDefault();
+        }
+
+        defaultProfile = defProfile;
+        foreach (var profile in Profiles)
+        {
+            profile.IsDefault = ReferenceEquals(profile, defaultProfile);
+        }
+
         selectedProfile = Profiles.FirstOrDefault(profile =>
                               profile.InstancePath.Equals(loadedSelectedPath, StringComparison.OrdinalIgnoreCase)) ??
-                          Profiles.FirstOrDefault();
-        if (selectedProfile is not null)
+                          defaultProfile;
+    }
+
+    public static GameProfile? DefaultProfile
+    {
+        get => defaultProfile ??= Profiles.FirstOrDefault(p => p.IsDefault) ?? Profiles.FirstOrDefault();
+        set
         {
-            selectedProfile.IsDefault = true;
+            if (value is not null)
+            {
+                SetDefaultProfile(value);
+            }
         }
     }
 
     public static GameProfile? SelectedProfile
     {
-        get => selectedProfile ??= Profiles.FirstOrDefault();
+        get => selectedProfile ??= defaultProfile ?? Profiles.FirstOrDefault();
         set
         {
             if (ReferenceEquals(selectedProfile, value))
@@ -48,23 +80,32 @@ public static class InstanceStore
                 return;
             }
 
-            if (selectedProfile is not null)
-            {
-                selectedProfile.IsDefault = false;
-            }
-
             selectedProfile = value;
-            if (selectedProfile is not null)
-            {
-                selectedProfile.IsDefault = true;
-            }
-
             SaveState();
             SelectionChanged?.Invoke();
         }
     }
 
+    public static void SetDefaultProfile(GameProfile profile)
+    {
+        if (profile is null)
+        {
+            return;
+        }
+
+        defaultProfile = profile;
+        foreach (var p in Profiles)
+        {
+            p.IsDefault = ReferenceEquals(p, profile);
+        }
+
+        SaveState();
+        DefaultProfileChanged?.Invoke();
+        ProfilesChanged?.Invoke();
+    }
+
     public static event Action? SelectionChanged;
+    public static event Action? DefaultProfileChanged;
     public static event Action? ProfilesChanged;
 
     public static Task EnsureMissingIconsAsync()
@@ -144,6 +185,7 @@ public static class InstanceStore
                 if (state?.Profiles is { Count: > 0 })
                 {
                     loadedSelectedPath = state.SelectedInstancePath;
+                    loadedDefaultPath = state.DefaultInstancePath;
                     return new ObservableCollection<GameProfile>(state.Profiles.Select(ToGameProfile));
                 }
             }
@@ -152,9 +194,11 @@ public static class InstanceStore
         {
         }
 
+        var defaultP = CreateProfile("Main Optimization Pack", "1.20.4", "Fabric", "Today", "Modpack", 42, "1.8 GB", "#23A66F", 2, 1, 1);
+        defaultP.IsDefault = true;
         return
         [
-            CreateProfile("Main Optimization Pack", "1.20.4", "Fabric", "Today", "Modpack", 42, "1.8 GB", "#23A66F", 2, 1, 1),
+            defaultP,
             CreateProfile("Legacy Bedwars Core", "1.8.9", "Vanilla", "Yesterday", "Vanilla", 0, "620 MB", "#D86A45", 5, 2, 1),
             CreateProfile("NeoForge Testing", "1.20.4", "NeoForge", "3 days ago", "Custom", 24, "1.2 GB", "#7B61D9", 2, 1, 0)
         ];
@@ -178,25 +222,29 @@ public static class InstanceStore
             }
         }
 
-        var selectionChanged = (selectedProfile is null && Profiles.Count > 0) ||
-                               (selectedProfile is not null && !Profiles.Contains(selectedProfile));
-        if (selectionChanged)
+        var defMissing = defaultProfile is null || !Profiles.Contains(defaultProfile);
+        if (defMissing)
         {
-            if (selectedProfile is not null)
+            defaultProfile = Profiles.FirstOrDefault(p => p.IsDefault) ?? Profiles.FirstOrDefault();
+            if (defaultProfile is not null)
             {
-                selectedProfile.IsDefault = false;
+                foreach (var p in Profiles)
+                {
+                    p.IsDefault = ReferenceEquals(p, defaultProfile);
+                }
             }
+        }
 
-            selectedProfile = Profiles.FirstOrDefault();
-            if (selectedProfile is not null)
-            {
-                selectedProfile.IsDefault = true;
-            }
+        var selectionMissing = (selectedProfile is null && Profiles.Count > 0) ||
+                               (selectedProfile is not null && !Profiles.Contains(selectedProfile));
+        if (selectionMissing)
+        {
+            selectedProfile = defaultProfile ?? Profiles.FirstOrDefault();
         }
 
         SaveState();
         ProfilesChanged?.Invoke();
-        if (selectionChanged)
+        if (selectionMissing)
         {
             SelectionChanged?.Invoke();
         }
@@ -228,6 +276,7 @@ public static class InstanceStore
         nameof(GameProfile.DataPackCount) or
         nameof(GameProfile.StorageUsed) or
         nameof(GameProfile.Accent) or
+        nameof(GameProfile.IsDefault) or
         nameof(GameProfile.IconUrl) or
         nameof(GameProfile.ModrinthProjectId) or
         nameof(GameProfile.LastPlayedAtUtc);
@@ -243,6 +292,7 @@ public static class InstanceStore
                 var state = new InstanceStoreState
                 {
                     SelectedInstancePath = selectedProfile?.InstancePath,
+                    DefaultInstancePath = (defaultProfile ?? Profiles.FirstOrDefault(p => p.IsDefault))?.InstancePath,
                     Profiles = Profiles.Select(ToStoredProfile).ToList()
                 };
                 var temporaryPath = StatePath + ".tmp";
@@ -274,6 +324,7 @@ public static class InstanceStore
         Accent = profile.Accent,
         IconUrl = profile.IconUrl,
         ModrinthProjectId = profile.ModrinthProjectId,
+        IsDefault = profile.IsDefault,
         LastPlayedAtUtc = profile.LastPlayedAtUtc
     };
 
@@ -293,6 +344,7 @@ public static class InstanceStore
         Accent = profile.Accent,
         IconUrl = profile.IconUrl,
         ModrinthProjectId = profile.ModrinthProjectId,
+        IsDefault = profile.IsDefault,
         LastPlayedAtUtc = profile.LastPlayedAtUtc
     };
 
@@ -365,6 +417,7 @@ public static class InstanceStore
     private sealed class InstanceStoreState
     {
         public string? SelectedInstancePath { get; init; }
+        public string? DefaultInstancePath { get; init; }
         public List<StoredProfile> Profiles { get; init; } = [];
     }
 
@@ -384,6 +437,7 @@ public static class InstanceStore
         public string Accent { get; init; } = "#4B78C9";
         public string IconUrl { get; init; } = string.Empty;
         public string ModrinthProjectId { get; init; } = string.Empty;
+        public bool IsDefault { get; init; }
         public DateTimeOffset? LastPlayedAtUtc { get; init; }
     }
 }

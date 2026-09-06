@@ -443,6 +443,46 @@
     </Style>
     <Style Selector="Button.InstanceEditButton:pointerover"><Setter Property="Background" Value="#24577F"/><Setter Property="BorderBrush" Value="#8BD0FF"/><Setter Property="BorderThickness" Value="1"/></Style>
     <Style Selector="Button.InstanceEditButton:pressed"><Setter Property="Background" Value="#142333"/></Style>
+    
+    <!-- Server Management Tabs -->
+    <Style Selector="Button.ServerTabButton">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="#7FA9C4"/>
+        <Setter Property="Padding" Value="12 8"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontFamily" Value="Inter"/>
+        <Setter Property="BorderThickness" Value="0 0 0 2"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Foreground" Duration="0:0:0.15"/>
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Button.ServerTabButton:pointerover">
+        <Setter Property="Foreground" Value="#D0E3F0"/>
+        <Setter Property="BorderBrush" Value="#3D5A70"/>
+    </Style>
+    <Style Selector="Button.ServerTabButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="#3D5A70"/>
+        <Setter Property="BorderThickness" Value="0 0 0 2"/>
+        <Setter Property="TextBlock.Foreground" Value="#D0E3F0"/>
+    </Style>
+    <Style Selector="Button.ServerTabButton.Active">
+        <Setter Property="Foreground" Value="#FFFFFF"/>
+        <Setter Property="BorderBrush" Value="#4C9BE8"/>
+    </Style>
+    <Style Selector="Button.ServerTabButton.Active /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="#4C9BE8"/>
+        <Setter Property="BorderThickness" Value="0 0 0 2"/>
+        <Setter Property="TextBlock.Foreground" Value="#FFFFFF"/>
+    </Style>
+
     <Style Selector="ComboBox.HomeInstancePicker">
         <Setter Property="MinHeight" Value="34"/>
         <Setter Property="MinWidth" Value="0"/>
@@ -2538,7 +2578,7 @@
     </Style>
 
     <Style Selector="Button.AccountModalBackdrop">
-        <Setter Property="Background" Value="#A600070C"/>
+        <Setter Property="Background" Value="#C800050C"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="0"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
@@ -2546,18 +2586,24 @@
         <Setter Property="CornerRadius" Value="0"/>
     </Style>
     <Style Selector="Button.AccountModalBackdrop:pointerover">
-        <Setter Property="Background" Value="#A600070C"/>
+        <Setter Property="Background" Value="#C800050C"/>
     </Style>
     <Style Selector="Button.AccountModalBackdrop:pressed">
-        <Setter Property="Background" Value="#A600070C"/>
+        <Setter Property="Background" Value="#C800050C"/>
     </Style>
     <Style Selector="Border.AccountModalCard">
         <Setter Property="Padding" Value="28"/>
-        <Setter Property="CornerRadius" Value="16"/>
-        <Setter Property="Background" Value="#F20A151D"/>
-        <Setter Property="BorderBrush" Value="#476F88"/>
+        <Setter Property="CornerRadius" Value="22"/>
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#F6111E32" Offset="0"/>
+                <GradientStop Color="#F4071322" Offset="0.5"/>
+                <GradientStop Color="#F50A1424" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="BorderBrush" Value="#637197"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="BoxShadow" Value="0 24 70 0 #B0000000, 0 0 34 0 #251E94D2"/>
+        <Setter Property="BoxShadow" Value="0 30 90 0 #D0000000, 0 0 70 0 #301770D8"/>
     </Style>
     <Style Selector="TextBlock.AccountModalTitle">
         <Setter Property="FontFamily" Value="Minecraft Ten"/>
@@ -2571,12 +2617,12 @@
         <Setter Property="Foreground" Value="#8095A3"/>
     </Style>
     <Style Selector="Button.AccountModalCloseButton">
-        <Setter Property="Width" Value="34"/>
-        <Setter Property="Height" Value="34"/>
+        <Setter Property="Width" Value="44"/>
+        <Setter Property="Height" Value="44"/>
         <Setter Property="Padding" Value="0"/>
-        <Setter Property="CornerRadius" Value="8"/>
-        <Setter Property="Background" Value="#101F29"/>
-        <Setter Property="BorderBrush" Value="#294252"/>
+        <Setter Property="CornerRadius" Value="22"/>
+        <Setter Property="Background" Value="#1A2639"/>
+        <Setter Property="BorderBrush" Value="#344662"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Foreground" Value="#AFC1CB"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -2588,18 +2634,98 @@
         <Setter Property="Foreground" Value="White"/>
     </Style>
     <Style Selector="Button.AccountChoiceButton">
-        <Setter Property="MinHeight" Value="178"/>
-        <Setter Property="Padding" Value="20"/>
-        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
-        <Setter Property="CornerRadius" Value="12"/>
-        <Setter Property="Background" Value="#0B1821"/>
-        <Setter Property="BorderBrush" Value="#2B4658"/>
+        <Setter Property="Width" Value="338"/>
+        <Setter Property="Height" Value="255"/>
+        <Setter Property="Padding" Value="18"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="CornerRadius" Value="20"/>
+        <Setter Property="Background" Value="#101B30"/>
+        <Setter Property="BorderBrush" Value="#3560A0"/>
         <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.18"/>
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.18"/>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.18"/>
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Button.AccountChoiceButton.Microsoft">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#173861" Offset="0"/>
+                <GradientStop Color="#112744" Offset="0.55"/>
+                <GradientStop Color="#0D1B2D" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="BorderBrush" Value="#2D92FF"/>
+        <Setter Property="Effect">
+            <DropShadowEffect Color="#126CC8" BlurRadius="22" Opacity="0.35" OffsetX="0" OffsetY="5"/>
+        </Setter>
+    </Style>
+    <Style Selector="Button.AccountChoiceButton.Offline">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#211A47" Offset="0"/>
+                <GradientStop Color="#15162E" Offset="0.55"/>
+                <GradientStop Color="#0E1527" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="BorderBrush" Value="#7444C9"/>
+        <Setter Property="Effect">
+            <DropShadowEffect Color="#5E2BB4" BlurRadius="22" Opacity="0.3" OffsetX="0" OffsetY="5"/>
+        </Setter>
+    </Style>
+    <Style Selector="Button.AccountChoiceButton.Microsoft /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="CornerRadius" Value="20"/>
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#173861" Offset="0"/>
+                <GradientStop Color="#112744" Offset="0.55"/>
+                <GradientStop Color="#0D1B2D" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+    </Style>
+    <Style Selector="Button.AccountChoiceButton.Offline /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="CornerRadius" Value="20"/>
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#211A47" Offset="0"/>
+                <GradientStop Color="#15162E" Offset="0.55"/>
+                <GradientStop Color="#0E1527" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
     </Style>
     <Style Selector="Button.AccountChoiceButton:pointerover">
-        <Setter Property="Background" Value="#102533"/>
-        <Setter Property="BorderBrush" Value="#69B9EC"/>
+        <Setter Property="BorderBrush" Value="#74BDFF"/>
+    </Style>
+    <Style Selector="Button.AccountChoiceButton.Offline:pointerover">
+        <Setter Property="BorderBrush" Value="#B082FF"/>
+    </Style>
+    <Style Selector="Button.AccountChoiceButton.Microsoft:pointerover">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#1B4F82" Offset="0"/>
+                <GradientStop Color="#17365B" Offset="0.55"/>
+                <GradientStop Color="#10233A" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="Effect">
+            <DropShadowEffect Color="#148EFF" BlurRadius="32" Opacity="0.72" OffsetX="0" OffsetY="5"/>
+        </Setter>
+    </Style>
+    <Style Selector="Button.AccountChoiceButton.Offline:pointerover">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#302568" Offset="0"/>
+                <GradientStop Color="#201B45" Offset="0.55"/>
+                <GradientStop Color="#141833" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="Effect">
+            <DropShadowEffect Color="#8351FF" BlurRadius="32" Opacity="0.65" OffsetX="0" OffsetY="5"/>
+        </Setter>
     </Style>
     <Style Selector="Button.AccountChoiceButton:pressed">
         <Setter Property="Background" Value="#0D202D"/>
@@ -2636,11 +2762,121 @@
         <Setter Property="LineHeight" Value="17"/>
     </Style>
     <Style Selector="Border.AccountSecurityNote">
-        <Setter Property="Padding" Value="12 10"/>
-        <Setter Property="CornerRadius" Value="8"/>
-        <Setter Property="Background" Value="#0B1A23"/>
-        <Setter Property="BorderBrush" Value="#223C4C"/>
+        <Setter Property="Padding" Value="13 14"/>
+        <Setter Property="CornerRadius" Value="15"/>
+        <Setter Property="Background" Value="#101D2B"/>
+        <Setter Property="BorderBrush" Value="#273C54"/>
         <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    <Style Selector="Border.AccountPickerHeroIcon">
+        <Setter Property="Width" Value="76"/>
+        <Setter Property="Height" Value="76"/>
+        <Setter Property="CornerRadius" Value="38"/>
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#146EBC" Offset="0"/>
+                <GradientStop Color="#2445C6" Offset="0.55"/>
+                <GradientStop Color="#3A1A9F" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="BorderBrush" Value="#29BDFC"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BoxShadow" Value="0 0 34 0 #4B1689FF"/>
+    </Style>
+    <Style Selector="TextBlock.AccountPickerTitle">
+        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontSize" Value="31"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="#F6F8FF"/>
+    </Style>
+    <Style Selector="TextBlock.AccountPickerSubtitle">
+        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="Foreground" Value="#B6C8E5"/>
+    </Style>
+    <Style Selector="Border.AccountChoiceHeroIcon">
+        <Setter Property="Width" Value="66"/>
+        <Setter Property="Height" Value="66"/>
+        <Setter Property="CornerRadius" Value="15"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    <Style Selector="Border.AccountChoiceHeroIcon.Microsoft">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#279EF5" Offset="0"/>
+                <GradientStop Color="#285EDC" Offset="0.55"/>
+                <GradientStop Color="#273FC1" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="BorderBrush" Value="#50C2FF"/>
+        <Setter Property="BoxShadow" Value="0 0 27 0 #53228DFF"/>
+    </Style>
+    <Style Selector="Border.AccountChoiceHeroIcon.Offline">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#7041DA" Offset="0"/>
+                <GradientStop Color="#48239C" Offset="0.6"/>
+                <GradientStop Color="#2D1A74" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="BorderBrush" Value="#AC71FF"/>
+        <Setter Property="BoxShadow" Value="0 0 27 0 #4B692EF2"/>
+    </Style>
+    <Style Selector="TextBlock.AccountPickerChoiceTitle">
+        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontSize" Value="21"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="#F9FAFF"/>
+    </Style>
+    <Style Selector="TextBlock.AccountPickerChoiceDescription">
+        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="LineHeight" Value="18"/>
+        <Setter Property="Foreground" Value="#BDCAE2"/>
+    </Style>
+    <Style Selector="Border.AccountChoiceArrow">
+        <Setter Property="Width" Value="46"/>
+        <Setter Property="Height" Value="46"/>
+        <Setter Property="CornerRadius" Value="23"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    <Style Selector="Border.AccountChoiceArrow.Microsoft">
+        <Setter Property="Background" Value="#1558C9"/>
+        <Setter Property="BorderBrush" Value="#4DBAFF"/>
+    </Style>
+    <Style Selector="Border.AccountChoiceArrow.Offline">
+        <Setter Property="Background" Value="#4823A2"/>
+        <Setter Property="BorderBrush" Value="#A36CFF"/>
+    </Style>
+    <Style Selector="TextBlock.AccountSecurityTitle">
+        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="#F1F5FF"/>
+    </Style>
+    <Style Selector="TextBlock.AccountSecurityDescription, TextBlock.AccountPickerFooter">
+        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontSize" Value="10.5"/>
+        <Setter Property="Foreground" Value="#9CB0CB"/>
+    </Style>
+    <Style Selector="TextBlock.AccountCardSpark">
+        <Setter Property="FontFamily" Value="Poppins"/>
+        <Setter Property="FontSize" Value="22"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+    <Style Selector="TextBlock.AccountCardSpark.Microsoft">
+        <Setter Property="Foreground" Value="#4EAEFF"/>
+    </Style>
+    <Style Selector="TextBlock.AccountCardSpark.Offline">
+        <Setter Property="Foreground" Value="#784DDB"/>
+    </Style>
+    <Style Selector="Border.AccountCardBlock.Microsoft">
+        <Setter Property="Background" Value="#123653"/>
+        <Setter Property="Opacity" Value="0.42"/>
+    </Style>
+    <Style Selector="Border.AccountCardBlock.Offline">
+        <Setter Property="Background" Value="#303157"/>
+        <Setter Property="Opacity" Value="0.38"/>
     </Style>
     <Style Selector="Button.AccountBackButton">
         <Setter Property="Padding" Value="0"/>

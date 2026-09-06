@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -45,9 +46,37 @@ public partial class App : Application
 
             _ = RefreshPublicConfigurationAsync(mainViewModel);
             LauncherAnalyticsService.StartHeartbeatLoop();
+            ExtractDefaultSkins();
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private static void ExtractDefaultSkins()
+    {
+        try
+        {
+            var cosmeticsDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "UBLauncher", "cosmetics");
+            var defaultSkinsDir = Path.Combine(cosmeticsDir, "default-skins");
+            Directory.CreateDirectory(defaultSkinsDir);
+
+            string[] skins = ["steve", "alex", "ari", "efe", "kai", "makena", "noor", "sunny", "zuri"];
+            foreach (var skin in skins)
+            {
+                var uri = new Uri($"avares://Launcher.UI/Assets/skins/{skin}.png");
+                var destPath = Path.Combine(defaultSkinsDir, $"{skin}.png");
+                if (!File.Exists(destPath))
+                {
+                    using var assetStream = Avalonia.Platform.AssetLoader.Open(uri);
+                    using var fileStream = File.Create(destPath);
+                    assetStream.CopyTo(fileStream);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to extract default skins: {ex}");
+        }
     }
 
     private static async Task RefreshPublicConfigurationAsync(MainWindowViewModel mainViewModel)

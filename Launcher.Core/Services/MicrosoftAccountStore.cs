@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Minecraft.Runtime;
 
 namespace Launcher.Core.Services;
 
@@ -21,6 +22,29 @@ public static class MicrosoftAccountStore
     public static string? MinecraftUsername => _current?.MinecraftUsername;
     public static string? MinecraftUuid => _current?.MinecraftUuid;
     public static IReadOnlyList<PersistedCape> Capes => _current?.Capes ?? [];
+
+    public record MinecraftAuthenticationSession(string Username, string Token, string Uuid);
+
+    /// <summary>
+    /// Gets valid Minecraft launch credentials, refreshing the Microsoft session first when needed.
+    /// Returns null when no account is signed in or its saved refresh token is no longer valid.
+    /// </summary>
+    public static async Task<MinecraftAuthenticationSession?> GetLaunchSessionAsync(
+        CancellationToken cancellationToken = default)
+    {
+        if (_current is null) return null;
+        if (!await TryRefreshAsync(cancellationToken)) return null;
+
+        return _current is { } session &&
+               !string.IsNullOrWhiteSpace(session.MinecraftUsername) &&
+               !string.IsNullOrWhiteSpace(session.MinecraftToken) &&
+               !string.IsNullOrWhiteSpace(session.MinecraftUuid)
+            ? new MinecraftAuthenticationSession(
+                session.MinecraftUsername,
+                session.MinecraftToken,
+                session.MinecraftUuid)
+            : null;
+    }
 
     // -------------------------------------------------------------------------
     // Persisted data model
