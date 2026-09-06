@@ -3107,32 +3107,27 @@
         <Setter Property="CornerRadius" Value="10"/>
     </Style>
     <Style Selector="Border.HomePanel">
-        <Setter Property="Background" Value="#000000"/>
-        <Setter Property="BorderBrush" Value="#33FFFFFF"/>
+        <Setter Property="Background" Value="#081119"/>
+        <Setter Property="BorderBrush" Value="#273C4A"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="CornerRadius" Value="12"/>
     </Style>
     <Style Selector="Border.PartnerPanel">
-        <Setter Property="Background" Value="#000000"/>
-        <Setter Property="BorderBrush" Value="#33FFFFFF"/>
+        <Setter Property="Background" Value="#081119"/>
+        <Setter Property="BorderBrush" Value="#273C4A"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="CornerRadius" Value="12"/>
     </Style>
     <Style Selector="Border.PerformanceSummaryCard">
-        <Setter Property="Background" Value="#000000"/>
-        <Setter Property="BorderBrush" Value="#33FFFFFF"/>
+        <Setter Property="Background" Value="#081119"/>
+        <Setter Property="BorderBrush" Value="#273C4A"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="CornerRadius" Value="12"/>
     </Style>
     <Style Selector="Border.RecentInstancesPanel">
-        <Setter Property="BorderBrush" Value="#1AFFFFFF"/>
-        <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="10"/>
     </Style>
     <Style Selector="Border.RecentServersPanel">
-        <Setter Property="Background" Value="#000000"/>
-        <Setter Property="BorderBrush" Value="#1AFFFFFF"/>
-        <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="10"/>
     </Style>
     <Style Selector="Border.QuickActionsCard">
