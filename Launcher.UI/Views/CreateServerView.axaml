@@ -9,7 +9,7 @@
              d:DesignHeight="860"
              x:Class="Launcher.UI.Views.CreateServerView"
              x:DataType="vm:CreateServerViewModel">
-    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+    
         <Grid Margin="32 28 32 36" RowDefinitions="Auto,Auto,*" RowSpacing="16">
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="18">
                 <StackPanel Spacing="6">
@@ -26,8 +26,8 @@
                 </Grid>
             </Border>
 
-            <Grid x:Name="ServerWorkspaceGrid" Grid.Row="2" ColumnDefinitions="360,*" ColumnSpacing="18" RowDefinitions="Auto,Auto">
-                <Border x:Name="ServerListPanel" Classes="WorkspaceSection" VerticalAlignment="Top">
+            <Grid x:Name="ServerWorkspaceGrid" Grid.Row="2" ColumnDefinitions="360,*" ColumnSpacing="18" RowDefinitions="*">
+                <Border x:Name="ServerListPanel" Classes="WorkspaceSection" VerticalAlignment="Stretch">
                     <StackPanel Spacing="14">
                         <Grid ColumnDefinitions="*,Auto">
                             <StackPanel Spacing="3">
@@ -36,7 +36,8 @@
                             </StackPanel>
                             <TextBlock Grid.Column="1" Text="{Binding Servers.Count, StringFormat='{}{0} saved'}" Classes="WorkspaceSecondary" VerticalAlignment="Center"/>
                         </Grid>
-                        <ItemsControl ItemsSource="{Binding Servers}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <ItemsControl ItemsSource="{Binding Servers}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate x:DataType="vm:LocalServerItem">
                                     <Button Classes="ServerListCard"
@@ -62,6 +63,7 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
+                        </ScrollViewer>
                     </StackPanel>
                 </Border>
 
@@ -323,7 +325,8 @@
                     </Grid>
                 </Border>
 
-                <Border Grid.Column="1" Classes="WorkspaceSection ServerCreatorPanel" VerticalAlignment="Top" IsVisible="{Binding IsCreatePanelVisible}">
+                <Border Grid.Column="1" Classes="WorkspaceSection ServerCreatorPanel" VerticalAlignment="Stretch" IsVisible="{Binding IsCreatePanelVisible}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel Spacing="18" MaxWidth="560" HorizontalAlignment="Stretch">
                         <Grid ColumnDefinitions="*,Auto">
                             <StackPanel Spacing="5">
@@ -505,8 +508,8 @@
                             <TextBlock Text="UB Launcher will automatically download all required software and start the server immediately." Classes="WorkspaceSecondary" FontSize="11" TextAlignment="Center" TextWrapping="Wrap"/>
                         </StackPanel>
                     </StackPanel>
+                    </ScrollViewer>
                 </Border>
             </Grid>
         </Grid>
-    </ScrollViewer>
 </UserControl>
