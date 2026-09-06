@@ -429,17 +429,11 @@
                                             IsEnabled="{Binding !IsBusy}"
                                             ToolTip.Tip="Turn this content on or off"
                                             VerticalAlignment="Center">
-                                        <Grid Width="56" Height="26">
-                                            <TextBlock Text="ON" IsVisible="{Binding IsEnabled}" Margin="9 0 0 0"
-                                                       FontFamily="Inter" FontSize="9" FontWeight="Bold" Foreground="White"
-                                                       HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                            <TextBlock Text="OFF" IsVisible="{Binding !IsEnabled}" Margin="0 0 7 0"
-                                                       FontFamily="Inter" FontSize="9" FontWeight="Bold" Foreground="#AEB8BE"
-                                                       HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                                            <Border Width="20" Height="20" CornerRadius="10" Margin="3"
+                                        <Grid Width="44" Height="24">
+                                            <Border Width="20" Height="20" CornerRadius="10" Margin="2"
                                                     IsVisible="{Binding IsEnabled}" HorizontalAlignment="Right" VerticalAlignment="Center"
                                                     Background="#F5FBF8" BorderBrush="#D8EEE4" BorderThickness="1"/>
-                                            <Border Width="20" Height="20" CornerRadius="10" Margin="3"
+                                            <Border Width="20" Height="20" CornerRadius="10" Margin="2"
                                                     IsVisible="{Binding !IsEnabled}" HorizontalAlignment="Left" VerticalAlignment="Center"
                                                     Background="#F2F5F6" BorderBrush="#D4DADC" BorderThickness="1"/>
                                         </Grid>

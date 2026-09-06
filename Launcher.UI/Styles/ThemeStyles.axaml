@@ -2525,10 +2525,10 @@
         <Setter Property="BorderBrush" Value="#3D7596"/>
     </Style>
     <Style Selector="Button.ManagedContentToggle">
-        <Setter Property="Width" Value="62"/>
-        <Setter Property="Height" Value="30"/>
+        <Setter Property="Width" Value="48"/>
+        <Setter Property="Height" Value="28"/>
         <Setter Property="Padding" Value="0"/>
-        <Setter Property="CornerRadius" Value="15"/>
+        <Setter Property="CornerRadius" Value="14"/>
         <Setter Property="Background" Value="#1A2227"/>
         <Setter Property="Foreground" Value="#AEB8BE"/>
         <Setter Property="BorderBrush" Value="#46545D"/>
