@@ -1620,12 +1620,13 @@
     <Style Selector="Button.WorkspaceInstallButton">
         <Setter Property="MinHeight" Value="40"/>
         <Setter Property="Background" Value="#102642"/>
-        <Setter Property="Foreground" Value="#A8D0FF"/>
+        <Setter Property="Foreground" Value="#BDE0FF"/>
         <Setter Property="BorderBrush" Value="#3A76B7"/>
+        <Setter Property="CornerRadius" Value="8"/>
     </Style>
     <Style Selector="Button.WorkspaceInstallButton:pointerover">
-        <Setter Property="Background" Value="#194276"/>
-        <Setter Property="BorderBrush" Value="#6AA5E8"/>
+        <Setter Property="Background" Value="#2564C7"/>
+        <Setter Property="BorderBrush" Value="#90CAFF"/>
         <Setter Property="Foreground" Value="White"/>
     </Style>
 
