@@ -16,14 +16,26 @@
                         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                             <StackPanel Spacing="5">
                                 <TextBlock Text="Display" Classes="SettingsGroupLabel"/>
-                                <Button Content="Appearance" Classes="SettingsNavButton" Classes.Active="{Binding IsAppearanceSelected}" Command="{Binding SelectSectionCommand}" CommandParameter="Appearance"/>
-                                <Button Content="Behavior" Classes="SettingsNavButton" Classes.Active="{Binding IsBehaviorSelected}" Command="{Binding SelectSectionCommand}" CommandParameter="Behavior"/>
+                                <Button Classes="SettingsNavButton" Classes.Active="{Binding IsAppearanceSelected}" Command="{Binding SelectSectionCommand}" CommandParameter="Appearance">
+                                    <StackPanel Orientation="Horizontal" Spacing="12"><TextBlock Text="&#xE7F4;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center"/><TextBlock Text="Appearance" VerticalAlignment="Center"/></StackPanel>
+                                </Button>
+                                <Button Classes="SettingsNavButton" Classes.Active="{Binding IsBehaviorSelected}" Command="{Binding SelectSectionCommand}" CommandParameter="Behavior">
+                                    <StackPanel Orientation="Horizontal" Spacing="12"><TextBlock Text="&#xE8A4;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center"/><TextBlock Text="Behavior" VerticalAlignment="Center"/></StackPanel>
+                                </Button>
                                 <TextBlock Text="Privacy" Classes="SettingsGroupLabel" Margin="0 16 0 0"/>
-                                <Button Content="Privacy" Classes="SettingsNavButton" Classes.Active="{Binding IsPrivacySelected}" Command="{Binding SelectSectionCommand}" CommandParameter="Privacy"/>
+                                <Button Classes="SettingsNavButton" Classes.Active="{Binding IsPrivacySelected}" Command="{Binding SelectSectionCommand}" CommandParameter="Privacy">
+                                    <StackPanel Orientation="Horizontal" Spacing="12"><TextBlock Text="&#xE814;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center"/><TextBlock Text="Privacy" VerticalAlignment="Center"/></StackPanel>
+                                </Button>
                                 <TextBlock Text="Instances" Classes="SettingsGroupLabel" Margin="0 16 0 0"/>
-                                <Button Content="Default game options" Classes="SettingsNavButton" Classes.Active="{Binding IsGameOptionsSelected}" Command="{Binding SelectSectionCommand}" CommandParameter="GameOptions"/>
-                                <Button Content="Java installations" Classes="SettingsNavButton" Classes.Active="{Binding IsJavaSelected}" Command="{Binding SelectSectionCommand}" CommandParameter="Java"/>
-                                <Button Content="Resource management" Classes="SettingsNavButton" Classes.Active="{Binding IsResourcesSelected}" Command="{Binding SelectSectionCommand}" CommandParameter="Resources"/>
+                                <Button Classes="SettingsNavButton" Classes.Active="{Binding IsGameOptionsSelected}" Command="{Binding SelectSectionCommand}" CommandParameter="GameOptions">
+                                    <StackPanel Orientation="Horizontal" Spacing="12"><TextBlock Text="&#xE7FC;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center"/><TextBlock Text="Default game options" VerticalAlignment="Center"/></StackPanel>
+                                </Button>
+                                <Button Classes="SettingsNavButton" Classes.Active="{Binding IsJavaSelected}" Command="{Binding SelectSectionCommand}" CommandParameter="Java">
+                                    <StackPanel Orientation="Horizontal" Spacing="12"><TextBlock Text="&#xE8A2;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center"/><TextBlock Text="Java installations" VerticalAlignment="Center"/></StackPanel>
+                                </Button>
+                                <Button Classes="SettingsNavButton" Classes.Active="{Binding IsResourcesSelected}" Command="{Binding SelectSectionCommand}" CommandParameter="Resources">
+                                    <StackPanel Orientation="Horizontal" Spacing="12"><TextBlock Text="&#xE7B8;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center"/><TextBlock Text="Resource management" VerticalAlignment="Center"/></StackPanel>
+                                </Button>
                             </StackPanel>
                         </ScrollViewer>
                         <StackPanel Grid.Row="1" Spacing="4" Margin="16 18 0 0"><TextBlock Text="UB Launcher" FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold" Foreground="#E5E8EB"/><TextBlock Text="Performance Edition" FontFamily="Segoe UI" FontSize="14" Foreground="#AEB5BE"/></StackPanel>

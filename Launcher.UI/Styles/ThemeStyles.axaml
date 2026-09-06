@@ -1384,11 +1384,11 @@
     <Style Selector="Button.CosmeticDeleteButton:pointerover"><Setter Property="Background" Value="#CB5260"/></Style>
     <Style Selector="Border.ReadableServerRow"><Setter Property="Background" Value="#10161A"/><Setter Property="BorderBrush" Value="#303A42"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="7"/></Style>
     <!-- Settings readability overrides -->
-    <Style Selector="Border.SettingsShell"><Setter Property="MaxWidth" Value="1040"/><Setter Property="Background" Value="#171B20"/><Setter Property="BorderBrush" Value="#3A4249"/><Setter Property="CornerRadius" Value="8"/></Style>
+    <Style Selector="Border.SettingsShell"><Setter Property="MaxWidth" Value="1040"/><Setter Property="Background" Value="#080D11"/><Setter Property="BorderBrush" Value="#1A252E"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="14"/><Setter Property="BoxShadow" Value="0 12 32 0 #40000000"/></Style>
     <Style Selector="TextBlock.SettingsTitle"><Setter Property="FontSize" Value="26"/></Style>
-    <Style Selector="Button.SettingsCloseButton"><Setter Property="Width" Value="38"/><Setter Property="Height" Value="38"/><Setter Property="CornerRadius" Value="6"/><Setter Property="Background" Value="#22282D"/><Setter Property="BorderBrush" Value="#3A434A"/><Setter Property="HorizontalContentAlignment" Value="Center"/><Setter Property="VerticalContentAlignment" Value="Center"/></Style>
+    <Style Selector="Button.SettingsCloseButton"><Setter Property="Width" Value="38"/><Setter Property="Height" Value="38"/><Setter Property="CornerRadius" Value="19"/><Setter Property="Background" Value="#10181E"/><Setter Property="BorderThickness" Value="1"/><Setter Property="BorderBrush" Value="#2A3846"/><Setter Property="HorizontalContentAlignment" Value="Center"/><Setter Property="VerticalContentAlignment" Value="Center"/></Style>
     <Style Selector="TextBlock.SettingsGroupLabel"><Setter Property="FontSize" Value="14"/><Setter Property="Foreground" Value="#9DA6AD"/><Setter Property="Margin" Value="14 0 0 7"/></Style>
-    <Style Selector="Button.SettingsNavButton"><Setter Property="Height" Value="44"/><Setter Property="CornerRadius" Value="6"/><Setter Property="Padding" Value="14 0"/><Setter Property="FontSize" Value="15"/><Setter Property="FontWeight" Value="Medium"/></Style>
+    <Style Selector="Button.SettingsNavButton"><Setter Property="Height" Value="44"/><Setter Property="CornerRadius" Value="22"/><Setter Property="Padding" Value="14 0"/><Setter Property="FontSize" Value="15"/><Setter Property="FontWeight" Value="Medium"/></Style>
     <Style Selector="Button.SettingsNavButton.Active"><Setter Property="Background" Value="#142944"/><Setter Property="Foreground" Value="#82B5FF"/></Style>
     <Style Selector="TextBlock.SettingsPageHeading"><Setter Property="FontSize" Value="24"/></Style>
     <Style Selector="TextBlock.SettingsSectionTitle"><Setter Property="FontSize" Value="16"/><Setter Property="LineHeight" Value="22"/></Style>
@@ -2438,24 +2438,27 @@
         <Setter Property="BorderBrush" Value="#34566C"/>
     </Style>
     <Style Selector="Border.SettingsContentCard">
-        <Setter Property="Background" Value="#0A141B"/>
-        <Setter Property="BorderBrush" Value="#2A3F4D"/>
-        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Background" Value="#0B1319"/>
+        <Setter Property="BorderBrush" Value="#223340"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BoxShadow" Value="0 4 10 0 #20000000"/>
     </Style>
     <Style Selector="Border.SettingsDivider">
-        <Setter Property="Background" Value="#20333F"/>
+        <Setter Property="Background" Value="#172733"/>
+        <Setter Property="Height" Value="1"/>
     </Style>
     <Style Selector="Button.SettingsNavButton:pointerover">
-        <Setter Property="Background" Value="#102536"/>
+        <Setter Property="Background" Value="#1AFFFFFF"/>
         <Setter Property="Foreground" Value="#F4FAFE"/>
     </Style>
     <Style Selector="Button.SettingsNavButton.Active">
-        <Setter Property="Background" Value="{DynamicResource BrandGradientBrush}"/>
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="#11FFFFFF"/>
+        <Setter Property="Foreground" Value="#82B5FF"/>
     </Style>
     <Style Selector="Button.SettingsNavButton.Active:pointerover">
-        <Setter Property="Background" Value="{DynamicResource BrandGradientHoverBrush}"/>
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="#22FFFFFF"/>
+        <Setter Property="Foreground" Value="#82B5FF"/>
     </Style>
     <Style Selector="Button.SettingsCloseButton">
         <Setter Property="Background" Value="#0B1720"/>
@@ -3360,5 +3363,12 @@
         <Setter Property="Background" Value="#18354A"/>
         <Setter Property="BorderBrush" Value="#4CCBFF"/>
         <Setter Property="Foreground" Value="#EAF9FF"/>
+    </Style>
+    
+    <!-- Modern ToggleSwitch without On/Off text -->
+    <Style Selector="ToggleSwitch">
+        <Setter Property="OnContent" Value="{x:Null}"/>
+        <Setter Property="OffContent" Value="{x:Null}"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
     </Style>
 </Styles>
