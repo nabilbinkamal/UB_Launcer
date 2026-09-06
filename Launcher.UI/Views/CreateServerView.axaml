@@ -98,7 +98,7 @@
 
                             <!-- Console Tab -->
                             <TabItem Header="Console">
-                                <Grid x:Name="ConsoleWorkspaceGrid" ColumnDefinitions="*,260" ColumnSpacing="16" RowDefinitions="Auto,Auto" Margin="0,8,0,0">
+                                <Grid x:Name="ConsoleWorkspaceGrid" ColumnDefinitions="*,260" ColumnSpacing="16" Margin="0,8,0,0">
                                     <Grid RowDefinitions="*,Auto" RowSpacing="12">
                                         <Border Background="#05090C" BorderBrush="#152636" BorderThickness="1" CornerRadius="6" Padding="8">
                                             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
