@@ -2697,13 +2697,13 @@
             </LinearGradientBrush>
         </Setter>
     </Style>
-    <Style Selector="Button.AccountChoiceButton:pointerover">
+    <Style Selector="Button.AccountChoiceButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="BorderBrush" Value="#74BDFF"/>
     </Style>
-    <Style Selector="Button.AccountChoiceButton.Offline:pointerover">
+    <Style Selector="Button.AccountChoiceButton.Offline:pointerover /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="BorderBrush" Value="#B082FF"/>
     </Style>
-    <Style Selector="Button.AccountChoiceButton.Microsoft:pointerover">
+    <Style Selector="Button.AccountChoiceButton.Microsoft:pointerover /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background">
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                 <GradientStop Color="#1B4F82" Offset="0"/>
@@ -2711,11 +2711,13 @@
                 <GradientStop Color="#10233A" Offset="1"/>
             </LinearGradientBrush>
         </Setter>
+    </Style>
+    <Style Selector="Button.AccountChoiceButton.Microsoft:pointerover">
         <Setter Property="Effect">
             <DropShadowEffect Color="#148EFF" BlurRadius="32" Opacity="0.72" OffsetX="0" OffsetY="5"/>
         </Setter>
     </Style>
-    <Style Selector="Button.AccountChoiceButton.Offline:pointerover">
+    <Style Selector="Button.AccountChoiceButton.Offline:pointerover /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background">
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                 <GradientStop Color="#302568" Offset="0"/>
@@ -2723,11 +2725,13 @@
                 <GradientStop Color="#141833" Offset="1"/>
             </LinearGradientBrush>
         </Setter>
+    </Style>
+    <Style Selector="Button.AccountChoiceButton.Offline:pointerover">
         <Setter Property="Effect">
             <DropShadowEffect Color="#8351FF" BlurRadius="32" Opacity="0.65" OffsetX="0" OffsetY="5"/>
         </Setter>
     </Style>
-    <Style Selector="Button.AccountChoiceButton:pressed">
+    <Style Selector="Button.AccountChoiceButton:pressed /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="#0D202D"/>
         <Setter Property="BorderBrush" Value="#9DDCFF"/>
     </Style>
