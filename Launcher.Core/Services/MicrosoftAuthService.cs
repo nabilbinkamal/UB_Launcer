@@ -53,7 +53,17 @@ public static class MicrosoftAuthService
         IProgress<string>? progress = null,
         CancellationToken cancellationToken = default)
     {
-        var redirectUri = "http://localhost:59125/";
+        int port = 59125;
+        try
+        {
+            var tcpListener = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 0);
+            tcpListener.Start();
+            port = ((System.Net.IPEndPoint)tcpListener.LocalEndpoint).Port;
+            tcpListener.Stop();
+        }
+        catch { }
+
+        var redirectUri = $"http://localhost:{port}/";
         var authorizeUrl = $"https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?client_id={ClientId}&response_type=code&redirect_uri={Uri.EscapeDataString(redirectUri)}&scope={Uri.EscapeDataString("XboxLive.signin offline_access")}";
 
         using var listener = new System.Net.HttpListener();
@@ -64,7 +74,7 @@ public static class MicrosoftAuthService
         }
         catch (Exception ex)
         {
-            throw new InvalidOperationException($"Could not start local web server for authentication. Is port 59125 in use? ({ex.Message})");
+            throw new InvalidOperationException($"Could not start local web server for authentication. Is port {port} in use? ({ex.Message})");
         }
 
         // Open the browser

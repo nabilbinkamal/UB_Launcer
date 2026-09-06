@@ -451,13 +451,6 @@
                                     <TextBlock Text="Microsoft sign-in" Classes="AccountChoiceTitle"/>
                                     <TextBlock Text="Sign in with your Microsoft account" Classes="AccountChoiceDescription"/>
                                 </StackPanel>
-                                <Button Grid.Column="2" Classes="AccountBackButton" Command="{Binding CancelMicrosoftSignInCommand}"
-                                        VerticalAlignment="Center">
-                                    <StackPanel Orientation="Horizontal" Spacing="6">
-                                        <TextBlock Text="✕" FontFamily="Segoe UI" FontSize="13" VerticalAlignment="Center"/>
-                                        <TextBlock Text="Cancel" FontFamily="Segoe UI" FontSize="12" VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                </Button>
                             </Grid>
 
                             <!-- Interactive Browser Instruction -->
