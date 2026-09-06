@@ -284,7 +284,7 @@ public static class DiscordPresenceService
         DateTime StartedAtUtc)
     {
         public static PresenceState Launcher(string username, DateTime startedAtUtc) =>
-            new(false, "Browsing UB Launcher", $"Signed in as {username}", string.Empty, startedAtUtc);
+            new(false, "Playing in UBLauncher", $"Signed as {username}", string.Empty, startedAtUtc);
 
         public static PresenceState Game(
             string instanceName,
