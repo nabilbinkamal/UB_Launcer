@@ -1864,15 +1864,15 @@
         <Setter Property="Margin" Value="0"/>
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
     </Style>
-    <Style Selector="ListBox.ContentCatalogList > ListBoxItem:pointerover">
+    <Style Selector="ListBox.ContentCatalogList > ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
-    <Style Selector="ListBox.ContentCatalogList > ListBoxItem:selected">
+    <Style Selector="ListBox.ContentCatalogList > ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
-    <Style Selector="ListBox.ContentCatalogList > ListBoxItem:focus">
+    <Style Selector="ListBox.ContentCatalogList > ListBoxItem:focus /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
@@ -2499,11 +2499,11 @@
         <Setter Property="Margin" Value="0"/>
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
     </Style>
-    <Style Selector="ListBox.ManagedContentList > ListBoxItem:pointerover">
+    <Style Selector="ListBox.ManagedContentList > ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
-    <Style Selector="ListBox.ManagedContentList > ListBoxItem:selected">
+    <Style Selector="ListBox.ManagedContentList > ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
