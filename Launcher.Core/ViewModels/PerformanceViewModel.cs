@@ -2,11 +2,37 @@ using System;
 using System.Collections.Generic;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Launcher.Core.Services;
 
 namespace Launcher.Core.ViewModels;
 
 public partial class PerformanceViewModel : ViewModelBase
 {
+    public PerformanceViewModel()
+    {
+        var savedProfile = LauncherGameSettingsStore.Current.PerformanceProfile;
+        if (string.IsNullOrWhiteSpace(savedProfile))
+        {
+            // Auto-detect based on system specs for the very first time
+            var ramGb = GC.GetGCMemoryInfo().TotalAvailableMemoryBytes / 1024.0 / 1024.0 / 1024.0;
+            var cores = Environment.ProcessorCount;
+            
+            if (ramGb >= 14 && cores >= 8)
+            {
+                savedProfile = "High";
+            }
+            else if (ramGb <= 6 || cores <= 4)
+            {
+                savedProfile = "Efficiency";
+            }
+            else
+            {
+                savedProfile = "Balanced";
+            }
+        }
+        SelectProfile(savedProfile);
+    }
+
     [ObservableProperty] private string _selectedProfile = "Balanced";
     [ObservableProperty] private bool _enableOptimizationPack = true;
     [ObservableProperty] private bool _enableFastLaunch = true;
@@ -87,6 +113,13 @@ public partial class PerformanceViewModel : ViewModelBase
         }
 
         SelectedProfile = profile;
+
+        var currentSettings = LauncherGameSettingsStore.Current;
+        if (currentSettings.PerformanceProfile != profile)
+        {
+            LauncherGameSettingsStore.Update(currentSettings with { PerformanceProfile = profile });
+        }
+
         switch (profile)
         {
             case "High":

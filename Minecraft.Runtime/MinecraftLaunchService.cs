@@ -22,21 +22,71 @@ public sealed record MinecraftLaunchConfiguration
     public string Java8Path { get; init; } = string.Empty;
     public string CustomJvmArguments { get; init; } = string.Empty;
     public bool MaxPerformanceMode { get; init; } = true;
+    public bool ForceDedicatedGpu { get; init; } = true;
+    public bool UseHighProcessPriority { get; init; } = true;
 }
 
 public sealed class MinecraftLaunchService
 {
+    private static int retiredUbClientCleanupDone;
     private readonly MinecraftLauncher launcher;
     private readonly string root;
 
     public MinecraftLaunchService(string? gameDirectory = null)
     {
-        RemoveAllRetiredUbClientFiles();
+        if (Interlocked.CompareExchange(ref retiredUbClientCleanupDone, 1, 0) == 0)
+        {
+            _ = Task.Run(RemoveAllRetiredUbClientFiles);
+        }
         root = string.IsNullOrWhiteSpace(gameDirectory)
             ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "UBLauncher", "minecraft")
             : gameDirectory;
         Directory.CreateDirectory(root);
         launcher = new MinecraftLauncher(new MinecraftPath(root));
+        if (launcher.GameInstaller is CmlLib.Core.Installers.ParallelGameInstaller installer)
+        {
+            installer.CheckFileChecksum = false;
+        }
+    }
+
+    public bool IsVersionInstalledLocally(string targetVersion)
+    {
+        try
+        {
+            var versionDir = Path.Combine(root, "versions", targetVersion);
+            var jsonFile = Path.Combine(versionDir, $"{targetVersion}.json");
+            if (!File.Exists(jsonFile) || new FileInfo(jsonFile).Length < 100)
+            {
+                return false;
+            }
+
+            var directJar = Path.Combine(versionDir, $"{targetVersion}.jar");
+            if (File.Exists(directJar) && new FileInfo(directJar).Length > 1024 * 1024)
+            {
+                return true;
+            }
+
+            using var jsonStream = File.OpenRead(jsonFile);
+            using var doc = JsonDocument.Parse(jsonStream);
+            if (doc.RootElement.TryGetProperty("inheritsFrom", out var inheritsProp))
+            {
+                var baseVersion = inheritsProp.GetString();
+                if (!string.IsNullOrWhiteSpace(baseVersion))
+                {
+                    var baseJar = Path.Combine(root, "versions", baseVersion, $"{baseVersion}.jar");
+                    if (File.Exists(baseJar) && new FileInfo(baseJar).Length > 1024 * 1024)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        catch
+        {
+            return false;
+        }
+
+        return false;
     }
 
     public async Task<Process> LaunchOfflineAsync(
@@ -60,8 +110,12 @@ public sealed class MinecraftLaunchService
             progress?.Report("UB Client is disabled; launching the selected Minecraft version normally.");
         }
 
-        progress?.Report($"Installing Minecraft {version}...");
-        await launcher.InstallAsync(version);
+        var isAlreadyInstalled = IsVersionInstalledLocally(version);
+        if (!isAlreadyInstalled)
+        {
+            progress?.Report($"Installing Minecraft {version}...");
+            await launcher.InstallAsync(version);
+        }
         progress?.Report("Preparing Minecraft process...");
 
         var requiredJavaMajor = await GetRequiredJavaMajorVersionAsync(version);
@@ -137,13 +191,17 @@ public sealed class MinecraftLaunchService
             progress?.Report("Saved Java path is unavailable; selecting a compatible Java runtime automatically.");
         }
 
-        // Keep JVM tuning in CmlLib's argument pipeline so options are inserted
-        // before the Minecraft main class and remain compatible with every loader.
-        if (!string.IsNullOrWhiteSpace(configuration.CustomJvmArguments))
+        // Inject ultra-performance JVM arguments for maximum FPS and zero-stutter frame times
+        var optimizedJvmArgs = BuildOptimizedJvmArguments(
+            configuration.CustomJvmArguments,
+            requiredJavaMajor,
+            configuration.MaxPerformanceMode);
+
+        if (!string.IsNullOrWhiteSpace(optimizedJvmArgs))
         {
             launchOption.ExtraJvmArguments =
             [
-                MArgument.FromCommandLine(configuration.CustomJvmArguments)
+                MArgument.FromCommandLine(optimizedJvmArgs)
             ];
         }
 
@@ -153,7 +211,17 @@ public sealed class MinecraftLaunchService
             progress?.Report("Applying safe FPS performance preset...");
         }
 
-        var process = await launcher.BuildProcessAsync(version, launchOption);
+        Process process;
+        try
+        {
+            process = await launcher.BuildProcessAsync(version, launchOption);
+        }
+        catch (Exception) when (isAlreadyInstalled)
+        {
+            progress?.Report($"Missing game files detected. Repairing Minecraft {version}...");
+            await launcher.InstallAsync(version);
+            process = await launcher.BuildProcessAsync(version, launchOption);
+        }
         process.StartInfo.UseShellExecute = false;
         process.StartInfo.RedirectStandardOutput = false;
         process.StartInfo.RedirectStandardError = false;
@@ -161,9 +229,132 @@ public sealed class MinecraftLaunchService
         process.StartInfo.WorkingDirectory = root;
         AddNativeLibraryPath(process.StartInfo, version);
         process.StartInfo.EnvironmentVariables["UB_LAUNCHER_AUTH_TOKEN"] = Guid.NewGuid().ToString();
+
+        if (configuration.ForceDedicatedGpu)
+        {
+            // Force discrete NVIDIA/AMD GPU on Windows & Linux hybrid graphics systems
+            process.StartInfo.EnvironmentVariables["SHIM_MCCOMPAT"] = "0xD";
+            process.StartInfo.EnvironmentVariables["__NV_PRIME_RENDER_OFFLOAD"] = "1";
+            process.StartInfo.EnvironmentVariables["__GLX_VENDOR_LIBRARY_NAME"] = "nvidia";
+            process.StartInfo.EnvironmentVariables["__GL_THREADED_OPTIMIZATIONS"] = "1";
+            process.StartInfo.EnvironmentVariables["DRI_PRIME"] = "1";
+            process.StartInfo.EnvironmentVariables["MESA_GL_VERSION_OVERRIDE"] = "4.6";
+
+            TryEnforceWindowsDirectXHighPerformanceGpu(launchOption.JavaPath ?? javaPath);
+        }
+
         progress?.Report("Starting Minecraft...");
         process.Start();
+
+        if (configuration.UseHighProcessPriority)
+        {
+            try
+            {
+                process.PriorityClass = ProcessPriorityClass.High;
+            }
+            catch
+            {
+            }
+        }
+
         return process;
+    }
+
+    public static string BuildOptimizedJvmArguments(string? userCustomArgs, int javaMajorVersion, bool maxPerformance)
+    {
+        if (!maxPerformance)
+        {
+            return userCustomArgs?.Trim() ?? string.Empty;
+        }
+
+        var flags = new List<string>();
+
+        // Use Generational ZGC for Java 21+ which provides massive latency improvements and better frametimes
+        if (javaMajorVersion >= 21)
+        {
+            flags.AddRange(new[]
+            {
+                "-XX:+UseZGC",
+                "-XX:+ZGenerational",
+                "-XX:+UnlockExperimentalVMOptions",
+                "-XX:+DisableExplicitGC",
+                "-XX:+PerfDisableSharedMem",
+                "-XX:+UseStringDeduplication",
+                "-XX:+OptimizeStringConcat"
+            });
+        }
+        else
+        {
+            // Aggressive G1GC tuning for Java 8-17
+            flags.AddRange(new[]
+            {
+                "-XX:+UseG1GC",
+                "-XX:+ParallelRefProcEnabled",
+                "-XX:MaxGCPauseMillis=200",
+                "-XX:+UnlockExperimentalVMOptions",
+                "-XX:+DisableExplicitGC",
+                "-XX:G1NewSizePercent=30",
+                "-XX:G1MaxNewSizePercent=40",
+                "-XX:G1ReservePercent=20",
+                "-XX:G1HeapWastePercent=5",
+                "-XX:G1MixedGCCountTarget=4",
+                "-XX:InitiatingHeapOccupancyPercent=15",
+                "-XX:G1MixedGCLiveThresholdPercent=90",
+                "-XX:G1RSetUpdatingPauseTimePercent=5",
+                "-XX:SurvivorRatio=32",
+                "-XX:+PerfDisableSharedMem",
+                "-XX:MaxTenuringThreshold=1",
+                "-Dsun.rmi.dgc.server.gcInterval=2147483646",
+                "-XX:+UseStringDeduplication",
+                "-XX:+OptimizeStringConcat"
+            });
+        }
+
+        if (javaMajorVersion >= 17)
+        {
+            flags.Add("--add-modules=jdk.naming.dns");
+            flags.Add("--add-exports=java.base/sun.security.x509=ALL-UNNAMED");
+            flags.Add("--add-opens=java.base/java.lang=ALL-UNNAMED");
+            flags.Add("--add-opens=java.base/java.lang.reflect=ALL-UNNAMED");
+            flags.Add("--add-opens=java.base/java.util=ALL-UNNAMED");
+        }
+
+        if (!string.IsNullOrWhiteSpace(userCustomArgs))
+        {
+            flags.Add(userCustomArgs.Trim());
+        }
+
+        return string.Join(" ", flags);
+    }
+
+    private static void TryEnforceWindowsDirectXHighPerformanceGpu(string? javaExecutablePath)
+    {
+        if (string.IsNullOrWhiteSpace(javaExecutablePath) || !OperatingSystem.IsWindows())
+        {
+            return;
+        }
+
+        try
+        {
+            using var key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\DirectX\UserGpuPreferences");
+            if (key is not null)
+            {
+                // GpuPreference=2; forces Windows graphics pipeline to use High Performance Discrete GPU
+                key.SetValue(javaExecutablePath, "GpuPreference=2;", Microsoft.Win32.RegistryValueKind.String);
+
+                var dir = Path.GetDirectoryName(javaExecutablePath);
+                if (!string.IsNullOrWhiteSpace(dir))
+                {
+                    var javaw = Path.Combine(dir, "javaw.exe");
+                    var java = Path.Combine(dir, "java.exe");
+                    if (File.Exists(javaw)) key.SetValue(javaw, "GpuPreference=2;", Microsoft.Win32.RegistryValueKind.String);
+                    if (File.Exists(java)) key.SetValue(java, "GpuPreference=2;", Microsoft.Win32.RegistryValueKind.String);
+                }
+            }
+        }
+        catch
+        {
+        }
     }
 
     private static void ApplyMaxPerformanceOptions(string gameDirectory)
@@ -172,17 +363,6 @@ public sealed class MinecraftLaunchService
 
         try
         {
-            // Never overwrite a player's choices. Existing instances keep their
-            // complete Minecraft settings unchanged on every launch.
-            if (File.Exists(optionsPath))
-            {
-                return;
-            }
-
-            // These keys are shared by modern Minecraft versions. Unknown keys are
-            // ignored by older versions, so the preset remains version-safe. This
-            // file is created only for a brand-new instance; Minecraft remains free
-            // to rewrite it after the player changes any option.
             var performanceValues = new Dictionary<string, string>(StringComparer.Ordinal)
             {
                 ["graphics"] = "fast",
@@ -192,8 +372,9 @@ public sealed class MinecraftLaunchService
                 ["entityShadows"] = "false",
                 ["particles"] = "decreased",
                 ["clouds"] = "false",
+                ["enableVsync"] = "false",
                 ["vSync"] = "false",
-                ["maxFps"] = "240",
+                ["maxFps"] = "260",
                 ["mipmapLevels"] = "0",
                 ["biomeBlendRadius"] = "0",
                 ["distortionEffectScale"] = "0.0",
@@ -201,8 +382,46 @@ public sealed class MinecraftLaunchService
                 ["darknessEffectScale"] = "0.0"
             };
 
-            var output = performanceValues.Select(pair => $"{pair.Key}:{pair.Value}");
-            File.WriteAllLines(optionsPath, output, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+            if (!File.Exists(optionsPath))
+            {
+                var output = performanceValues.Select(pair => $"{pair.Key}:{pair.Value}");
+                File.WriteAllLines(optionsPath, output, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+                return;
+            }
+
+            var lines = File.ReadAllLines(optionsPath).ToList();
+            var changed = false;
+            for (var i = 0; i < lines.Count; i++)
+            {
+                var line = lines[i];
+                var separator = line.IndexOf(':');
+                if (separator <= 0) continue;
+                var key = line[..separator].Trim();
+                var val = line[(separator + 1)..].Trim();
+
+                if (key.Equals("enableVsync", StringComparison.OrdinalIgnoreCase) ||
+                    key.Equals("vSync", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (val.Equals("true", StringComparison.OrdinalIgnoreCase))
+                    {
+                        lines[i] = $"{key}:false";
+                        changed = true;
+                    }
+                }
+                else if (key.Equals("maxFps", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (int.TryParse(val, out var fps) && fps is > 0 and <= 60)
+                    {
+                        lines[i] = $"{key}:260";
+                        changed = true;
+                    }
+                }
+            }
+
+            if (changed)
+            {
+                File.WriteAllLines(optionsPath, lines, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+            }
         }
         catch (IOException)
         {
@@ -290,6 +509,19 @@ public sealed class MinecraftLaunchService
     {
         try
         {
+            var jsonFile = Path.Combine(root, "versions", version, $"{version}.json");
+            if (File.Exists(jsonFile))
+            {
+                using var jsonStream = File.OpenRead(jsonFile);
+                using var doc = JsonDocument.Parse(jsonStream);
+                if (doc.RootElement.TryGetProperty("javaVersion", out var javaObj) &&
+                    javaObj.TryGetProperty("majorVersion", out var majorProp) &&
+                    majorProp.TryGetInt32(out var major) && major > 0)
+                {
+                    return major;
+                }
+            }
+
             var versionInfo = await launcher.GetVersionAsync(version);
             if (int.TryParse(versionInfo.JavaVersion?.MajorVersion, out var majorVersion) && majorVersion > 0)
             {
@@ -432,14 +664,25 @@ public sealed class MinecraftLaunchService
 
         try
         {
-            foreach (var file in Directory.EnumerateFiles(instancesRoot, "*", SearchOption.AllDirectories))
+            foreach (var instanceDir in Directory.EnumerateDirectories(instancesRoot, "*", SearchOption.TopDirectoryOnly))
             {
-                var name = Path.GetFileName(file);
-                if (name.StartsWith("ubclient", StringComparison.OrdinalIgnoreCase) ||
-                    name.Equals("ubclient.properties", StringComparison.OrdinalIgnoreCase))
+                var modsDir = Path.Combine(instanceDir, "mods");
+                if (Directory.Exists(modsDir))
                 {
-                    try { File.Delete(file); } catch (IOException) { }
-                    catch (UnauthorizedAccessException) { }
+                    foreach (var file in Directory.EnumerateFiles(modsDir, "ubclient*.jar", SearchOption.TopDirectoryOnly))
+                    {
+                        try { File.Delete(file); } catch { }
+                    }
+                }
+                
+                var rootFiles = new[] { "ubclient.properties", "ubclient.jar" };
+                foreach (var name in rootFiles)
+                {
+                    var file = Path.Combine(instanceDir, name);
+                    if (File.Exists(file))
+                    {
+                        try { File.Delete(file); } catch { }
+                    }
                 }
             }
         }

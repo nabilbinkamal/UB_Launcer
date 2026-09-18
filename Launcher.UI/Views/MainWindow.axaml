@@ -171,7 +171,7 @@
                             </Button>
 
                             <Grid Grid.Row="3" ColumnDefinitions="23,*,23,*,23,*,23" Margin="11 0 12 0">
-                                <Border Grid.Column="0" Classes="SocialIconHover" ToolTip.Tip="Discord">
+                                <Border Grid.Column="0" Classes="SocialIconHover" ToolTip.Tip="Discord" Cursor="Hand" PointerPressed="OnDiscordSocialPointerPressed">
                                     <controls:SvgPathIcon Source="{Binding DiscordIconSource}" Width="23" Height="23"/>
                                 </Border>
                                 <Border Grid.Column="2" Classes="SocialIconHover" ToolTip.Tip="TikTok">

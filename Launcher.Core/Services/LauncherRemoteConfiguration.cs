@@ -120,9 +120,10 @@ public sealed class LauncherPublicConfiguration
     public string UpdateMessage { get; init; } = "A new version of UB Launcher is available. Update now to get the latest features, improvements, and bug fixes.";
     public string UpdateUrl { get; init; } = string.Empty;
     public string ReleaseNotesUrl { get; init; } = string.Empty;
+    public const string DefaultDiscordCommunityUrl = "https://discord.gg/8Cge9nBqVh";
     public string DiscordApplicationId { get; init; } = string.Empty;
     public string DiscordLargeImage { get; init; } = string.Empty;
-    public string DiscordCommunityUrl { get; init; } = string.Empty;
+    public string DiscordCommunityUrl { get; init; } = DefaultDiscordCommunityUrl;
     public Dictionary<string, string> Assets { get; init; } = new(StringComparer.OrdinalIgnoreCase);
     public List<LauncherPartnerServer> PartnerServers { get; init; } = [];
 
@@ -144,7 +145,7 @@ public sealed class LauncherPublicConfiguration
             ? DiscordApplicationId.Trim()
             : string.Empty,
         DiscordLargeImage = NormalizeDiscordImage(DiscordLargeImage),
-        DiscordCommunityUrl = IsHttpUrl(DiscordCommunityUrl) ? DiscordCommunityUrl.Trim() : string.Empty,
+        DiscordCommunityUrl = IsHttpUrl(DiscordCommunityUrl) ? DiscordCommunityUrl.Trim() : DefaultDiscordCommunityUrl,
         Assets = (Assets ?? new Dictionary<string, string>())
             .Where(pair => pair.Key.Length is > 0 and <= 64 && IsHttpUrl(pair.Value))
             .Take(40)

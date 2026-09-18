@@ -5,6 +5,7 @@ using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using Launcher.Core.Services;
 using Launcher.Core.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ public partial class MainWindow : Window
 
         pagePreloadTimer = new DispatcherTimer(DispatcherPriority.Background)
         {
-            Interval = TimeSpan.FromMilliseconds(160)
+            Interval = TimeSpan.FromMilliseconds(500)
         };
         pagePreloadTimer.Tick += OnPagePreloadTick;
 
@@ -59,8 +60,15 @@ public partial class MainWindow : Window
         catch { /* clipboard unavailable */ }
     }
 
-    private void BeginPagePreload()
+    private async void BeginPagePreload()
     {
+        if (DataContext is not MainWindowViewModel)
+        {
+            return;
+        }
+
+        // Defer background page preloading so initial launcher window renders instantly
+        await Task.Delay(3000);
         if (DataContext is not MainWindowViewModel)
         {
             return;
@@ -158,5 +166,25 @@ public partial class MainWindow : Window
         WindowState = WindowState == WindowState.Maximized
             ? WindowState.Normal
             : WindowState.Maximized;
+    }
+
+    private void OnDiscordSocialPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+        {
+            try
+            {
+                var url = !string.IsNullOrWhiteSpace(LauncherRemoteConfiguration.Current.DiscordCommunityUrl)
+                    ? LauncherRemoteConfiguration.Current.DiscordCommunityUrl
+                    : "https://discord.gg/8Cge9nBqVh";
+
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                });
+            }
+            catch { }
+        }
     }
 }

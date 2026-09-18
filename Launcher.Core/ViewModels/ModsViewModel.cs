@@ -137,12 +137,20 @@ public partial class ModsViewModel : ViewModelBase
         : $"{SelectedInstance.Name}  ·  {SelectedInstance.LoaderType} {SelectedInstance.Version}";
     public bool CanConfirmVersionInstall => !string.IsNullOrWhiteSpace(SelectedInstallVersion);
 
+    private bool isInitialLoaded;
+
     public ModsViewModel()
     {
         _selectedCategory = Categories[0];
         _selectedInstance = InstanceStore.SelectedProfile;
         InstanceStore.SelectionChanged += OnSharedInstanceSelectionChanged;
-        _ = ReloadAsync();
+    }
+
+    public Task EnsureLoadedAsync()
+    {
+        if (isInitialLoaded) return Task.CompletedTask;
+        isInitialLoaded = true;
+        return ReloadAsync();
     }
 
     partial void OnSearchQueryChanged(string value)

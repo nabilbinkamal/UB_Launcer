@@ -399,7 +399,8 @@
                         </Button>
                     </StackPanel>
                 </Border>
-                <Border x:Name="DiscordCard" Grid.Row="2" Classes="DiscordCard" Height="142" Padding="0" ClipToBounds="True">
+                <Border x:Name="DiscordCard" Grid.Row="2" Classes="DiscordCard" Height="142" Padding="0" ClipToBounds="True"
+                        PointerPressed="OnDiscordCardPointerPressed" Cursor="Hand">
                     <Grid>
                         <Image Source="/Assets/JoinDiscord.png" Stretch="UniformToFill"
                                IsVisible="{Binding !HasRemoteDiscordBannerImage}"/>
@@ -407,6 +408,9 @@
                                               IsVisible="{Binding HasRemoteDiscordBannerImage}"
                                               DecodePixelWidth="1000" Stretch="UniformToFill"/>
                         <Button Classes="JoinButton" Content="Join Now"
+                                Command="{Binding JoinDiscordCommand}"
+                                Click="OnJoinDiscordClick"
+                                Cursor="Hand"
                                 HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="18 0 0 16"/>
                     </Grid>
                 </Border>

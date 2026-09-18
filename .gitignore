@@ -37,3 +37,8 @@ Desktop.ini
 
 # Ignore admin panel
 UBL ADMIN/
+# Gradle build output
+**/build/
+*.diff
+*.patch
+temp_diff.txt

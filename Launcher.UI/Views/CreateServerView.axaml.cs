@@ -33,8 +33,8 @@ public partial class CreateServerView : UserControl
             ? new ColumnDefinitions("*")
             : new ColumnDefinitions("360,*");
         ServerWorkspaceGrid.RowDefinitions = stackServerPanels
-            ? new RowDefinitions("Auto,Auto")
-            : new RowDefinitions("Auto");
+            ? new RowDefinitions("Auto,*")
+            : new RowDefinitions("*");
         ServerWorkspaceGrid.ColumnSpacing = stackServerPanels ? 0 : 18;
         Grid.SetColumn(ServerManagerPanel, stackServerPanels ? 0 : 1);
         Grid.SetRow(ServerManagerPanel, stackServerPanels ? 1 : 0);
@@ -47,8 +47,8 @@ public partial class CreateServerView : UserControl
             ? new ColumnDefinitions("*")
             : new ColumnDefinitions("*,260");
         ConsoleWorkspaceGrid.RowDefinitions = stackConsoleControls
-            ? new RowDefinitions("Auto,Auto")
-            : new RowDefinitions("Auto");
+            ? new RowDefinitions("*,Auto")
+            : new RowDefinitions("*");
         ConsoleWorkspaceGrid.ColumnSpacing = stackConsoleControls ? 0 : 16;
         Grid.SetColumn(ConsoleControlsPanel, stackConsoleControls ? 0 : 1);
         Grid.SetRow(ConsoleControlsPanel, stackConsoleControls ? 1 : 0);

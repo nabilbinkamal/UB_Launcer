@@ -228,6 +228,40 @@ public partial class HomeView : UserControl, INavigationAwarePage
     private void OnLaunchOptionsClick(object? sender, Avalonia.Interactivity.RoutedEventArgs eventArgs) =>
         NavigateToSettings();
 
+    private void OnJoinDiscordClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        e.Handled = true;
+        OpenDiscordInvite();
+    }
+
+    private void OnDiscordCardPointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+    {
+        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+        {
+            OpenDiscordInvite();
+        }
+    }
+
+    private static void OpenDiscordInvite()
+    {
+        try
+        {
+            var url = !string.IsNullOrWhiteSpace(LauncherRemoteConfiguration.Current.DiscordCommunityUrl)
+                ? LauncherRemoteConfiguration.Current.DiscordCommunityUrl
+                : "https://discord.gg/8Cge9nBqVh";
+
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Warning(ex, "Could not open Discord invite URL.");
+        }
+    }
+
     private MainWindowViewModel? GetMainWindowViewModel() =>
         TopLevel.GetTopLevel(this)?.DataContext as MainWindowViewModel;
 

@@ -17,6 +17,7 @@ public sealed record LauncherGameSettings
     public string CustomJvmArguments { get; init; } = string.Empty;
     public bool MaxPerformanceMode { get; init; } = true;
     public bool EnableDiscordRpc { get; init; } = true;
+    public string PerformanceProfile { get; init; } = string.Empty;
 }
 
 public static class LauncherGameSettingsStore
@@ -71,6 +72,7 @@ public static class LauncherGameSettingsStore
     public static MinecraftLaunchConfiguration CreateLaunchConfiguration()
     {
         var settings = Current;
+        var isEfficiency = string.Equals(settings.PerformanceProfile, "Efficiency", StringComparison.OrdinalIgnoreCase);
         return new MinecraftLaunchConfiguration
         {
             EnableUbClient = settings.EnableUbClient,
@@ -83,7 +85,9 @@ public static class LauncherGameSettingsStore
             Java17Path = settings.Java17Path,
             Java8Path = settings.Java8Path,
             CustomJvmArguments = settings.CustomJvmArguments,
-            MaxPerformanceMode = settings.MaxPerformanceMode
+            MaxPerformanceMode = settings.MaxPerformanceMode && !isEfficiency,
+            ForceDedicatedGpu = !isEfficiency,
+            UseHighProcessPriority = !isEfficiency
         };
     }
 
@@ -97,7 +101,8 @@ public static class LauncherGameSettingsStore
         Java21Path = settings.Java21Path?.Trim() ?? string.Empty,
         Java17Path = settings.Java17Path?.Trim() ?? string.Empty,
         Java8Path = settings.Java8Path?.Trim() ?? string.Empty,
-        CustomJvmArguments = settings.CustomJvmArguments?.Trim() ?? string.Empty
+        CustomJvmArguments = settings.CustomJvmArguments?.Trim() ?? string.Empty,
+        PerformanceProfile = settings.PerformanceProfile ?? string.Empty
     };
 
     private static LauncherGameSettings Load()

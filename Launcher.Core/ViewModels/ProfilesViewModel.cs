@@ -855,6 +855,7 @@ public partial class ProfilesViewModel : ViewModelBase
         try
         {
             var launchService = new MinecraftLaunchService(profile.InstancePath);
+            MinecraftServerInjector.InjectPartnerServers(profile.InstancePath);
             var progress = new Progress<string>(message =>
             {
                 LaunchProgress = Math.Min(LaunchProgress + 14, 88);

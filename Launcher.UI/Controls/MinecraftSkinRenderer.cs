@@ -131,8 +131,8 @@ internal readonly record struct CapeTextureLayout(
         if (looksLikeCapeAtlas)
         {
             return new CapeTextureLayout(
-                new TextureRegion(12, 1, 22, 17).Scale(atlasScaleX, atlasScaleY),
                 new TextureRegion(1, 1, 11, 17).Scale(atlasScaleX, atlasScaleY),
+                new TextureRegion(12, 1, 22, 17).Scale(atlasScaleX, atlasScaleY),
                 new TextureRegion(0, 1, 1, 17).Scale(atlasScaleX, atlasScaleY),
                 new TextureRegion(11, 1, 12, 17).Scale(atlasScaleX, atlasScaleY),
                 new TextureRegion(1, 0, 11, 1).Scale(atlasScaleX, atlasScaleY),

@@ -144,7 +144,11 @@ public partial class HomeViewModel : ViewModelBase
         InstanceStore.SelectionChanged += RefreshSelectedInstanceStats;
         InstanceStore.ProfilesChanged += RefreshRecentInstances;
         ServerStore.Servers.CollectionChanged += OnServersCollectionChanged;
-        _ = InstanceStore.EnsureMissingIconsAsync();
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(4000);
+            await InstanceStore.EnsureMissingIconsAsync();
+        });
         RefreshSelectedInstanceStats();
         RefreshRecentInstances();
         RefreshRecentServers();
@@ -250,6 +254,27 @@ public partial class HomeViewModel : ViewModelBase
 
     partial void OnRemoteDiscordBannerImageUrlChanged(string value) =>
         OnPropertyChanged(nameof(HasRemoteDiscordBannerImage));
+
+    [RelayCommand]
+    public void JoinDiscord()
+    {
+        try
+        {
+            var url = !string.IsNullOrWhiteSpace(LauncherRemoteConfiguration.Current.DiscordCommunityUrl)
+                ? LauncherRemoteConfiguration.Current.DiscordCommunityUrl
+                : "https://discord.gg/8Cge9nBqVh";
+
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Could not open Discord invite URL.");
+        }
+    }
 
     private void RefreshUsername()
     {
@@ -403,6 +428,7 @@ public partial class HomeViewModel : ViewModelBase
         try
         {
             var launchService = new MinecraftLaunchService(selectedInstance?.InstancePath);
+            MinecraftServerInjector.InjectPartnerServers(selectedInstance?.InstancePath);
             activeGameDirectory = selectedInstance?.InstancePath ?? string.Empty;
             var versionMatch = Regex.Match(SelectedVersion, @"\d+\.\d+(?:\.\d+)?");
             var version = selectedInstance?.Version ??
@@ -430,14 +456,25 @@ public partial class HomeViewModel : ViewModelBase
                 selectedInstance.LastPlayedAtUtc = DateTimeOffset.UtcNow;
             }
             RefreshTotalPlaytime();
-            LaunchProgress = 35;
+            LaunchProgress = 50;
             StatusText = "Minecraft is starting...";
-            LaunchProgress = 65;
 
-            var windowTimeout = TimeSpan.FromSeconds(15);
-            var windowStart = DateTime.UtcNow;
-            while (!gameProcess.HasExited && (DateTime.UtcNow - windowStart) < windowTimeout)
+            // Quick verification: ensure the process did not immediately crash on startup (e.g. invalid JVM argument)
+            await Task.Delay(400);
+            if (gameProcess.HasExited)
             {
+                throw new InvalidOperationException(
+                    "Minecraft closed immediately after launch. Check instance Java runtime and memory settings.");
+            }
+
+            // Wait for the game window to actually appear on the taskbar
+            for (var i = 0; i < 60; i++) // Up to 30 seconds wait
+            {
+                if (gameProcess.HasExited)
+                {
+                    break;
+                }
+
                 try
                 {
                     gameProcess.Refresh();
@@ -448,22 +485,16 @@ public partial class HomeViewModel : ViewModelBase
                 }
                 catch
                 {
-                    break;
+                    // Ignore access exceptions if process is dying
                 }
-
-                await Task.Delay(200);
-            }
-
-            if (!HasActiveGameProcess())
-            {
-                throw new InvalidOperationException(
-                    "Minecraft closed before startup finished. Check the selected instance and Java runtime.");
+                
+                await Task.Delay(500);
             }
 
             launchStopwatch.Stop();
+            LaunchTimeText = $"{launchStopwatch.Elapsed.TotalSeconds:0.0}s";
             LaunchHistory = AppendSample(LaunchHistory, Math.Clamp(launchStopwatch.Elapsed.TotalSeconds / 30, 0, 1));
 
-            LaunchProgress = 90;
             LaunchProgress = 100;
             StatusText = partnerServer is null
                 ? "Game launched! Enjoy UB Launcher."

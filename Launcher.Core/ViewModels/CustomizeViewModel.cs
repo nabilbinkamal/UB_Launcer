@@ -48,7 +48,7 @@ public partial class CustomizeViewModel : ViewModelBase
     private static readonly string SavedCapesDirectory = Path.Combine(CosmeticsDirectory, "saved-capes");
     private static readonly string SavedCapesManifestPath = Path.Combine(CosmeticsDirectory, "saved-capes.json");
     private static readonly string SavedCapePath = Path.Combine(CosmeticsDirectory, "cape.png");
-    private static readonly string CosmeticsSelectionPath = Path.Combine(CosmeticsDirectory, "selection.json");
+    private string CosmeticsSelectionPath => Path.Combine(CosmeticsDirectory, $"selection_{Username}.json");
     private static readonly string OwnedCapesDirectory = Path.Combine(CosmeticsDirectory, "owned-capes");
 
     private static readonly HttpClient TextureClient = new() { Timeout = TimeSpan.FromSeconds(15) };
@@ -101,7 +101,13 @@ public partial class CustomizeViewModel : ViewModelBase
         _ = AutoDetectPremiumSkinAsync();
     }
 
-    private void RefreshUsername() => OnPropertyChanged(nameof(Username));
+    private void RefreshUsername()
+    {
+        OnPropertyChanged(nameof(Username));
+        RestoreSelection();
+        _ = LoadMicrosoftOwnedCapesAsync();
+        _ = AutoDetectPremiumSkinAsync();
+    }
 
     private void OnMicrosoftSessionChanged() 
     {
@@ -225,7 +231,7 @@ public partial class CustomizeViewModel : ViewModelBase
 
     private async Task AutoDetectPremiumSkinAsync()
     {
-        if (!MicrosoftAccountStore.HasSession) return;
+        if (!MicrosoftAccountStore.HasSession || !string.Equals(MicrosoftAccountStore.MinecraftUsername, OfflineAccountStore.Username, StringComparison.OrdinalIgnoreCase)) return;
         var uuid = MicrosoftAccountStore.MinecraftUuid;
         if (string.IsNullOrWhiteSpace(uuid)) return;
 
@@ -287,14 +293,16 @@ public partial class CustomizeViewModel : ViewModelBase
                 if (currentSelection is null || string.IsNullOrWhiteSpace(currentSelection.SkinPath) || currentSelection.SkinPath.Equals(DefaultStevePath, StringComparison.OrdinalIgnoreCase))
                 {
                     SkinPath = localPath;
-                    SelectedSkinName = MicrosoftAccountStore.MinecraftUsername ?? "Premium Skin";
+                    SelectedSkinName = "Premium Skin";
                     UseSlimModel = isSlim;
-                    
+
                     // Deselect default skins in the UI
                     foreach (var s in DefaultSkins) s.IsSelected = false;
                     foreach (var s in SavedSkins) s.IsSelected = false;
 
-                    StatusText = $"Detected premium skin for {SelectedSkinName}.";
+                    SaveSelection();
+
+                    StatusText = $"Detected premium skin for {MicrosoftAccountStore.MinecraftUsername}.";
                 }
             }
         }
@@ -313,7 +321,7 @@ public partial class CustomizeViewModel : ViewModelBase
     {
         MicrosoftOwnedCapes.Clear();
 
-        if (!MicrosoftAccountStore.HasSession)
+        if (!MicrosoftAccountStore.HasSession || !string.Equals(MicrosoftAccountStore.MinecraftUsername, OfflineAccountStore.Username, StringComparison.OrdinalIgnoreCase))
         {
             HasMicrosoftOwnedCapes = false;
             return;
@@ -407,7 +415,7 @@ public partial class CustomizeViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void ApplyCosmetics()
+    private async Task ApplyCosmeticsAsync()
     {
         if (SkinPath.StartsWith("avares://", StringComparison.OrdinalIgnoreCase))
         {
@@ -422,7 +430,8 @@ public partial class CustomizeViewModel : ViewModelBase
             SetSelectedSkin(defaultSkin);
             SaveCape();
             SaveSelection();
-            StatusText = $"{SelectedSkinName} saved and applied.";
+            
+            await UploadSkinToMojangAsync(defaultSkin.ImagePath, UseSlimModel);
             return;
         }
 
@@ -443,7 +452,73 @@ public partial class CustomizeViewModel : ViewModelBase
         ActivateSkin(savedSkin);
         SaveCape();
         SaveSelection();
-        StatusText = $"{SelectedSkinName} saved and applied.";
+        
+        await UploadSkinToMojangAsync(sourcePath, UseSlimModel);
+    }
+    
+    private async Task UploadSkinToMojangAsync(string skinPath, bool isSlim)
+    {
+        if (!MicrosoftAccountStore.HasSession || !string.Equals(MicrosoftAccountStore.MinecraftUsername, OfflineAccountStore.Username, StringComparison.OrdinalIgnoreCase))
+        {
+            StatusText = $"{SelectedSkinName} saved and applied locally.";
+            return;
+        }
+
+        StatusText = $"{SelectedSkinName} saved. Uploading to Mojang...";
+        var session = await MicrosoftAccountStore.GetLaunchSessionAsync();
+        if (session is null)
+        {
+            StatusText = $"{SelectedSkinName} saved locally. Mojang upload failed (No session).";
+            return;
+        }
+
+        try
+        {
+            using var content = new MultipartFormDataContent();
+            content.Add(new StringContent(isSlim ? "slim" : "classic"), "variant");
+
+            if (skinPath.StartsWith("avares://", StringComparison.OrdinalIgnoreCase))
+            {
+                var resetRequest = new HttpRequestMessage(HttpMethod.Delete, "https://api.minecraftservices.com/minecraft/profile/skins");
+                resetRequest.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", session.Token);
+                var resetResponse = await TextureClient.SendAsync(resetRequest);
+                if (resetResponse.IsSuccessStatusCode)
+                {
+                    StatusText = $"{SelectedSkinName} saved. Mojang skin reset to default successfully.";
+                }
+                else
+                {
+                    StatusText = $"{SelectedSkinName} saved locally, but failed to reset Mojang skin (HTTP {(int)resetResponse.StatusCode}).";
+                }
+                return;
+            }
+
+            var skinBytes = await File.ReadAllBytesAsync(skinPath);
+
+            var fileContent = new ByteArrayContent(skinBytes);
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
+            content.Add(fileContent, "file", "skin.png");
+
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://api.minecraftservices.com/minecraft/profile/skins")
+            {
+                Content = content
+            };
+            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", session.Token);
+
+            var response = await TextureClient.SendAsync(request);
+            if (response.IsSuccessStatusCode)
+            {
+                StatusText = $"{SelectedSkinName} saved and applied to Mojang successfully.";
+            }
+            else
+            {
+                StatusText = $"{SelectedSkinName} saved locally, but failed to upload to Mojang (HTTP {(int)response.StatusCode}).";
+            }
+        }
+        catch (Exception ex)
+        {
+            StatusText = $"{SelectedSkinName} saved locally. Error uploading to Mojang: {ex.Message}";
+        }
     }
 
     [RelayCommand]

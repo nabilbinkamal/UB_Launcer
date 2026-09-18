@@ -502,6 +502,10 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         SetActive(nameof(IsModsActive));
         _navigation.NavigateTo<ModsViewModel>();
+        if (_navigation.CurrentView is ModsViewModel modsVm)
+        {
+            _ = modsVm.EnsureLoadedAsync();
+        }
     }
 
     [RelayCommand]

@@ -23,6 +23,8 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            System.Net.ServicePointManager.DefaultConnectionLimit = 256;
+
             Func<Type, ViewModelBase> factory = type =>
             {
                 if (type == typeof(HomeViewModel)) return new HomeViewModel();
@@ -46,7 +48,7 @@ public partial class App : Application
 
             _ = RefreshPublicConfigurationAsync(mainViewModel);
             LauncherAnalyticsService.StartHeartbeatLoop();
-            ExtractDefaultSkins();
+            _ = Task.Run(ExtractDefaultSkins);
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -81,11 +83,18 @@ public partial class App : Application
 
     private static async Task RefreshPublicConfigurationAsync(MainWindowViewModel mainViewModel)
     {
-        if (await LauncherRemoteConfiguration.RefreshAsync())
+        try
         {
-            await Dispatcher.UIThread.InvokeAsync(mainViewModel.ApplyRemoteConfiguration);
+            using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(5));
+            if (await LauncherRemoteConfiguration.RefreshAsync(cts.Token))
+            {
+                await Dispatcher.UIThread.InvokeAsync(mainViewModel.ApplyRemoteConfiguration);
+            }
+        }
+        catch
+        {
         }
 
-        await LauncherAnalyticsService.SendLauncherOpenAsync();
+        _ = Task.Run(LauncherAnalyticsService.SendLauncherOpenAsync);
     }
 }

@@ -132,6 +132,31 @@ public partial class CreateServerViewModel : ViewModelBase
     private readonly Dictionary<string, Process> runningProcesses = [];
     private readonly SynchronizationContext? uiContext = SynchronizationContext.Current;
     private readonly UnifiedContentCatalogService pluginCatalogService = new();
+    private CancellationTokenSource? _liveSearchCts;
+
+    partial void OnPluginSearchQueryChanged(string value)
+    {
+        _liveSearchCts?.Cancel();
+        _liveSearchCts?.Dispose();
+        _liveSearchCts = new CancellationTokenSource();
+        var ct = _liveSearchCts.Token;
+
+        Task.Run(async () =>
+        {
+            try
+            {
+                await Task.Delay(400, ct);
+                if (!ct.IsCancellationRequested)
+                {
+                    uiContext?.Post(_ => _ = SearchPluginsAsync(), null);
+                }
+            }
+            catch (TaskCanceledException)
+            {
+            }
+        });
+    }
+
     private UbRelayClient? tunnelClient;
     private string? tunnelServerId;
 
@@ -227,7 +252,7 @@ public partial class CreateServerViewModel : ViewModelBase
             : $"Forward TCP port {SelectedServer.Port} to {LocalIpAddress}:{SelectedServer.Port}. Then friends join using YOUR_PUBLIC_IP:{SelectedServer.Port}.";
     public string TunnelJoinAddress => TunnelRemotePort == 0
         ? "Assigned when relay starts"
-        : $"213.35.106.78:{TunnelRemotePort}";
+        : $"launcher.unitedbangla.top:{TunnelRemotePort}";
     public string TunnelActionLabel => IsTunnelRunning ? "Stop relay" : "Start relay";
     public bool IsManagerVisible => !IsCreatePanelVisible && SelectedServer is not null;
     public bool IsPluginSupported => SelectedServer is not null &&
@@ -267,6 +292,17 @@ public partial class CreateServerViewModel : ViewModelBase
 
         ServerStore.SelectionChanged += OnStoredServerSelectionChanged;
         SelectedServer = ServerStore.SelectedServer ?? Servers.FirstOrDefault();
+
+        AppDomain.CurrentDomain.ProcessExit += (_, _) =>
+        {
+            foreach (var process in runningProcesses.Values)
+            {
+                if (!process.HasExited)
+                {
+                    try { process.Kill(entireProcessTree: true); } catch { }
+                }
+            }
+        };
     }
 
     partial void OnSelectedServerChanged(LocalServerItem? value)
@@ -529,6 +565,8 @@ public partial class CreateServerViewModel : ViewModelBase
         await Task.Run(() => WriteConfigurationFiles(server));
         try
         {
+            await StopProcessesLockingServerAsync(server);
+
             var startInfo = BuildServerStartInfo(server);
             var process = new Process { StartInfo = startInfo, EnableRaisingEvents = true };
             process.OutputDataReceived += (_, eventArgs) => PostLog(server, eventArgs.Data);
