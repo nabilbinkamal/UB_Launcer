@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Text.Json;
+using Launcher.Security;
 
 namespace Launcher.Core.Services;
 
@@ -41,6 +42,9 @@ public static class LauncherRemoteConfiguration
     {
         try
         {
+            using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            timeout.CancelAfter(TimeSpan.FromSeconds(8));
+            cancellationToken = timeout.Token;
             using var response = await HttpClient.GetAsync(
                 configUrl,
                 HttpCompletionOption.ResponseHeadersRead,
@@ -54,7 +58,7 @@ public static class LauncherRemoteConfiguration
 
             await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
             using var buffer = new MemoryStream();
-            await stream.CopyToAsync(buffer, cancellationToken);
+            await BoundedStream.CopyAsync(stream, buffer, MaximumConfigBytes, cancellationToken);
             if (buffer.Length is 0 or > MaximumConfigBytes)
             {
                 return false;
@@ -149,9 +153,11 @@ public sealed class LauncherPublicConfiguration
         Assets = (Assets ?? new Dictionary<string, string>())
             .Where(pair => pair.Key.Length is > 0 and <= 64 && IsHttpUrl(pair.Value))
             .Take(40)
+            .GroupBy(pair => pair.Key, StringComparer.OrdinalIgnoreCase)
+            .Select(group => group.Last())
             .ToDictionary(pair => pair.Key, pair => pair.Value.Trim(), StringComparer.OrdinalIgnoreCase),
         PartnerServers = (PartnerServers ?? [])
-            .Select(server => server.Sanitize())
+            .Select(server => server?.Sanitize())
             .Where(server => server is not null)
             .Cast<LauncherPartnerServer>()
             .Take(30)

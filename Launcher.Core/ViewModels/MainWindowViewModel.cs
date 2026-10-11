@@ -29,7 +29,6 @@ public partial class MainWindowViewModel : ViewModelBase
     private const string DefaultDiscordApplicationId = "1538201318798397550";
     private readonly INavigationService _navigation;
     private string _activeBeforeSettings = nameof(IsHomeActive);
-    private CancellationTokenSource? accountStatusCancellation;
     private CancellationTokenSource? _microsoftSignInCts;
 
     [ObservableProperty]
@@ -276,33 +275,6 @@ public partial class MainWindowViewModel : ViewModelBase
 
         HasSavedAccounts = SavedAccounts.Count > 0;
 
-        accountStatusCancellation?.Cancel();
-        accountStatusCancellation?.Dispose();
-        accountStatusCancellation = new CancellationTokenSource();
-        _ = RefreshUserRankAsync(Username, accountStatusCancellation.Token);
-    }
-
-    private async Task RefreshUserRankAsync(string username, CancellationToken cancellationToken)
-    {
-        if (IsMicrosoftAccountUsername(username))
-        {
-            UserRank = "Microsoft";
-            return;
-        }
-
-        try
-        {
-            var isPremium = await MinecraftAccountStatusService.IsPremiumUsernameAsync(username, cancellationToken);
-            if (!cancellationToken.IsCancellationRequested &&
-                isPremium.HasValue &&
-                string.Equals(Username, username, StringComparison.OrdinalIgnoreCase))
-            {
-                UserRank = isPremium.Value ? "Premium name" : "Offline";
-            }
-        }
-        catch (OperationCanceledException)
-        {
-        }
     }
 
     partial void OnIsAccountMenuOpenChanged(bool value)
@@ -486,22 +458,29 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void NavigateHome()
     {
-        SetActive(nameof(IsHomeActive));
-        _navigation.NavigateTo<HomeViewModel>();
+        if (_navigation.NavigateTo<HomeViewModel>())
+        {
+            IsSettingsOpen = false;
+            SetActive(nameof(IsHomeActive));
+        }
     }
 
     [RelayCommand]
     private void NavigateProfiles()
     {
-        SetActive(nameof(IsInstanceActive));
-        _navigation.NavigateTo<ProfilesViewModel>();
+        if (_navigation.NavigateTo<ProfilesViewModel>())
+        {
+            IsSettingsOpen = false;
+            SetActive(nameof(IsInstanceActive));
+        }
     }
 
     [RelayCommand]
     private void NavigateMods()
     {
+        if (!_navigation.NavigateTo<ModsViewModel>()) return;
+        IsSettingsOpen = false;
         SetActive(nameof(IsModsActive));
-        _navigation.NavigateTo<ModsViewModel>();
         if (_navigation.CurrentView is ModsViewModel modsVm)
         {
             _ = modsVm.EnsureLoadedAsync();
@@ -511,22 +490,31 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void NavigateCustomize()
     {
-        SetActive(nameof(IsCustomizeActive));
-        _navigation.NavigateTo<CustomizeViewModel>();
+        if (_navigation.NavigateTo<CustomizeViewModel>())
+        {
+            IsSettingsOpen = false;
+            SetActive(nameof(IsCustomizeActive));
+        }
     }
 
     [RelayCommand]
     private void NavigatePerformance()
     {
-        SetActive(nameof(IsPerformanceActive));
-        _navigation.NavigateTo<PerformanceViewModel>();
+        if (_navigation.NavigateTo<PerformanceViewModel>())
+        {
+            IsSettingsOpen = false;
+            SetActive(nameof(IsPerformanceActive));
+        }
     }
 
     [RelayCommand]
     private void NavigateCreateServer()
     {
-        SetActive(nameof(IsCreateServerActive));
-        _navigation.NavigateTo<CreateServerViewModel>();
+        if (_navigation.NavigateTo<CreateServerViewModel>())
+        {
+            IsSettingsOpen = false;
+            SetActive(nameof(IsCreateServerActive));
+        }
     }
 
     [RelayCommand]

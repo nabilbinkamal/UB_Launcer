@@ -29,7 +29,6 @@ public partial class HomeView : UserControl, INavigationAwarePage
     private Size pendingResponsiveSize;
     private WindowBase? observedWindow;
     private readonly DispatcherTimer telemetryTimer;
-    private readonly WindowsTelemetryReader telemetryReader;
 
     public HomeView()
     {
@@ -39,8 +38,7 @@ public partial class HomeView : UserControl, INavigationAwarePage
             performanceGrid.RowDefinitions = new RowDefinitions("Auto,*,*,*,*");
         }
 
-        telemetryReader = WindowsTelemetryReader.Shared;
-        telemetryTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+        telemetryTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
         telemetryTimer.Tick += OnTelemetryTick;
 
         SizeChanged += OnSizeChanged;
@@ -73,12 +71,16 @@ public partial class HomeView : UserControl, INavigationAwarePage
             return;
         }
 
+        if (DataContext is HomeViewModel viewModel)
+            viewModel.RefreshRecentData();
         OnTelemetryTick(this, EventArgs.Empty);
         telemetryTimer.Start();
     }
 
     public void SetNavigationActive(bool isActive)
     {
+        if (isNavigationActive == isActive)
+            return;
         isNavigationActive = isActive;
         UpdateTelemetryState();
     }
@@ -96,15 +98,18 @@ public partial class HomeView : UserControl, INavigationAwarePage
         {
             // PerformanceCounter.NextValue can briefly block. Keep it off the UI thread so
             // native window move/resize remains responsive.
-            var snapshot = await Task.Run(telemetryReader.Read);
-            if (!isAttached || DataContext is not HomeViewModel viewModel)
+            var snapshot = await Task.Run(() => WindowsTelemetryReader.Shared.Read());
+            if (!isAttached || !isNavigationActive || DataContext is not HomeViewModel viewModel)
             {
                 return;
             }
 
             viewModel.UpdateTelemetry(snapshot.CpuUsage, snapshot.GpuUsage, snapshot.UsedMemoryGb, snapshot.TotalMemoryGb);
             viewModel.RefreshTotalPlaytime();
-            viewModel.RefreshRecentData();
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Warning(ex, "Could not refresh Home telemetry.");
         }
         finally
         {
@@ -231,11 +236,13 @@ public partial class HomeView : UserControl, INavigationAwarePage
     private void OnJoinDiscordClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         e.Handled = true;
-        OpenDiscordInvite();
     }
 
     private void OnDiscordCardPointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {
+        if (e.Source is Control source && (source is Button || source.FindAncestorOfType<Button>() is not null))
+            return;
+
         if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
         {
             OpenDiscordInvite();

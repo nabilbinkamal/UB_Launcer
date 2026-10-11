@@ -288,7 +288,7 @@ public partial class SettingsViewModel : ViewModelBase
         var width = int.TryParse(GameWindowWidth, out var parsedWidth) ? parsedWidth : current.ScreenWidth;
         var height = int.TryParse(GameWindowHeight, out var parsedHeight) ? parsedHeight : current.ScreenHeight;
 
-        LauncherGameSettingsStore.Update(new LauncherGameSettings
+        LauncherGameSettingsStore.Update(current with
         {
             MaximumMemoryMb = Math.Max(512, (int)Math.Round(MaximumMemoryMb)),
             FullScreen = ForceFullscreen,

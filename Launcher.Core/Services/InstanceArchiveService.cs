@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Launcher.Core.ViewModels;
+using Launcher.Security;
 
 namespace Launcher.Core.Services;
 
@@ -263,9 +264,9 @@ public sealed class InstanceArchiveService
             modrinthProjectId: manifest.ModrinthProjectId);
         var targetRoot = Path.GetFullPath(profile.InstancePath);
 
+        EnsureEmptyImportTarget(targetRoot);
         try
         {
-            EnsureEmptyImportTarget(targetRoot);
             var importedIconPath = await ExtractProfileIconAsync(
                 archive,
                 targetRoot,
@@ -318,9 +319,9 @@ public sealed class InstanceArchiveService
             kind: "Modpack");
         var targetRoot = Path.GetFullPath(profile.InstancePath);
 
+        EnsureEmptyImportTarget(targetRoot);
         try
         {
-            EnsureEmptyImportTarget(targetRoot);
             var importedIconPath = await ExtractProfileIconAsync(
                 archive,
                 targetRoot,
@@ -419,7 +420,7 @@ public sealed class InstanceArchiveService
             FileShare.None,
             131_072,
             true);
-        await input.CopyToAsync(output, cancellationToken);
+        await BoundedStream.CopyAsync(input, output, Math.Min(entry.Length, MaximumEntryBytes), cancellationToken);
     }
 
     private static async Task DownloadFileAsync(
@@ -429,7 +430,7 @@ public sealed class InstanceArchiveService
         CancellationToken cancellationToken)
     {
         if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) ||
-            (uri.Scheme != Uri.UriSchemeHttps && uri.Scheme != Uri.UriSchemeHttp))
+            uri.Scheme != Uri.UriSchemeHttps)
         {
             throw new InvalidDataException("The modpack contains an invalid download URL.");
         }
@@ -453,7 +454,7 @@ public sealed class InstanceArchiveService
                              131_072,
                              true))
             {
-                await input.CopyToAsync(output, cancellationToken);
+                await BoundedStream.CopyAsync(input, output, MaximumEntryBytes, cancellationToken);
             }
 
             await VerifyHashAsync(temporaryPath, hashes, cancellationToken);
@@ -472,7 +473,7 @@ public sealed class InstanceArchiveService
     {
         if (hashes is null)
         {
-            return;
+            throw new InvalidDataException("The modpack file has no integrity hash.");
         }
 
         HashAlgorithm? algorithm = null;
@@ -490,7 +491,8 @@ public sealed class InstanceArchiveService
 
         if (algorithm is null || string.IsNullOrWhiteSpace(expected))
         {
-            return;
+            algorithm?.Dispose();
+            throw new InvalidDataException("The modpack file has no supported integrity hash.");
         }
 
         using (algorithm)
@@ -723,20 +725,7 @@ public sealed class InstanceArchiveService
 
     private static string GetSafeDestinationPath(string rootPath, string relativePath)
     {
-        if (string.IsNullOrWhiteSpace(relativePath) || Path.IsPathRooted(relativePath))
-        {
-            throw new InvalidDataException("The pack contains an invalid file path.");
-        }
-
-        var root = Path.GetFullPath(rootPath).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
-        var normalizedRelativePath = relativePath.Replace('/', Path.DirectorySeparatorChar);
-        var destination = Path.GetFullPath(Path.Combine(root, normalizedRelativePath));
-        if (!destination.StartsWith(root, StringComparison.OrdinalIgnoreCase))
-        {
-            throw new InvalidDataException("The pack contains an unsafe file path.");
-        }
-
-        return destination;
+        return SafeArchivePath.Resolve(rootPath, relativePath);
     }
 
     private static void EnsureEmptyImportTarget(string targetRoot)

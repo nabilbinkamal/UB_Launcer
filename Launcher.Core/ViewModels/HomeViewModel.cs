@@ -61,10 +61,10 @@ public partial class HomeViewModel : ViewModelBase
     private string _launchTimeText = "--";
 
     [ObservableProperty]
-    private string _cpuUsageText = "000%";
+    private string _cpuUsageText = "0%";
 
     [ObservableProperty]
-    private string _gpuUsageText = "000%";
+    private string _gpuUsageText = "0%";
 
     [ObservableProperty]
     private string _memoryUsedText = "0";
@@ -94,13 +94,13 @@ public partial class HomeViewModel : ViewModelBase
     private double _memoryUsagePercent;
 
     [ObservableProperty]
-    private IReadOnlyList<double> _launchHistory = new double[] { 0.18, 0.2, 0.16, 0.21, 0.19, 0.24, 0.2, 0.23, 0.22, 0.24, 0.25, 0.24 };
+    private IReadOnlyList<double> _launchHistory = new double[12];
 
     [ObservableProperty]
-    private IReadOnlyList<double> _cpuHistory = new double[] { 0.18, 0.3, 0.2, 0.42, 0.24, 0.34, 0.22, 0.38, 0.26, 0.45, 0.31, 0.36 };
+    private IReadOnlyList<double> _cpuHistory = new double[60];
 
     [ObservableProperty]
-    private IReadOnlyList<double> _gpuHistory = new double[] { 0.14, 0.22, 0.18, 0.32, 0.2, 0.3, 0.24, 0.35, 0.27, 0.4, 0.31, 0.34 };
+    private IReadOnlyList<double> _gpuHistory = new double[60];
 
     [ObservableProperty]
     private string _remoteBannerImageUrl = string.Empty;
@@ -115,6 +115,7 @@ public partial class HomeViewModel : ViewModelBase
     private string _username = string.IsNullOrWhiteSpace(OfflineAccountStore.Username) ? "Player" : OfflineAccountStore.Username;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasSelectedInstance))]
     private GameProfile? _selectedInstance;
 
     public ObservableCollection<string> MinecraftVersions { get; }
@@ -122,7 +123,8 @@ public partial class HomeViewModel : ViewModelBase
     public ObservableCollection<GameProfile> RecentInstances { get; } = [];
     public ObservableCollection<LocalServerItem> RecentServers { get; } = [];
     public ObservableCollection<PartnerServerItem> PartnerServers { get; } = [];
-    public bool CanLaunchGame => !IsLaunching && !IsGameRunning;
+    public bool CanLaunchGame => !IsLaunching && !IsGameRunning && SelectedInstance is not null;
+    public bool HasSelectedInstance => SelectedInstance is not null;
     public bool IsFabricSelected => SelectedInstance?.LoaderType.Equals("Fabric", StringComparison.OrdinalIgnoreCase) == true;
     public bool HasRecentInstances => RecentInstances.Count > 0;
     public bool HasRecentServers => RecentServers.Count > 0;
@@ -165,8 +167,8 @@ public partial class HomeViewModel : ViewModelBase
         var safeUsedMemory = Math.Clamp(usedMemoryGb, 0, safeTotalMemory);
         var memoryPercent = safeTotalMemory <= 0 ? 0 : safeUsedMemory / safeTotalMemory * 100;
 
-        CpuUsageText = $"{clampedCpu:000}%";
-        GpuUsageText = $"{clampedGpu:000}%";
+        CpuUsageText = $"{clampedCpu:0}%";
+        GpuUsageText = $"{clampedGpu:0}%";
         MemoryUsedText = $"{safeUsedMemory:0}";
         MemoryCapacityText = $" GB/{safeTotalMemory:0} GB";
         MemoryUsagePercent = memoryPercent;
@@ -312,6 +314,7 @@ public partial class HomeViewModel : ViewModelBase
         }
 
         OnPropertyChanged(nameof(IsFabricSelected));
+        OnPropertyChanged(nameof(CanLaunchGame));
         RefreshLaunchConfiguration();
         RefreshRecentInstances();
     }
@@ -387,10 +390,10 @@ public partial class HomeViewModel : ViewModelBase
         }
 
         var selectedInstance = InstanceStore.SelectedProfile;
-        if (partnerServer is not null && selectedInstance is null)
+        if (selectedInstance is null)
         {
             StatusText = "Select an instance first";
-            ActionStatusText = $"Select or create an instance before joining {partnerServer.Name}.";
+            ActionStatusText = "Create or select an instance before launching Minecraft.";
             return;
         }
 
@@ -439,7 +442,8 @@ public partial class HomeViewModel : ViewModelBase
                 LauncherGameSettingsStore.CreateLaunchConfiguration(),
                 new Progress<string>(message => StatusText = message),
                 partnerServer?.Address,
-                selectedInstance?.LoaderType);
+                selectedInstance?.LoaderType,
+                await GameAccountSession.GetAsync(Username));
             activeGameProcessId = gameProcess.Id;
             IsGameRunning = true;
             _ = MonitorActiveGameProcessAsync(gameProcess.Id);

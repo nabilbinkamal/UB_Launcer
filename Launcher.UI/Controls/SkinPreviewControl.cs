@@ -260,6 +260,8 @@ public sealed class SkinPreviewControl : Control
 
     private void OnAnimationTick(object? sender, EventArgs e)
     {
+        if (!IsEffectivelyVisible || TopLevel.GetTopLevel(this) is Window { WindowState: WindowState.Minimized })
+            return;
         animationPhase += 0.08;
         if (animationPhase > Math.PI * 2)
             animationPhase -= Math.PI * 2;

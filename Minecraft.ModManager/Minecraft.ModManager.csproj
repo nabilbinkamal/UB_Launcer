@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Launcher.Downloader\Launcher.Downloader.csproj" />
+    <ProjectReference Include="..\Launcher.Security\Launcher.Security.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

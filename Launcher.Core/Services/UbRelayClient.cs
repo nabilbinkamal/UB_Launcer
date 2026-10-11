@@ -1,6 +1,7 @@
 using System.Buffers.Binary;
 using System.Collections.Concurrent;
 using System.Net.Sockets;
+using System.Net.Security;
 using System.Text;
 
 namespace Launcher.Core.Services;
@@ -9,14 +10,14 @@ public sealed class UbRelayClient : IAsyncDisposable
 {
     private const string RelayHost = "launcher.unitedbangla.top";
     private const int RelayControlPort = 28080;
-    private const string RelayToken = "e180334b26744649a87721236b467cb9812a5803f40b4b01b6822cd48dba2bda";
+    private static string RelayToken => Environment.GetEnvironmentVariable("UB_RELAY_TOKEN") ?? string.Empty;
     private const int MaximumFrameSize = 1024 * 1024;
 
     private readonly ConcurrentDictionary<uint, TcpClient> localConnections = new();
     private readonly SemaphoreSlim sendLock = new(1, 1);
     private readonly CancellationTokenSource shutdown = new();
     private TcpClient? controlClient;
-    private NetworkStream? controlStream;
+    private Stream? controlStream;
     private Task? receiveTask;
     private int localPort;
     private int stopped;
@@ -38,29 +39,33 @@ public sealed class UbRelayClient : IAsyncDisposable
         using var linkedCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, shutdown.Token);
         linkedCancellation.CancelAfter(TimeSpan.FromSeconds(15));
 
+        var token = RelayToken;
+        if (token.Length < 24)
+            throw new InvalidOperationException("Secure relay access is not configured. Set UB_RELAY_TOKEN to a newly issued relay credential.");
+
         var client = new TcpClient { NoDelay = true };
+        SslStream? stream = null;
+        int assignedPort;
         try
         {
             await client.ConnectAsync(RelayHost, RelayControlPort, linkedCancellation.Token);
+            stream = new SslStream(client.GetStream(), leaveInnerStreamOpen: false);
+            await stream.AuthenticateAsClientAsync(new SslClientAuthenticationOptions
+            {
+                TargetHost = RelayHost
+            }, linkedCancellation.Token);
+            var handshake = Encoding.UTF8.GetBytes($"UBR1 {token}\n");
+            await stream.WriteAsync(handshake, linkedCancellation.Token);
+            var response = await ReadLineAsync(stream, 128, linkedCancellation.Token);
+            if (!response.StartsWith("PORT ", StringComparison.Ordinal) ||
+                !int.TryParse(response.AsSpan(5), out assignedPort) || assignedPort is < 1024 or > 65535)
+                throw new IOException("The relay rejected the connection or returned an invalid public port.");
         }
-        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+        catch
         {
+            stream?.Dispose();
             client.Dispose();
-            throw new IOException("UB Relay is unreachable. Oracle port 28080/TCP is probably blocked.");
-        }
-        var stream = client.GetStream();
-        var handshake = Encoding.UTF8.GetBytes($"UBR1 {RelayToken}\n");
-        await stream.WriteAsync(handshake, linkedCancellation.Token);
-
-        var response = await ReadLineAsync(stream, 128, linkedCancellation.Token);
-        if (!response.StartsWith("PORT ", StringComparison.Ordinal) ||
-            !int.TryParse(response.AsSpan(5), out var assignedPort) ||
-            assignedPort is < 1024 or > 65535)
-        {
-            client.Dispose();
-            throw new InvalidOperationException(response.StartsWith("ERROR ", StringComparison.Ordinal)
-                ? $"Relay rejected the connection: {response[6..]}"
-                : "The relay returned an invalid public port.");
+            throw;
         }
 
         controlClient = client;
@@ -248,6 +253,7 @@ public sealed class UbRelayClient : IAsyncDisposable
         }
         localConnections.Clear();
 
+        controlStream?.Dispose();
         controlClient?.Dispose();
         controlClient = null;
         controlStream = null;
@@ -277,7 +283,7 @@ public sealed class UbRelayClient : IAsyncDisposable
     }
 
     private static async Task<string> ReadLineAsync(
-        NetworkStream stream,
+        Stream stream,
         int maximumLength,
         CancellationToken cancellationToken)
     {
@@ -301,7 +307,7 @@ public sealed class UbRelayClient : IAsyncDisposable
     }
 
     private static async Task ReadExactlyAsync(
-        NetworkStream stream,
+        Stream stream,
         Memory<byte> buffer,
         CancellationToken cancellationToken)
     {

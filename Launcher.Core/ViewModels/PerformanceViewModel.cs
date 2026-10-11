@@ -8,6 +8,7 @@ namespace Launcher.Core.ViewModels;
 
 public partial class PerformanceViewModel : ViewModelBase
 {
+    private bool applyingProfile;
     public PerformanceViewModel()
     {
         var savedProfile = LauncherGameSettingsStore.Current.PerformanceProfile;
@@ -30,7 +31,18 @@ public partial class PerformanceViewModel : ViewModelBase
                 savedProfile = "Balanced";
             }
         }
-        SelectProfile(savedProfile);
+        if (string.IsNullOrWhiteSpace(LauncherGameSettingsStore.Current.PerformanceProfile))
+            SelectProfile(savedProfile);
+        else
+        {
+            applyingProfile = true;
+            SelectedProfile = savedProfile;
+            var settings = LauncherGameSettingsStore.Current;
+            EnableOptimizationPack = settings.MaxPerformanceMode;
+            UseHighProcessPriority = settings.UseHighProcessPriority;
+            ForceDedicatedGpu = settings.ForceDedicatedGpu;
+            applyingProfile = false;
+        }
     }
 
     [ObservableProperty] private string _selectedProfile = "Balanced";
@@ -57,15 +69,15 @@ public partial class PerformanceViewModel : ViewModelBase
 
     [ObservableProperty]
     private IReadOnlyList<double> _cpuHistory =
-        new double[] { .12, .15, .14, .18, .16, .21, .17, .2, .16, .19, .18, .2, .17, .21, .18, .2 };
+        new double[60];
 
     [ObservableProperty]
     private IReadOnlyList<double> _gpuHistory =
-        new double[] { .08, .11, .1, .14, .12, .16, .13, .17, .14, .18, .15, .17, .14, .18, .16, .19 };
+        new double[60];
 
     [ObservableProperty]
     private IReadOnlyList<double> _memoryHistory =
-        new double[] { .38, .39, .39, .4, .4, .41, .41, .42, .42, .42, .43, .43, .43, .44, .44, .44 };
+        new double[60];
 
     private double latestCpuUsage;
     private double latestGpuUsage;
@@ -107,18 +119,13 @@ public partial class PerformanceViewModel : ViewModelBase
     [RelayCommand]
     private void SelectProfile(string? profile)
     {
-        if (string.IsNullOrWhiteSpace(profile))
+        if (profile is not ("High" or "Balanced" or "Efficiency"))
         {
             return;
         }
 
+        applyingProfile = true;
         SelectedProfile = profile;
-
-        var currentSettings = LauncherGameSettingsStore.Current;
-        if (currentSettings.PerformanceProfile != profile)
-        {
-            LauncherGameSettingsStore.Update(currentSettings with { PerformanceProfile = profile });
-        }
 
         switch (profile)
         {
@@ -132,7 +139,7 @@ public partial class PerformanceViewModel : ViewModelBase
                 AutoOptimize = true;
                 break;
             case "Efficiency":
-                EnableOptimizationPack = true;
+                EnableOptimizationPack = false;
                 EnableFastLaunch = true;
                 EnableGameMode = false;
                 EnableHardwareAcceleration = true;
@@ -151,6 +158,24 @@ public partial class PerformanceViewModel : ViewModelBase
                 break;
         }
 
+        applyingProfile = false;
+        SavePerformanceSettings();
+    }
+
+    partial void OnEnableOptimizationPackChanged(bool value) => SavePerformanceSettings();
+    partial void OnUseHighProcessPriorityChanged(bool value) => SavePerformanceSettings();
+    partial void OnForceDedicatedGpuChanged(bool value) => SavePerformanceSettings();
+
+    private void SavePerformanceSettings()
+    {
+        if (applyingProfile) return;
+        LauncherGameSettingsStore.Update(LauncherGameSettingsStore.Current with
+        {
+            PerformanceProfile = SelectedProfile,
+            MaxPerformanceMode = EnableOptimizationPack,
+            UseHighProcessPriority = UseHighProcessPriority,
+            ForceDedicatedGpu = ForceDedicatedGpu
+        });
     }
 
     [RelayCommand]

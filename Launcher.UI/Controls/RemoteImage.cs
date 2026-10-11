@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
@@ -27,7 +28,9 @@ public sealed class RemoteImage : Image
         AvaloniaProperty.Register<RemoteImage, int>(nameof(DecodePixelWidth), 144);
 
     private const int MaximumImageBytes = 6 * 1024 * 1024;
-    private static readonly ConcurrentDictionary<ImageCacheKey, Task<Bitmap?>> ImageCache = new();
+    private static readonly ConcurrentDictionary<ImageCacheKey, Lazy<Task<Bitmap?>>> ImageCache = new();
+    private static readonly SemaphoreSlim DownloadGate = new(6, 6);
+    private const int MaximumCachedImages = 128;
     private static readonly SemaphoreSlim DecodeGate = new(2, 2);
     private static readonly HttpClient HttpClient = CreateHttpClient();
     private static readonly string CacheDirectory = Path.Combine(
@@ -54,9 +57,9 @@ public sealed class RemoteImage : Image
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == SourceUrlProperty)
+        if (change.Property == SourceUrlProperty || change.Property == DecodePixelWidthProperty)
         {
-            BeginLoad(change.NewValue as string);
+            BeginLoad(SourceUrl);
         }
     }
 
@@ -73,8 +76,11 @@ public sealed class RemoteImage : Image
         try
         {
             var cacheKey = new ImageCacheKey(normalizedSource, Math.Clamp(DecodePixelWidth, 32, 2560));
-            var imageTask = ImageCache.GetOrAdd(cacheKey, LoadImageBitmapAsync);
-            var bitmap = await imageTask;
+            var imageTask = ImageCache.GetOrAdd(cacheKey, key => new Lazy<Task<Bitmap?>>(() => LoadImageBitmapAsync(key)));
+            var bitmap = await imageTask.Value;
+            foreach (var entry in ImageCache.Where(entry => entry.Value.IsValueCreated && entry.Value.Value.IsCompleted)
+                         .Take(Math.Max(0, ImageCache.Count - MaximumCachedImages)))
+                ImageCache.TryRemove(entry.Key, out _);
             if (bitmap is null || revision != loadRevision)
             {
                 if (bitmap is null)
@@ -103,7 +109,10 @@ public sealed class RemoteImage : Image
 
     private static async Task<Bitmap?> LoadImageBitmapAsync(ImageCacheKey cacheKey)
     {
-        var bytes = await LoadImageBytesAsync(cacheKey.Source).ConfigureAwait(false);
+        byte[]? bytes;
+        await DownloadGate.WaitAsync().ConfigureAwait(false);
+        try { bytes = await LoadImageBytesAsync(cacheKey.Source).ConfigureAwait(false); }
+        finally { DownloadGate.Release(); }
         if (bytes is null)
         {
             return null;
@@ -142,10 +151,15 @@ public sealed class RemoteImage : Image
         {
             if (File.Exists(cachePath))
             {
+                var info = new FileInfo(cachePath);
+                if (info.Length is <= 0 or > MaximumImageBytes) File.Delete(cachePath);
+                else
+                {
                 var cachedBytes = await File.ReadAllBytesAsync(cachePath).ConfigureAwait(false);
                 if (cachedBytes.Length is > 0 and <= MaximumImageBytes)
                 {
                     return cachedBytes;
+                }
                 }
             }
         }
@@ -154,8 +168,9 @@ public sealed class RemoteImage : Image
             // A cache read failure should never prevent the network fallback.
         }
 
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(20));
         using var response = await HttpClient
-            .GetAsync(source, HttpCompletionOption.ResponseHeadersRead)
+            .GetAsync(source, HttpCompletionOption.ResponseHeadersRead, timeout.Token)
             .ConfigureAwait(false);
         response.EnsureSuccessStatusCode();
         if (response.Content.Headers.ContentLength is > MaximumImageBytes)
@@ -163,12 +178,12 @@ public sealed class RemoteImage : Image
             return null;
         }
 
-        await using var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+        await using var responseStream = await response.Content.ReadAsStreamAsync(timeout.Token).ConfigureAwait(false);
         using var destination = new MemoryStream();
         var buffer = new byte[32 * 1024];
         var totalBytes = 0;
         int read;
-        while ((read = await responseStream.ReadAsync(buffer).ConfigureAwait(false)) > 0)
+        while ((read = await responseStream.ReadAsync(buffer, timeout.Token).ConfigureAwait(false)) > 0)
         {
             totalBytes += read;
             if (totalBytes > MaximumImageBytes)

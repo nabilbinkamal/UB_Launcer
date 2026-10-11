@@ -182,7 +182,7 @@ public static class InstanceStore
             if (File.Exists(StatePath))
             {
                 var state = JsonSerializer.Deserialize<InstanceStoreState>(File.ReadAllText(StatePath));
-                if (state?.Profiles is { Count: > 0 })
+                if (state?.Profiles is not null)
                 {
                     loadedSelectedPath = state.SelectedInstancePath;
                     loadedDefaultPath = state.DefaultInstancePath;
@@ -194,14 +194,7 @@ public static class InstanceStore
         {
         }
 
-        var defaultP = CreateProfile("Main Optimization Pack", "1.20.4", "Fabric", "Today", "Modpack", 42, "1.8 GB", "#23A66F", 2, 1, 1);
-        defaultP.IsDefault = true;
-        return
-        [
-            defaultP,
-            CreateProfile("Legacy Bedwars Core", "1.8.9", "Vanilla", "Yesterday", "Vanilla", 0, "620 MB", "#D86A45", 5, 2, 1),
-            CreateProfile("NeoForge Testing", "1.20.4", "NeoForge", "3 days ago", "Custom", 24, "1.2 GB", "#7B61D9", 2, 1, 0)
-        ];
+        return [];
     }
 
     private static void OnProfilesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs eventArgs)

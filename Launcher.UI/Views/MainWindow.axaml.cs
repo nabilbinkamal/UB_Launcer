@@ -8,7 +8,6 @@ using Avalonia.VisualTree;
 using Launcher.Core.Services;
 using Launcher.Core.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,31 +18,21 @@ public partial class MainWindow : Window
     private double appliedScale;
     private bool scaleUpdateQueued;
     private double pendingScaleWidth;
-    private readonly Queue<Action<MainWindowViewModel>> pagePreloadQueue = new();
-    private readonly DispatcherTimer pagePreloadTimer;
 
     public MainWindow()
     {
         InitializeComponent();
 
-        pagePreloadTimer = new DispatcherTimer(DispatcherPriority.Background)
-        {
-            Interval = TimeSpan.FromMilliseconds(500)
-        };
-        pagePreloadTimer.Tick += OnPagePreloadTick;
-
         SizeChanged += OnWindowSizeChanged;
         AttachedToVisualTree += (_, _) =>
         {
             ApplyResponsiveScale(Bounds.Width);
-            BeginPagePreload();
 
             if (DataContext is MainWindowViewModel vm)
                 vm.CopyToClipboardRequested += OnCopyToClipboardRequested;
         };
         DetachedFromVisualTree += (_, _) =>
         {
-            pagePreloadTimer.Stop();
             if (DataContext is MainWindowViewModel vm)
                 vm.CopyToClipboardRequested -= OnCopyToClipboardRequested;
         };
@@ -58,39 +47,6 @@ public partial class MainWindow : Window
                 await clipboard.SetTextAsync(text);
         }
         catch { /* clipboard unavailable */ }
-    }
-
-    private async void BeginPagePreload()
-    {
-        if (DataContext is not MainWindowViewModel)
-        {
-            return;
-        }
-
-        // Defer background page preloading so initial launcher window renders instantly
-        await Task.Delay(3000);
-        if (DataContext is not MainWindowViewModel)
-        {
-            return;
-        }
-
-        pagePreloadQueue.Enqueue(viewModel => viewModel.Navigation.Preload<ProfilesViewModel>());
-        pagePreloadQueue.Enqueue(viewModel => viewModel.Navigation.Preload<CustomizeViewModel>());
-        pagePreloadQueue.Enqueue(viewModel => viewModel.Navigation.Preload<ModsViewModel>());
-        pagePreloadQueue.Enqueue(viewModel => viewModel.Navigation.Preload<PerformanceViewModel>());
-        pagePreloadQueue.Enqueue(viewModel => viewModel.Navigation.Preload<CreateServerViewModel>());
-        pagePreloadTimer.Start();
-    }
-
-    private void OnPagePreloadTick(object? sender, EventArgs eventArgs)
-    {
-        if (DataContext is not MainWindowViewModel viewModel || pagePreloadQueue.Count == 0)
-        {
-            pagePreloadTimer.Stop();
-            return;
-        }
-
-        pagePreloadQueue.Dequeue()(viewModel);
     }
 
     private void OnWindowSizeChanged(object? sender, SizeChangedEventArgs e)

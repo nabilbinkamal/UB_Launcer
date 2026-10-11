@@ -8,4 +8,5 @@
   <Project Path="Launcher.Updater/Launcher.Updater.csproj" />
   <Project Path="Minecraft.ModManager/Minecraft.ModManager.csproj" />
   <Project Path="Minecraft.Runtime/Minecraft.Runtime.csproj" />
+  <Project Path="Launcher.Tests/Launcher.Tests.csproj" />
 </Solution>

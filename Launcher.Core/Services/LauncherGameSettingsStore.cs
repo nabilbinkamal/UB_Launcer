@@ -18,6 +18,8 @@ public sealed record LauncherGameSettings
     public bool MaxPerformanceMode { get; init; } = true;
     public bool EnableDiscordRpc { get; init; } = true;
     public string PerformanceProfile { get; init; } = string.Empty;
+    public bool UseHighProcessPriority { get; init; }
+    public bool ForceDedicatedGpu { get; init; } = true;
 }
 
 public static class LauncherGameSettingsStore
@@ -64,7 +66,7 @@ public static class LauncherGameSettingsStore
         {
             >= 25 => settings.Java25Path,
             >= 21 => settings.Java21Path,
-            >= 17 => settings.Java17Path,
+            >= 16 => settings.Java17Path,
             _ => settings.Java8Path
         };
     }
@@ -72,7 +74,6 @@ public static class LauncherGameSettingsStore
     public static MinecraftLaunchConfiguration CreateLaunchConfiguration()
     {
         var settings = Current;
-        var isEfficiency = string.Equals(settings.PerformanceProfile, "Efficiency", StringComparison.OrdinalIgnoreCase);
         return new MinecraftLaunchConfiguration
         {
             EnableUbClient = settings.EnableUbClient,
@@ -85,9 +86,9 @@ public static class LauncherGameSettingsStore
             Java17Path = settings.Java17Path,
             Java8Path = settings.Java8Path,
             CustomJvmArguments = settings.CustomJvmArguments,
-            MaxPerformanceMode = settings.MaxPerformanceMode && !isEfficiency,
-            ForceDedicatedGpu = !isEfficiency,
-            UseHighProcessPriority = !isEfficiency
+            MaxPerformanceMode = settings.MaxPerformanceMode,
+            ForceDedicatedGpu = settings.ForceDedicatedGpu,
+            UseHighProcessPriority = settings.UseHighProcessPriority
         };
     }
 
@@ -125,12 +126,8 @@ public static class LauncherGameSettingsStore
 
     private static void SaveSnapshot()
     {
-        LauncherGameSettings snapshot;
         lock (Gate)
         {
-            snapshot = current;
-        }
-
         try
         {
             var directory = Path.GetDirectoryName(SettingsPath);
@@ -139,10 +136,15 @@ public static class LauncherGameSettingsStore
                 Directory.CreateDirectory(directory);
             }
 
-            File.WriteAllText(SettingsPath, JsonSerializer.Serialize(snapshot, JsonOptions));
+            var temporaryPath = SettingsPath + ".tmp";
+            File.WriteAllText(temporaryPath, JsonSerializer.Serialize(current, JsonOptions));
+            File.Move(temporaryPath, SettingsPath, overwrite: true);
         }
         catch
         {
         }
+        }
     }
+
+    public static void Flush() => SaveSnapshot();
 }

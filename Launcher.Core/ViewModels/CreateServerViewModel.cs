@@ -36,7 +36,7 @@ public partial class LocalServerItem : ObservableObject
     public string Endpoint => $"localhost:{Port}";
     public string MemoryLabel => $"{MemoryGb} GB RAM";
     public string LaunchJarPath => Path.Combine(FolderPath, LaunchJarName);
-    public bool HasServerJar => File.Exists(LaunchJarPath);
+    public bool HasServerJar => ServerLaunchFiles.IsReady(FolderPath, LaunchJarName, ServerType);
     public bool IsSetupRequired => !HasServerJar;
     public string ActionLabel => IsRunning ? "Stop server" : HasServerJar ? "Start server" : "Download & start";
     public string RecentActivityLabel => LastActivityAtUtc is null
@@ -255,6 +255,7 @@ public partial class CreateServerViewModel : ViewModelBase
         : $"launcher.unitedbangla.top:{TunnelRemotePort}";
     public string TunnelActionLabel => IsTunnelRunning ? "Stop relay" : "Start relay";
     public bool IsManagerVisible => !IsCreatePanelVisible && SelectedServer is not null;
+    public bool IsEmptyWorkspaceVisible => !IsCreatePanelVisible && SelectedServer is null;
     public bool IsPluginSupported => SelectedServer is not null &&
         (EditServerType.Equals("Paper", StringComparison.OrdinalIgnoreCase) ||
          EditServerType.Equals("Purpur", StringComparison.OrdinalIgnoreCase) ||
@@ -332,6 +333,7 @@ public partial class CreateServerViewModel : ViewModelBase
         OnPropertyChanged(nameof(LanJoinAddress));
         OnPropertyChanged(nameof(InternetJoinHint));
         OnPropertyChanged(nameof(IsManagerVisible));
+        OnPropertyChanged(nameof(IsEmptyWorkspaceVisible));
         OnPropertyChanged(nameof(IsPluginSupported));
         OnPropertyChanged(nameof(IsModSupported));
         OnPropertyChanged(nameof(IsExtensionSupported));
@@ -343,7 +345,11 @@ public partial class CreateServerViewModel : ViewModelBase
         OnPropertyChanged(nameof(PluginSupportText));
     }
 
-    partial void OnIsCreatePanelVisibleChanged(bool value) => OnPropertyChanged(nameof(IsManagerVisible));
+    partial void OnIsCreatePanelVisibleChanged(bool value)
+    {
+        OnPropertyChanged(nameof(IsManagerVisible));
+        OnPropertyChanged(nameof(IsEmptyWorkspaceVisible));
+    }
 
     partial void OnLocalIpAddressChanged(string value)
     {
@@ -565,8 +571,6 @@ public partial class CreateServerViewModel : ViewModelBase
         await Task.Run(() => WriteConfigurationFiles(server));
         try
         {
-            await StopProcessesLockingServerAsync(server);
-
             var startInfo = BuildServerStartInfo(server);
             var process = new Process { StartInfo = startInfo, EnableRaisingEvents = true };
             process.OutputDataReceived += (_, eventArgs) => PostLog(server, eventArgs.Data);
@@ -603,34 +607,10 @@ public partial class CreateServerViewModel : ViewModelBase
     private static ProcessStartInfo BuildServerStartInfo(LocalServerItem server)
     {
         var serverFolder = server.FolderPath;
-        var userJvmArgs = Path.Combine(serverFolder, "user_jvm_args.txt");
-        string? argsFile = null;
-
-        var librariesDir = Path.Combine(serverFolder, "libraries");
-        if (Directory.Exists(librariesDir))
+        var argsFile = ServerLaunchFiles.FindArgumentFile(serverFolder, server.ServerType);
+        var startInfo = new ProcessStartInfo
         {
-            var winArgs = Directory.GetFiles(librariesDir, "win_args.txt", SearchOption.AllDirectories).FirstOrDefault();
-            var unixArgs = Directory.GetFiles(librariesDir, "unix_args.txt", SearchOption.AllDirectories).FirstOrDefault();
-            var generalArgs = Directory.GetFiles(librariesDir, "args.txt", SearchOption.AllDirectories).FirstOrDefault();
-            argsFile = winArgs ?? unixArgs ?? generalArgs;
-        }
-
-        string arguments;
-        if (argsFile != null && (server.ServerType.Equals("Forge", StringComparison.OrdinalIgnoreCase) || server.ServerType.Equals("NeoForge", StringComparison.OrdinalIgnoreCase)))
-        {
-            var relativeArgsPath = Path.GetRelativePath(serverFolder, argsFile);
-            var userArgsPrefix = File.Exists(userJvmArgs) ? "@user_jvm_args.txt " : string.Empty;
-            arguments = $"-Xms1G -Xmx{server.MemoryGb}G {userArgsPrefix}@{relativeArgsPath} nogui";
-        }
-        else
-        {
-            arguments = $"-Xms1G -Xmx{server.MemoryGb}G -jar \"{server.LaunchJarName}\" nogui";
-        }
-
-        return new ProcessStartInfo
-        {
-            FileName = "java",
-            Arguments = arguments,
+            FileName = ServerLaunchFiles.ResolveJava(server.Version),
             WorkingDirectory = serverFolder,
             UseShellExecute = false,
             CreateNoWindow = true,
@@ -638,6 +618,23 @@ public partial class CreateServerViewModel : ViewModelBase
             RedirectStandardOutput = true,
             RedirectStandardError = true
         };
+        var maximumMb = Minecraft.Runtime.MinecraftLaunchService.ClampMemoryMb(
+            (int)Math.Clamp((long)server.MemoryGb * 1024, 512, 131072), GC.GetGCMemoryInfo().TotalAvailableMemoryBytes);
+        startInfo.ArgumentList.Add($"-Xms{Math.Min(1024, maximumMb)}M");
+        startInfo.ArgumentList.Add($"-Xmx{maximumMb}M");
+        if (argsFile is not null)
+        {
+            if (File.Exists(Path.Combine(serverFolder, "user_jvm_args.txt")))
+                startInfo.ArgumentList.Add("@user_jvm_args.txt");
+            startInfo.ArgumentList.Add("@" + Path.GetRelativePath(serverFolder, argsFile));
+        }
+        else
+        {
+            startInfo.ArgumentList.Add("-jar");
+            startInfo.ArgumentList.Add(server.LaunchJarName);
+        }
+        startInfo.ArgumentList.Add("nogui");
+        return startInfo;
     }
 
     [RelayCommand]

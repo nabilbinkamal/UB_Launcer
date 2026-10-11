@@ -15,7 +15,6 @@ namespace Launcher.UI.Views;
 public partial class PerformanceView : UserControl, INavigationAwarePage
 {
     private readonly DispatcherTimer telemetryTimer;
-    private readonly WindowsTelemetryReader telemetryReader;
     private bool isAttached;
     private bool isNavigationActive;
     private bool telemetryReadInProgress;
@@ -23,7 +22,6 @@ public partial class PerformanceView : UserControl, INavigationAwarePage
     public PerformanceView()
     {
         InitializeComponent();
-        telemetryReader = WindowsTelemetryReader.Shared;
         telemetryTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
         telemetryTimer.Tick += OnTelemetryTick;
         AttachedToVisualTree += OnAttachedToVisualTree;
@@ -56,6 +54,8 @@ public partial class PerformanceView : UserControl, INavigationAwarePage
 
     public void SetNavigationActive(bool isActive)
     {
+        if (isNavigationActive == isActive)
+            return;
         isNavigationActive = isActive;
         UpdateTelemetryState();
     }
@@ -71,8 +71,8 @@ public partial class PerformanceView : UserControl, INavigationAwarePage
         telemetryReadInProgress = true;
         try
         {
-            var snapshot = await Task.Run(telemetryReader.Read);
-            if (isAttached && DataContext is PerformanceViewModel viewModel)
+            var snapshot = await Task.Run(() => WindowsTelemetryReader.Shared.Read());
+            if (isAttached && isNavigationActive && DataContext is PerformanceViewModel viewModel)
             {
                 viewModel.UpdateTelemetry(
                     snapshot.CpuUsage,
@@ -80,6 +80,10 @@ public partial class PerformanceView : UserControl, INavigationAwarePage
                     snapshot.UsedMemoryGb,
                     snapshot.TotalMemoryGb);
             }
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Warning(ex, "Could not refresh performance telemetry.");
         }
         finally
         {

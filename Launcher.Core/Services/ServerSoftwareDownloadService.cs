@@ -140,7 +140,7 @@ public static class ServerSoftwareDownloadService
                              81920,
                              FileOptions.Asynchronous))
             {
-                await source.CopyToAsync(destination, cancellationToken);
+                await Launcher.Security.BoundedStream.CopyAsync(source, destination, 2L * 1024 * 1024 * 1024, cancellationToken);
                 await destination.FlushAsync(cancellationToken);
             }
 
@@ -342,7 +342,7 @@ public static class ServerSoftwareDownloadService
                              81920,
                              FileOptions.Asynchronous))
             {
-                await source.CopyToAsync(destination, cancellationToken);
+                await Launcher.Security.BoundedStream.CopyAsync(source, destination, 2L * 1024 * 1024 * 1024, cancellationToken);
                 await destination.FlushAsync(cancellationToken);
             }
 
@@ -513,31 +513,7 @@ public static class ServerSoftwareDownloadService
             await DownloadFileAsync(installerUri, installerPath, cancellationToken);
 
             progress?.Report("Setting up Forge server files...");
-            try
-            {
-                var startInfo = new ProcessStartInfo
-                {
-                    FileName = "java",
-                    Arguments = "-jar forge-installer.jar --installServer",
-                    WorkingDirectory = serverFolder,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true
-                };
-
-                using var process = new Process { StartInfo = startInfo };
-                process.OutputDataReceived += (_, e) => { if (!string.IsNullOrWhiteSpace(e.Data)) progress?.Report(e.Data); };
-                process.ErrorDataReceived += (_, e) => { if (!string.IsNullOrWhiteSpace(e.Data)) progress?.Report(e.Data); };
-                process.Start();
-                process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
-                await process.WaitForExitAsync(cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                progress?.Report($"Forge setup note: {ex.Message}");
-            }
+            await RunInstallerAsync(installerPath, minecraftVersion, progress, cancellationToken);
 
             var legacyJar = Directory.GetFiles(serverFolder, "forge-*.jar", SearchOption.TopDirectoryOnly)
                 .FirstOrDefault(f => !Path.GetFileName(f).Equals("forge-installer.jar", StringComparison.OrdinalIgnoreCase));
@@ -546,10 +522,8 @@ public static class ServerSoftwareDownloadService
             {
                 File.Copy(legacyJar, destinationPath, true);
             }
-            else if (!File.Exists(destinationPath))
-            {
-                await File.WriteAllTextAsync(destinationPath, $"# Forge {fullVersion} Server" + Environment.NewLine, cancellationToken);
-            }
+            if (!ServerLaunchFiles.IsReady(serverFolder, Path.GetFileName(destinationPath), "Forge"))
+                throw new IOException("Forge installation did not produce launchable server files.");
 
             progress?.Report($"Forge {fullVersion} server is ready.");
         }
@@ -608,36 +582,10 @@ public static class ServerSoftwareDownloadService
             await DownloadFileAsync(installerUri, installerPath, cancellationToken);
 
             progress?.Report("Setting up NeoForge server files...");
-            try
-            {
-                var startInfo = new ProcessStartInfo
-                {
-                    FileName = "java",
-                    Arguments = "-jar neoforge-installer.jar --installServer",
-                    WorkingDirectory = serverFolder,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true
-                };
+            await RunInstallerAsync(installerPath, minecraftVersion, progress, cancellationToken);
 
-                using var process = new Process { StartInfo = startInfo };
-                process.OutputDataReceived += (_, e) => { if (!string.IsNullOrWhiteSpace(e.Data)) progress?.Report(e.Data); };
-                process.ErrorDataReceived += (_, e) => { if (!string.IsNullOrWhiteSpace(e.Data)) progress?.Report(e.Data); };
-                process.Start();
-                process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
-                await process.WaitForExitAsync(cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                progress?.Report($"NeoForge setup note: {ex.Message}");
-            }
-
-            if (!File.Exists(destinationPath))
-            {
-                await File.WriteAllTextAsync(destinationPath, $"# NeoForge {selectedVersion} Server" + Environment.NewLine, cancellationToken);
-            }
+            if (!ServerLaunchFiles.IsReady(serverFolder, Path.GetFileName(destinationPath), "NeoForge"))
+                throw new IOException("NeoForge installation did not produce launchable server files.");
 
             progress?.Report($"NeoForge {selectedVersion} server is ready.");
         }
@@ -645,6 +593,41 @@ public static class ServerSoftwareDownloadService
         {
             try { if (File.Exists(installerPath)) File.Delete(installerPath); } catch { }
             try { var logPath = installerPath + ".log"; if (File.Exists(logPath)) File.Delete(logPath); } catch { }
+        }
+    }
+
+    private static async Task RunInstallerAsync(string installerPath, string minecraftVersion,
+        IProgress<string>? progress, CancellationToken cancellationToken)
+    {
+        var startInfo = new ProcessStartInfo
+        {
+            FileName = ServerLaunchFiles.ResolveJava(minecraftVersion),
+            WorkingDirectory = Path.GetDirectoryName(installerPath)!,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true
+        };
+        startInfo.ArgumentList.Add("-jar");
+        startInfo.ArgumentList.Add(Path.GetFileName(installerPath));
+        startInfo.ArgumentList.Add("--installServer");
+        using var process = new Process { StartInfo = startInfo };
+        process.OutputDataReceived += (_, e) => { if (!string.IsNullOrWhiteSpace(e.Data)) progress?.Report(e.Data); };
+        process.ErrorDataReceived += (_, e) => { if (!string.IsNullOrWhiteSpace(e.Data)) progress?.Report(e.Data); };
+        process.Start();
+        process.BeginOutputReadLine();
+        process.BeginErrorReadLine();
+        try
+        {
+            await process.WaitForExitAsync(cancellationToken);
+            if (process.ExitCode != 0)
+                throw new IOException($"Server installer failed with exit code {process.ExitCode}. Check the console log.");
+        }
+        catch (OperationCanceledException)
+        {
+            if (!process.HasExited) process.Kill(entireProcessTree: true);
+            await process.WaitForExitAsync(CancellationToken.None);
+            throw;
         }
     }
 

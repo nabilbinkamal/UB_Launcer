@@ -1,5 +1,7 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Launcher.Core.Services;
 
@@ -53,6 +55,9 @@ public static class MicrosoftAuthService
         IProgress<string>? progress = null,
         CancellationToken cancellationToken = default)
     {
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        timeout.CancelAfter(TimeSpan.FromMinutes(5));
+        cancellationToken = timeout.Token;
         int port = 59125;
         try
         {
@@ -64,7 +69,10 @@ public static class MicrosoftAuthService
         catch { }
 
         var redirectUri = $"http://localhost:{port}/";
-        var authorizeUrl = $"https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?client_id={ClientId}&response_type=code&redirect_uri={Uri.EscapeDataString(redirectUri)}&scope={Uri.EscapeDataString("XboxLive.signin offline_access")}";
+        var state = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
+        var verifier = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32)).TrimEnd('=').Replace('+', '-').Replace('/', '_');
+        var challenge = Convert.ToBase64String(SHA256.HashData(Encoding.ASCII.GetBytes(verifier))).TrimEnd('=').Replace('+', '-').Replace('/', '_');
+        var authorizeUrl = $"https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?client_id={ClientId}&response_type=code&redirect_uri={Uri.EscapeDataString(redirectUri)}&scope={Uri.EscapeDataString("XboxLive.signin offline_access")}&state={state}&code_challenge={challenge}&code_challenge_method=S256";
 
         using var listener = new System.Net.HttpListener();
         listener.Prefixes.Add(redirectUri);
@@ -94,11 +102,18 @@ public static class MicrosoftAuthService
         {
             try
             {
-                context = await listener.GetContextAsync();
+                while (true)
+                {
+                    context = await listener.GetContextAsync();
+                    if (context.Request.HttpMethod == "GET" &&
+                        string.Equals(context.Request.QueryString["state"], state, StringComparison.Ordinal)) break;
+                    context.Response.StatusCode = 400;
+                    context.Response.Close();
+                }
             }
-            catch (Exception)
+            catch (Exception) when (cancellationToken.IsCancellationRequested)
             {
-                throw new OperationCanceledException("Authentication was canceled.");
+                throw new OperationCanceledException("Authentication was canceled or timed out.", cancellationToken);
             }
         }
 
@@ -108,22 +123,20 @@ public static class MicrosoftAuthService
 
         if (requestUrl != null)
         {
-            var query = requestUrl.Query.TrimStart('?').Split('&')
-                .Select(q => q.Split('='))
-                .Where(q => q.Length >= 2)
-                .ToDictionary(q => q[0], q => Uri.UnescapeDataString(q[1]));
-
-            code = query.TryGetValue("code", out var c) ? c : null;
-            errorMsg = query.TryGetValue("error_description", out var ed) ? ed : (query.TryGetValue("error", out var e) ? e : null);
+            code = context.Request.QueryString["code"];
+            errorMsg = context.Request.QueryString["error_description"] ?? context.Request.QueryString["error"];
         }
 
         // Send a response to the browser
         var responseString = string.IsNullOrEmpty(code)
-            ? $"<html><body style='font-family: sans-serif; text-align: center; margin-top: 50px; background: #0E1A25; color: #fff;'><h1>Authentication Failed</h1><p>{errorMsg}</p></body></html>"
+            ? $"<html><body style='font-family: sans-serif; text-align: center; margin-top: 50px; background: #0E1A25; color: #fff;'><h1>Authentication Failed</h1><p>{System.Net.WebUtility.HtmlEncode(errorMsg)}</p></body></html>"
             : "<html><body style='font-family: sans-serif; text-align: center; margin-top: 50px; background: #0E1A25; color: #fff;'><h1>Authentication Successful!</h1><p style='color: #68DDA8;'>You can now safely close this window and return to UB Launcher.</p><script>window.close();</script></body></html>";
 
         var buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
         context.Response.ContentLength64 = buffer.Length;
+        context.Response.ContentType = "text/html; charset=utf-8";
+        context.Response.Headers["Cache-Control"] = "no-store";
+        context.Response.Headers["Referrer-Policy"] = "no-referrer";
         try
         {
             await context.Response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
@@ -145,7 +158,8 @@ public static class MicrosoftAuthService
             ["grant_type"] = "authorization_code",
             ["client_id"] = ClientId,
             ["code"] = code,
-            ["redirect_uri"] = redirectUri
+            ["redirect_uri"] = redirectUri,
+            ["code_verifier"] = verifier
         });
 
         using var tokenResponse = await Http.PostAsync(TokenUrl, content, cancellationToken);
@@ -224,6 +238,10 @@ public static class MicrosoftAuthService
                 MinecraftUsername = username,
                 Capes = capes
             };
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch
         {

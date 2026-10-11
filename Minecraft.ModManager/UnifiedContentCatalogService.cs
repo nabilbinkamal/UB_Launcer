@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using Launcher.Security;
 
 namespace Minecraft.ModManager;
 
@@ -84,6 +85,7 @@ public sealed class UnifiedContentCatalogService
 {
     private const string ModrinthBaseUrl = "https://api.modrinth.com/v2";
     private const string SmithedBaseUrl = "https://api.smithed.dev/v2";
+    private const long MaximumFileBytes = 2L * 1024 * 1024 * 1024;
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
     {
         PropertyNameCaseInsensitive = true
@@ -461,13 +463,21 @@ public sealed class UnifiedContentCatalogService
                 progress.Report(new CatalogInstallProgress(update.Percent * 0.1, update.Message)));
             await DownloadToFileAsync(packFile.Url, temporaryPath, packFile.Hashes, packProgress, cancellationToken);
             using var archive = ZipFile.OpenRead(temporaryPath);
+            if (archive.Entries.Count > 100_000 || archive.Entries.Sum(entry => entry.Length) > 16L * 1024 * 1024 * 1024)
+                throw new InvalidDataException("The modpack exceeds the extraction limits.");
             var indexEntry = archive.GetEntry("modrinth.index.json") ??
                              throw new InvalidDataException("The modpack is missing modrinth.index.json.");
+            if (indexEntry.Length > 8 * 1024 * 1024) throw new InvalidDataException("The modpack index is too large.");
             await using var indexStream = indexEntry.Open();
             var index = await JsonSerializer.DeserializeAsync<ModrinthPackIndex>(indexStream, JsonOptions, cancellationToken) ??
                         throw new InvalidDataException("The modpack index is invalid.");
 
             var files = index.Files ?? [];
+            if (files.Count > 100_000) throw new InvalidDataException("The modpack has too many files.");
+            var paths = new HashSet<string>(OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
+            foreach (var file in files)
+                if (!paths.Add(GetSafeDestinationPath(target.RootPath, file.Path)))
+                    throw new InvalidDataException("The modpack contains duplicate file paths.");
             var fileTasks = new List<Task>();
             using var downloadLimiter = new SemaphoreSlim(6);
             for (var fileIndex = 0; fileIndex < files.Count; fileIndex++)
@@ -508,13 +518,19 @@ public sealed class UnifiedContentCatalogService
         IProgress<CatalogInstallProgress>? progress,
         CancellationToken cancellationToken)
     {
-        var temporaryPath = destinationPath + ".download";
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) || uri.Scheme != Uri.UriSchemeHttps)
+            throw new InvalidDataException("Content downloads require HTTPS.");
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        timeout.CancelAfter(TimeSpan.FromMinutes(30));
+        cancellationToken = timeout.Token;
+        var temporaryPath = destinationPath + $".{Guid.NewGuid():N}.download";
         Directory.CreateDirectory(Path.GetDirectoryName(destinationPath)!);
         try
         {
             using var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
             response.EnsureSuccessStatusCode();
             var totalBytes = response.Content.Headers.ContentLength;
+            if (totalBytes > MaximumFileBytes) throw new InvalidDataException("The content file is too large.");
             await using var source = await response.Content.ReadAsStreamAsync(cancellationToken);
             await using (var destination = new FileStream(
                              temporaryPath, FileMode.Create, FileAccess.Write, FileShare.None, 81920, true))
@@ -526,8 +542,9 @@ public sealed class UnifiedContentCatalogService
                 int read;
                 while ((read = await source.ReadAsync(buffer, cancellationToken)) > 0)
                 {
-                    await destination.WriteAsync(buffer.AsMemory(0, read), cancellationToken);
                     copied += read;
+                    if (copied > MaximumFileBytes) throw new InvalidDataException("The content file is too large.");
+                    await destination.WriteAsync(buffer.AsMemory(0, read), cancellationToken);
                     if (totalBytes is > 0)
                     {
                         var percent = Math.Clamp(copied * 100d / totalBytes.Value, 0, 99);
@@ -573,6 +590,8 @@ public sealed class UnifiedContentCatalogService
         try
         {
         var destinationPath = GetSafeDestinationPath(rootPath, file.Path);
+        if (file.Hashes is null || (!file.Hashes.ContainsKey("sha512") && !file.Hashes.ContainsKey("sha1")))
+            throw new InvalidDataException("The modpack file has no supported integrity hash.");
         Directory.CreateDirectory(Path.GetDirectoryName(destinationPath)!);
         var basePercent = 10 + 75d * fileIndex / Math.Max(1, fileCount);
         progress?.Report(new CatalogInstallProgress(basePercent, $"Installing {file.Path}..."));
@@ -635,7 +654,7 @@ public sealed class UnifiedContentCatalogService
             await using var input = entry.Open();
             await using var output = new FileStream(
                 destinationPath, FileMode.Create, FileAccess.Write, FileShare.None, 81920, true);
-            await input.CopyToAsync(output, cancellationToken);
+            await BoundedStream.CopyAsync(input, output, Math.Min(entry.Length, MaximumFileBytes), cancellationToken);
         }
     }
 
@@ -765,14 +784,7 @@ public sealed class UnifiedContentCatalogService
 
     private static string GetSafeDestinationPath(string root, string relativePath)
     {
-        var fullRoot = Path.GetFullPath(root).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
-        var fullPath = Path.GetFullPath(Path.Combine(root, relativePath.Replace('/', Path.DirectorySeparatorChar)));
-        if (!fullPath.StartsWith(fullRoot, StringComparison.OrdinalIgnoreCase))
-        {
-            throw new InvalidDataException("The package contains an unsafe file path.");
-        }
-
-        return fullPath;
+        return SafeArchivePath.Resolve(root, relativePath);
     }
 
     private static string? GetPackLoader(IReadOnlyDictionary<string, string>? dependencies)

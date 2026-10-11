@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO.Compression;
+using System.IO.Enumeration;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -151,8 +152,20 @@ public partial class GameProfile : ObservableObject
             return 0;
         }
 
-        return Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories)
-            .Sum(file => new FileInfo(file).Length);
+        // Directory enumeration already provides file sizes; avoid a second lookup per file.
+        var sizes = new FileSystemEnumerable<long>(
+            path,
+            (ref FileSystemEntry entry) => entry.Length,
+            new EnumerationOptions
+            {
+                RecurseSubdirectories = true,
+                IgnoreInaccessible = true,
+                AttributesToSkip = FileAttributes.ReparsePoint
+            })
+        {
+            ShouldIncludePredicate = (ref FileSystemEntry entry) => !entry.IsDirectory
+        };
+        return sizes.Sum();
     }
 
     private static string FormatStorage(long bytes) => bytes switch
@@ -866,7 +879,8 @@ public partial class ProfilesViewModel : ViewModelBase
                 profile.Version,
                 LauncherGameSettingsStore.CreateLaunchConfiguration(),
                 progress,
-                instanceLoaderType: profile.LoaderType);
+                instanceLoaderType: profile.LoaderType,
+                authenticatedSession: await GameAccountSession.GetAsync(username));
             PlaytimeStore.TrackSession(username, gameProcess);
             DiscordPresenceService.TrackGame(
                 gameProcess,

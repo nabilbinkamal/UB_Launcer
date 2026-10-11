@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Minecraft.Runtime;
+using Launcher.Security;
 
 namespace Launcher.Core.Services;
 
@@ -12,11 +13,14 @@ public static class MicrosoftAccountStore
 
     private static readonly string StoreDir =
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "UBLauncher");
-    private static readonly string SessionFile = Path.Combine(StoreDir, "ms-session.json");
+    private static readonly string SessionFile = Path.Combine(StoreDir, "ms-session.dat");
+    private static readonly string LegacySessionFile = Path.Combine(StoreDir, "ms-session.json");
+    private static readonly object Gate = new();
+    private static readonly SemaphoreSlim RefreshGate = new(1, 1);
 
     private static readonly JsonSerializerOptions SerializerOptions = new() { WriteIndented = true };
 
-    private static PersistedSession? _current = TryLoad();
+    private static volatile PersistedSession? _current = TryLoad();
 
     public static bool HasSession => _current is not null;
     public static string? MinecraftUsername => _current?.MinecraftUsername;
@@ -75,6 +79,8 @@ public static class MicrosoftAccountStore
     /// <summary>Save a freshly-obtained session from <see cref="MicrosoftAuthService"/>.</summary>
     public static void Save(MicrosoftAuthService.MicrosoftSession session)
     {
+        lock (Gate)
+        {
         _current = new PersistedSession
         {
             RefreshToken = session.RefreshToken,
@@ -91,16 +97,20 @@ public static class MicrosoftAccountStore
             }).ToList()
         };
         Flush();
+        }
         SessionChanged?.Invoke();
     }
 
     /// <summary>Remove the stored session and sign the user out.</summary>
     public static void Clear()
     {
-        _current = null;
-        if (File.Exists(SessionFile))
+        lock (Gate)
         {
-            try { File.Delete(SessionFile); } catch { /* best-effort */ }
+        _current = null;
+        foreach (var path in new[] { SessionFile, LegacySessionFile })
+        {
+            try { File.Delete(path); } catch { /* best-effort */ }
+        }
         }
         SessionChanged?.Invoke();
     }
@@ -111,14 +121,23 @@ public static class MicrosoftAccountStore
     /// </summary>
     public static async Task<bool> TryRefreshAsync(CancellationToken cancellationToken = default)
     {
-        if (_current is null) return false;
-        if (DateTimeOffset.UtcNow < _current.ExpiresAt.AddMinutes(-5)) return true; // still valid
-
-        var refreshed = await MicrosoftAuthService.TryRefreshSessionAsync(_current.RefreshToken, cancellationToken);
-        if (refreshed is null) return false;
-
-        Save(refreshed);
-        return true;
+        await RefreshGate.WaitAsync(cancellationToken);
+        try
+        {
+            var snapshot = _current;
+            if (snapshot is null) return false;
+            if (DateTimeOffset.UtcNow < snapshot.ExpiresAt.AddMinutes(-5)) return true;
+            var refreshed = await MicrosoftAuthService.TryRefreshSessionAsync(snapshot.RefreshToken, cancellationToken);
+            if (refreshed is null) return false;
+            lock (Gate)
+            {
+                // A completed refresh must never restore an account that was signed out or switched.
+                if (!ReferenceEquals(snapshot, _current)) return false;
+                Save(refreshed);
+            }
+            return true;
+        }
+        finally { RefreshGate.Release(); }
     }
 
     // -------------------------------------------------------------------------
@@ -130,7 +149,8 @@ public static class MicrosoftAccountStore
         try
         {
             Directory.CreateDirectory(StoreDir);
-            File.WriteAllText(SessionFile, JsonSerializer.Serialize(_current, SerializerOptions));
+            ProtectedSessionFile.Write(SessionFile, JsonSerializer.SerializeToUtf8Bytes(_current, SerializerOptions));
+            File.Delete(LegacySessionFile);
         }
         catch
         {
@@ -142,8 +162,15 @@ public static class MicrosoftAccountStore
     {
         try
         {
-            if (!File.Exists(SessionFile)) return null;
-            return JsonSerializer.Deserialize<PersistedSession>(File.ReadAllText(SessionFile));
+            if (File.Exists(SessionFile))
+                return JsonSerializer.Deserialize<PersistedSession>(ProtectedSessionFile.Read(SessionFile));
+            if (!File.Exists(LegacySessionFile)) return null;
+            var session = JsonSerializer.Deserialize<PersistedSession>(File.ReadAllText(LegacySessionFile));
+            if (session is null) return null;
+            if (OperatingSystem.IsWindows())
+                ProtectedSessionFile.Write(SessionFile, JsonSerializer.SerializeToUtf8Bytes(session, SerializerOptions));
+            File.Delete(LegacySessionFile);
+            return session;
         }
         catch
         {

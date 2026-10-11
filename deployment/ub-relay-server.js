@@ -4,6 +4,8 @@
 
 const crypto = require("node:crypto");
 const net = require("node:net");
+const tls = require("node:tls");
+const fs = require("node:fs");
 
 const CONTROL_PORT = Number(process.env.UB_RELAY_CONTROL_PORT || 28080);
 const PUBLIC_PORT_MIN = Number(process.env.UB_RELAY_PORT_MIN || 30000);
@@ -13,9 +15,17 @@ const MAX_SESSIONS = Number(process.env.UB_RELAY_MAX_SESSIONS || 200);
 const MAX_SESSIONS_PER_IP = Number(process.env.UB_RELAY_MAX_SESSIONS_PER_IP || 5);
 const MAX_PLAYERS_PER_SESSION = Number(process.env.UB_RELAY_MAX_PLAYERS || 50);
 const MAX_FRAME_SIZE = 1024 * 1024;
+const MAX_BUFFERED_BYTES = 4 * 1024 * 1024;
 
 if (!RELAY_TOKEN || RELAY_TOKEN.length < 24) {
   throw new Error("UB_RELAY_TOKEN must contain at least 24 characters");
+}
+if (!process.env.UB_RELAY_TLS_CERT || !process.env.UB_RELAY_TLS_KEY) {
+  throw new Error("UB_RELAY_TLS_CERT and UB_RELAY_TLS_KEY are required for the secure control channel");
+}
+if (![CONTROL_PORT, PUBLIC_PORT_MIN, PUBLIC_PORT_MAX].every(port => Number.isInteger(port) && port >= 1024 && port <= 65535) ||
+    PUBLIC_PORT_MIN > PUBLIC_PORT_MAX || ![MAX_SESSIONS, MAX_SESSIONS_PER_IP, MAX_PLAYERS_PER_SESSION].every(limit => Number.isInteger(limit) && limit > 0)) {
+  throw new Error("Invalid relay port range or capacity limits");
 }
 
 const sessions = new Set();
@@ -35,6 +45,10 @@ function makeFrame(type, connectionId, payload = Buffer.alloc(0)) {
 
 function safeWrite(socket, data) {
   if (!socket.destroyed && socket.writable) {
+    if (socket.writableLength + data.length > MAX_BUFFERED_BYTES) {
+      socket.destroy(new Error("Relay backpressure limit exceeded"));
+      return;
+    }
     socket.write(data);
   }
 }
@@ -79,7 +93,7 @@ function attachPublicPlayer(session, player) {
 function handleFrame(session, type, connectionId, payload) {
   if (type === 2) {
     const player = session.players.get(connectionId);
-    if (player && !player.destroyed) player.write(payload);
+    if (player && !player.destroyed) safeWrite(player, payload);
     return;
   }
 
@@ -114,10 +128,12 @@ function consumeFrames(session, chunk) {
     const payload = session.buffer.subarray(9, 9 + length);
     session.buffer = session.buffer.subarray(9 + length);
     handleFrame(session, type, connectionId, payload);
+    if (session.closed) return;
   }
 }
 
 function startPublicListener(session, attempts = 0) {
+  if (session.closed) return;
   if (attempts >= 80) {
     safeWrite(session.control, "ERROR no-free-port\n");
     closeSession(session, "no free public port");
@@ -126,11 +142,13 @@ function startPublicListener(session, attempts = 0) {
 
   const port = crypto.randomInt(PUBLIC_PORT_MIN, PUBLIC_PORT_MAX + 1);
   const publicServer = net.createServer((player) => attachPublicPlayer(session, player));
+  session.publicServer = publicServer;
   publicServer.on("error", (error) => {
     if (error.code === "EADDRINUSE") startPublicListener(session, attempts + 1);
     else closeSession(session, `public listener: ${error.message}`);
   });
   publicServer.listen({ host: "0.0.0.0", port, exclusive: true }, () => {
+    if (session.closed) { publicServer.close(); return; }
     session.port = port;
     session.publicServer = publicServer;
     safeWrite(session.control, `PORT ${port}\n`);
@@ -145,6 +163,7 @@ function acceptControl(control) {
 
   let handshakeBuffer = Buffer.alloc(0);
   const handshakeTimeout = setTimeout(() => control.destroy(), 10000);
+  control.once("close", () => clearTimeout(handshakeTimeout));
 
   const onHandshakeData = (chunk) => {
     handshakeBuffer = Buffer.concat([handshakeBuffer, chunk]);
@@ -202,7 +221,13 @@ function acceptControl(control) {
   control.on("error", () => control.destroy());
 }
 
-const controlServer = net.createServer(acceptControl);
+const controlServer = tls.createServer({
+  cert: fs.readFileSync(process.env.UB_RELAY_TLS_CERT),
+  key: fs.readFileSync(process.env.UB_RELAY_TLS_KEY),
+  minVersion: "TLSv1.2",
+  handshakeTimeout: 10000
+}, acceptControl);
+controlServer.maxConnections = MAX_SESSIONS + 100;
 controlServer.on("error", (error) => {
   console.error(error);
   process.exitCode = 1;

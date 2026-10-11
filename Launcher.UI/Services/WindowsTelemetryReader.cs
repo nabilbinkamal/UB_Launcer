@@ -12,8 +12,11 @@ public sealed class WindowsTelemetryReader : IDisposable
     private static readonly TimeSpan GpuSampleInterval = TimeSpan.FromSeconds(2);
     private readonly object readLock = new();
     private readonly PerformanceCounter? cpuCounter;
-    private readonly List<PerformanceCounter> gpuCounters = new();
+    private readonly PerformanceCounterCategory gpuCategory = new("GPU Engine");
+    private Dictionary<string, CounterSample> previousGpuSamples = new(StringComparer.OrdinalIgnoreCase);
     private long lastGpuSampleTimestamp;
+    private long lastCpuSampleTimestamp;
+    private double cachedCpuUsage;
     private double cachedGpuUsage;
 
     public static WindowsTelemetryReader Shared { get; } = new();
@@ -24,68 +27,83 @@ public sealed class WindowsTelemetryReader : IDisposable
         {
             cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total", true);
             _ = cpuCounter.NextValue();
+            lastCpuSampleTimestamp = Stopwatch.GetTimestamp();
         }
         catch
         {
             cpuCounter = null;
         }
 
-        try
-        {
-            var gpuCategory = new PerformanceCounterCategory("GPU Engine");
-            foreach (var instanceName in gpuCategory.GetInstanceNames())
-            {
-                if (!instanceName.Contains("engtype_3D", StringComparison.OrdinalIgnoreCase))
-                {
-                    continue;
-                }
-
-                try
-                {
-                    var counter = new PerformanceCounter("GPU Engine", "Utilization Percentage", instanceName, true);
-                    _ = counter.NextValue();
-                    gpuCounters.Add(counter);
-                }
-                catch
-                {
-                }
-            }
-        }
-        catch
-        {
-        }
     }
 
     public WindowsTelemetrySnapshot Read()
     {
         lock (readLock)
         {
-            var cpuUsage = ReadCounter(cpuCounter);
             var now = Stopwatch.GetTimestamp();
+            if (lastCpuSampleTimestamp == 0 ||
+                Stopwatch.GetElapsedTime(lastCpuSampleTimestamp, now) >= TimeSpan.FromMilliseconds(750))
+            {
+                cachedCpuUsage = ReadCounter(cpuCounter);
+                lastCpuSampleTimestamp = now;
+            }
             if (lastGpuSampleTimestamp == 0 ||
                 Stopwatch.GetElapsedTime(lastGpuSampleTimestamp, now) >= GpuSampleInterval)
             {
-                var gpuUsage = 0d;
-                foreach (var counter in gpuCounters)
-                {
-                    gpuUsage += ReadCounter(counter);
-                }
-
-                cachedGpuUsage = Math.Clamp(gpuUsage, 0, 100);
+                cachedGpuUsage = ReadGpuUsage();
                 lastGpuSampleTimestamp = now;
             }
 
             var memory = ReadMemory();
-            return new WindowsTelemetrySnapshot(cpuUsage, cachedGpuUsage, memory.UsedGb, memory.TotalGb);
+            return new WindowsTelemetrySnapshot(cachedCpuUsage, cachedGpuUsage, memory.UsedGb, memory.TotalGb);
         }
     }
 
     public void Dispose()
     {
-        cpuCounter?.Dispose();
-        foreach (var counter in gpuCounters)
+        lock (readLock)
         {
-            counter.Dispose();
+            cpuCounter?.Dispose();
+            previousGpuSamples.Clear();
+        }
+    }
+
+    private double ReadGpuUsage()
+    {
+        try
+        {
+            // Fetch the category once instead of querying Windows for every GPU engine.
+            var instances = gpuCategory.ReadCategory()["Utilization Percentage"];
+            var samples = new Dictionary<string, CounterSample>(StringComparer.OrdinalIgnoreCase);
+            var usage = 0d;
+            foreach (InstanceData instance in instances.Values)
+            {
+                if (!instance.InstanceName.Contains("engtype_3D", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                var sample = instance.Sample;
+                samples[instance.InstanceName] = sample;
+                if (!previousGpuSamples.TryGetValue(instance.InstanceName, out var previous))
+                    continue;
+
+                try
+                {
+                    var value = CounterSample.Calculate(previous, sample);
+                    if (double.IsFinite(value))
+                        usage += Math.Clamp(value, 0, 100);
+                }
+                catch
+                {
+                    // Restarted or removed processes can invalidate a single counter sample.
+                }
+            }
+            previousGpuSamples = samples;
+            return Math.Clamp(usage, 0, 100);
+        }
+        catch
+        {
+            previousGpuSamples.Clear();
+            return 0;
         }
     }
 

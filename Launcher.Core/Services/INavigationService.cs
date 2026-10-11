@@ -7,6 +7,7 @@ public interface INavigationService
 {
     ViewModelBase CurrentView { get; set; }
     ObservableCollection<ViewModelBase> Views { get; }
-    void NavigateTo<TViewModel>() where TViewModel : ViewModelBase;
+    string? ErrorMessage { get; }
+    bool NavigateTo<TViewModel>() where TViewModel : ViewModelBase;
     void Preload<TViewModel>() where TViewModel : ViewModelBase;
 }

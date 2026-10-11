@@ -42,3 +42,11 @@ UBL ADMIN/
 *.diff
 *.patch
 temp_diff.txt
+
+# Private credentials and local tooling
+*.key
+*.pem
+.env
+.env.*
+!.env.example
+UB_Launcher_Admin_Pannel/

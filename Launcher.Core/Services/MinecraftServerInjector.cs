@@ -17,7 +17,7 @@ public static class MinecraftServerInjector
                 
             var serversDatPath = Path.Combine(root, "servers.dat");
             NbtFile file;
-            NbtList serversList;
+            NbtList? serversList;
 
             if (File.Exists(serversDatPath))
             {
@@ -27,8 +27,8 @@ public static class MinecraftServerInjector
                 }
                 catch
                 {
-                    // File might be corrupted or empty
-                    file = new NbtFile(new NbtCompound(""));
+                    // Preserve the player's server list if it cannot be parsed.
+                    return;
                 }
                 
                 serversList = file.RootTag.Get<NbtList>("servers");
@@ -84,7 +84,10 @@ public static class MinecraftServerInjector
                 serversList.Insert(0, newServerTag);
             }
 
-            file.SaveToFile(serversDatPath, NbtCompression.None);
+            Directory.CreateDirectory(root);
+            var temporaryPath = serversDatPath + ".tmp";
+            file.SaveToFile(temporaryPath, NbtCompression.None);
+            File.Move(temporaryPath, serversDatPath, overwrite: true);
         }
         catch (Exception)
         {

@@ -2,9 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.VisualTree;
 using Launcher.Core.ViewModels;
 
 namespace Launcher.UI.Controls;
@@ -25,6 +27,8 @@ public sealed class NavigationHost : Panel
     private readonly Dictionary<ViewModelBase, Control> pages = [];
     private readonly ViewLocator viewLocator = new();
     private INotifyCollectionChanged? collectionNotifier;
+    private Window? observedWindow;
+    private MainWindowViewModel? observedViewModel;
 
     public IEnumerable? ItemsSource
     {
@@ -56,6 +60,59 @@ public sealed class NavigationHost : Panel
 
             UpdateVisibility();
         }
+        else if (change.Property == IsVisibleProperty)
+        {
+            UpdateVisibility();
+        }
+        else if (change.Property == DataContextProperty)
+        {
+            ObserveViewModel();
+            UpdateVisibility();
+        }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        observedWindow = TopLevel.GetTopLevel(this) as Window;
+        if (observedWindow is not null)
+            observedWindow.PropertyChanged += OnWindowPropertyChanged;
+        ObserveViewModel();
+        UpdateVisibility();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        if (observedWindow is not null)
+            observedWindow.PropertyChanged -= OnWindowPropertyChanged;
+        if (observedViewModel is not null)
+            observedViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        observedWindow = null;
+        observedViewModel = null;
+        foreach (var page in pages.Values.OfType<INavigationAwarePage>())
+            page.SetNavigationActive(false);
+        base.OnDetachedFromVisualTree(e);
+    }
+
+    private void ObserveViewModel()
+    {
+        if (observedViewModel is not null)
+            observedViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        observedViewModel = DataContext as MainWindowViewModel;
+        if (observedViewModel is not null)
+            observedViewModel.PropertyChanged += OnViewModelPropertyChanged;
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(MainWindowViewModel.IsAnyModalOpen))
+            UpdateVisibility();
+    }
+
+    private void OnWindowPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.Property == Window.IsActiveProperty || e.Property == Window.WindowStateProperty)
+            UpdateVisibility();
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -64,11 +121,12 @@ public sealed class NavigationHost : Panel
         var desiredHeight = 0d;
         foreach (var child in Children)
         {
-            child.Measure(availableSize);
             if (!child.IsVisible)
             {
                 continue;
             }
+
+            child.Measure(availableSize);
 
             desiredWidth = Math.Max(desiredWidth, child.DesiredSize.Width);
             desiredHeight = Math.Max(desiredHeight, child.DesiredSize.Height);
@@ -82,7 +140,8 @@ public sealed class NavigationHost : Panel
         var bounds = new Rect(finalSize);
         foreach (var child in Children)
         {
-            child.Arrange(bounds);
+            if (child.IsVisible)
+                child.Arrange(bounds);
         }
 
         return finalSize;
@@ -145,14 +204,16 @@ public sealed class NavigationHost : Panel
 
     private void UpdatePageState(ViewModelBase viewModel, Control page)
     {
-        var isActive = ReferenceEquals(viewModel, CurrentView);
+        var isActive = IsVisible && ReferenceEquals(viewModel, CurrentView);
         page.IsVisible = isActive;
         page.Opacity = 1;
         page.IsHitTestVisible = isActive;
 
         if (page is INavigationAwarePage navigationAwarePage)
         {
-            navigationAwarePage.SetNavigationActive(isActive);
+            navigationAwarePage.SetNavigationActive(isActive &&
+                observedWindow is { IsActive: true, WindowState: not WindowState.Minimized } &&
+                observedViewModel?.IsAnyModalOpen != true);
         }
     }
 }

@@ -23,8 +23,6 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            System.Net.ServicePointManager.DefaultConnectionLimit = 256;
-
             Func<Type, ViewModelBase> factory = type =>
             {
                 if (type == typeof(HomeViewModel)) return new HomeViewModel();
@@ -44,7 +42,11 @@ public partial class App : Application
             {
                 DataContext = mainViewModel,
             };
-            desktop.Exit += (_, _) => DiscordPresenceService.Shutdown();
+            desktop.Exit += (_, _) =>
+            {
+                LauncherGameSettingsStore.Flush();
+                DiscordPresenceService.Shutdown();
+            };
 
             _ = RefreshPublicConfigurationAsync(mainViewModel);
             LauncherAnalyticsService.StartHeartbeatLoop();

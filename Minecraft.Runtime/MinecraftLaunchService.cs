@@ -4,6 +4,7 @@ using CmlLib.Core.ProcessBuilder;
 using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace Minecraft.Runtime;
 
@@ -28,16 +29,11 @@ public sealed record MinecraftLaunchConfiguration
 
 public sealed class MinecraftLaunchService
 {
-    private static int retiredUbClientCleanupDone;
     private readonly MinecraftLauncher launcher;
     private readonly string root;
 
     public MinecraftLaunchService(string? gameDirectory = null)
     {
-        if (Interlocked.CompareExchange(ref retiredUbClientCleanupDone, 1, 0) == 0)
-        {
-            _ = Task.Run(RemoveAllRetiredUbClientFiles);
-        }
         root = string.IsNullOrWhiteSpace(gameDirectory)
             ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "UBLauncher", "minecraft")
             : gameDirectory;
@@ -45,7 +41,7 @@ public sealed class MinecraftLaunchService
         launcher = new MinecraftLauncher(new MinecraftPath(root));
         if (launcher.GameInstaller is CmlLib.Core.Installers.ParallelGameInstaller installer)
         {
-            installer.CheckFileChecksum = false;
+            installer.CheckFileChecksum = true;
         }
     }
 
@@ -95,7 +91,8 @@ public sealed class MinecraftLaunchService
         MinecraftLaunchConfiguration configuration,
         IProgress<string>? progress = null,
         string? serverAddress = null,
-        string? instanceLoaderType = null)
+        string? instanceLoaderType = null,
+        MSession? authenticatedSession = null)
     {
         if (string.IsNullOrWhiteSpace(username)) throw new ArgumentException("Enter an offline username first.", nameof(username));
         if (string.IsNullOrWhiteSpace(version)) throw new ArgumentException("Select a Minecraft version first.", nameof(version));
@@ -168,8 +165,8 @@ public sealed class MinecraftLaunchService
 
         var launchOption = new MLaunchOption
         {
-            Session = MSession.CreateOfflineSession(username),
-            MaximumRamMb = Math.Max(512, configuration.MaximumRamMb),
+            Session = authenticatedSession ?? MSession.CreateOfflineSession(username),
+            MaximumRamMb = ClampMemoryMb(configuration.MaximumRamMb, GC.GetGCMemoryInfo().TotalAvailableMemoryBytes),
             FullScreen = configuration.FullScreen,
             ScreenWidth = Math.Max(320, configuration.ScreenWidth),
             ScreenHeight = Math.Max(240, configuration.ScreenHeight)
@@ -191,7 +188,7 @@ public sealed class MinecraftLaunchService
             progress?.Report("Saved Java path is unavailable; selecting a compatible Java runtime automatically.");
         }
 
-        // Inject ultra-performance JVM arguments for maximum FPS and zero-stutter frame times
+        // Conservative defaults leave room for the JVM's hardware-aware ergonomics.
         var optimizedJvmArgs = BuildOptimizedJvmArguments(
             configuration.CustomJvmArguments,
             requiredJavaMajor,
@@ -234,13 +231,16 @@ public sealed class MinecraftLaunchService
         {
             // Force discrete NVIDIA/AMD GPU on Windows & Linux hybrid graphics systems
             process.StartInfo.EnvironmentVariables["SHIM_MCCOMPAT"] = "0xD";
-            process.StartInfo.EnvironmentVariables["__NV_PRIME_RENDER_OFFLOAD"] = "1";
-            process.StartInfo.EnvironmentVariables["__GLX_VENDOR_LIBRARY_NAME"] = "nvidia";
-            process.StartInfo.EnvironmentVariables["__GL_THREADED_OPTIMIZATIONS"] = "1";
-            process.StartInfo.EnvironmentVariables["DRI_PRIME"] = "1";
-            process.StartInfo.EnvironmentVariables["MESA_GL_VERSION_OVERRIDE"] = "4.6";
-
-            TryEnforceWindowsDirectXHighPerformanceGpu(launchOption.JavaPath ?? javaPath);
+            if (OperatingSystem.IsLinux())
+            {
+                process.StartInfo.EnvironmentVariables["DRI_PRIME"] = "1";
+                if (File.Exists("/proc/driver/nvidia/version"))
+                {
+                    process.StartInfo.EnvironmentVariables["__NV_PRIME_RENDER_OFFLOAD"] = "1";
+                    process.StartInfo.EnvironmentVariables["__GLX_VENDOR_LIBRARY_NAME"] = "nvidia";
+                }
+            }
+            TryEnforceWindowsDirectXHighPerformanceGpu(process.StartInfo.FileName);
         }
 
         progress?.Report("Starting Minecraft...");
@@ -250,7 +250,7 @@ public sealed class MinecraftLaunchService
         {
             try
             {
-                process.PriorityClass = ProcessPriorityClass.High;
+                process.PriorityClass = ProcessPriorityClass.AboveNormal;
             }
             catch
             {
@@ -268,56 +268,12 @@ public sealed class MinecraftLaunchService
         }
 
         var flags = new List<string>();
-
-        // Use Generational ZGC for Java 21+ which provides massive latency improvements and better frametimes
-        if (javaMajorVersion >= 21)
-        {
-            flags.AddRange(new[]
-            {
-                "-XX:+UseZGC",
-                "-XX:+ZGenerational",
-                "-XX:+UnlockExperimentalVMOptions",
-                "-XX:+DisableExplicitGC",
-                "-XX:+PerfDisableSharedMem",
-                "-XX:+UseStringDeduplication",
-                "-XX:+OptimizeStringConcat"
-            });
-        }
-        else
-        {
-            // Aggressive G1GC tuning for Java 8-17
-            flags.AddRange(new[]
-            {
-                "-XX:+UseG1GC",
-                "-XX:+ParallelRefProcEnabled",
-                "-XX:MaxGCPauseMillis=200",
-                "-XX:+UnlockExperimentalVMOptions",
-                "-XX:+DisableExplicitGC",
-                "-XX:G1NewSizePercent=30",
-                "-XX:G1MaxNewSizePercent=40",
-                "-XX:G1ReservePercent=20",
-                "-XX:G1HeapWastePercent=5",
-                "-XX:G1MixedGCCountTarget=4",
-                "-XX:InitiatingHeapOccupancyPercent=15",
-                "-XX:G1MixedGCLiveThresholdPercent=90",
-                "-XX:G1RSetUpdatingPauseTimePercent=5",
-                "-XX:SurvivorRatio=32",
-                "-XX:+PerfDisableSharedMem",
-                "-XX:MaxTenuringThreshold=1",
-                "-Dsun.rmi.dgc.server.gcInterval=2147483646",
-                "-XX:+UseStringDeduplication",
-                "-XX:+OptimizeStringConcat"
-            });
-        }
-
-        if (javaMajorVersion >= 17)
-        {
-            flags.Add("--add-modules=jdk.naming.dns");
-            flags.Add("--add-exports=java.base/sun.security.x509=ALL-UNNAMED");
-            flags.Add("--add-opens=java.base/java.lang=ALL-UNNAMED");
-            flags.Add("--add-opens=java.base/java.lang.reflect=ALL-UNNAMED");
-            flags.Add("--add-opens=java.base/java.util=ALL-UNNAMED");
-        }
+        var custom = userCustomArgs?.Trim() ?? string.Empty;
+        // GC selections cannot be combined. Preserve an explicitly selected collector.
+        if (javaMajorVersion >= 8 && !Regex.IsMatch(custom, @"(?:^|\s)-XX:[+-]Use\w+GC(?:\s|$)"))
+            flags.Add("-XX:+UseG1GC");
+        if (javaMajorVersion >= 8 && !custom.Contains("-XX:MaxGCPauseMillis=", StringComparison.Ordinal))
+            flags.Add("-XX:MaxGCPauseMillis=100");
 
         if (!string.IsNullOrWhiteSpace(userCustomArgs))
         {
@@ -325,6 +281,13 @@ public sealed class MinecraftLaunchService
         }
 
         return string.Join(" ", flags);
+    }
+
+    public static int ClampMemoryMb(int requestedMb, long availableBytes)
+    {
+        var availableMb = availableBytes / (1024 * 1024);
+        var limit = availableMb > 0 ? Math.Max(512, Math.Min(availableMb * 3 / 4, availableMb - 2048)) : 4096;
+        return (int)Math.Clamp(requestedMb, 512L, Math.Min(limit, 131072));
     }
 
     private static void TryEnforceWindowsDirectXHighPerformanceGpu(string? javaExecutablePath)
@@ -363,15 +326,18 @@ public sealed class MinecraftLaunchService
 
         try
         {
+            // Existing options belong to the player, including VSync and frame caps.
+            if (File.Exists(optionsPath)) return;
             var performanceValues = new Dictionary<string, string>(StringComparer.Ordinal)
             {
-                ["graphics"] = "fast",
+                ["graphicsMode"] = "0",
+                ["fancyGraphics"] = "false",
                 ["renderDistance"] = "8",
                 ["simulationDistance"] = "5",
                 ["entityDistanceScaling"] = "0.5",
                 ["entityShadows"] = "false",
-                ["particles"] = "decreased",
-                ["clouds"] = "false",
+                ["particles"] = "1",
+                ["renderClouds"] = "false",
                 ["enableVsync"] = "false",
                 ["vSync"] = "false",
                 ["maxFps"] = "260",
@@ -382,46 +348,9 @@ public sealed class MinecraftLaunchService
                 ["darknessEffectScale"] = "0.0"
             };
 
-            if (!File.Exists(optionsPath))
-            {
-                var output = performanceValues.Select(pair => $"{pair.Key}:{pair.Value}");
-                File.WriteAllLines(optionsPath, output, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
-                return;
-            }
-
-            var lines = File.ReadAllLines(optionsPath).ToList();
-            var changed = false;
-            for (var i = 0; i < lines.Count; i++)
-            {
-                var line = lines[i];
-                var separator = line.IndexOf(':');
-                if (separator <= 0) continue;
-                var key = line[..separator].Trim();
-                var val = line[(separator + 1)..].Trim();
-
-                if (key.Equals("enableVsync", StringComparison.OrdinalIgnoreCase) ||
-                    key.Equals("vSync", StringComparison.OrdinalIgnoreCase))
-                {
-                    if (val.Equals("true", StringComparison.OrdinalIgnoreCase))
-                    {
-                        lines[i] = $"{key}:false";
-                        changed = true;
-                    }
-                }
-                else if (key.Equals("maxFps", StringComparison.OrdinalIgnoreCase))
-                {
-                    if (int.TryParse(val, out var fps) && fps is > 0 and <= 60)
-                    {
-                        lines[i] = $"{key}:260";
-                        changed = true;
-                    }
-                }
-            }
-
-            if (changed)
-            {
-                File.WriteAllLines(optionsPath, lines, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
-            }
+            using var file = new FileStream(optionsPath, FileMode.CreateNew, FileAccess.Write, FileShare.None);
+            using var writer = new StreamWriter(file, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+            foreach (var pair in performanceValues) writer.WriteLine($"{pair.Key}:{pair.Value}");
         }
         catch (IOException)
         {
@@ -650,44 +579,11 @@ public sealed class MinecraftLaunchService
         if (!Directory.Exists(modsFolder)) return;
         foreach (var path in Directory.EnumerateFiles(modsFolder, "ubclient*.jar", SearchOption.TopDirectoryOnly))
         {
-            // UB Client is retired globally; remove stale copies before launch.
-            File.Delete(path);
+            // Keep retired mods recoverable and only touch the selected instance.
+            var disabledPath = path + ".disabled";
+            if (File.Exists(disabledPath)) disabledPath = path + $".{Guid.NewGuid():N}.disabled";
+            File.Move(path, disabledPath);
         }
-    }
-
-    private static void RemoveAllRetiredUbClientFiles()
-    {
-        var instancesRoot = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "UBLauncher", "instances");
-        if (!Directory.Exists(instancesRoot)) return;
-
-        try
-        {
-            foreach (var instanceDir in Directory.EnumerateDirectories(instancesRoot, "*", SearchOption.TopDirectoryOnly))
-            {
-                var modsDir = Path.Combine(instanceDir, "mods");
-                if (Directory.Exists(modsDir))
-                {
-                    foreach (var file in Directory.EnumerateFiles(modsDir, "ubclient*.jar", SearchOption.TopDirectoryOnly))
-                    {
-                        try { File.Delete(file); } catch { }
-                    }
-                }
-                
-                var rootFiles = new[] { "ubclient.properties", "ubclient.jar" };
-                foreach (var name in rootFiles)
-                {
-                    var file = Path.Combine(instanceDir, name);
-                    if (File.Exists(file))
-                    {
-                        try { File.Delete(file); } catch { }
-                    }
-                }
-            }
-        }
-        catch (IOException) { }
-        catch (UnauthorizedAccessException) { }
     }
 
     private static async Task EnsureFabricApi1204Async(string modsFolder, IProgress<string>? progress)
